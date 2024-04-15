@@ -39,8 +39,8 @@ rake db:migrate:with_data && rake db:seed
 ```bash
 rubocop -a # ruby lint
 brakeman # ruby SAST
-yarn run jslint # standard js linter
-yarn run lint:fix # autofix all files
+yarn run jslint:fix # standard js linter
+yarn run lint # lint and auto-fix everything
 ```
 
 ## Deployment
