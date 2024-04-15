@@ -6,11 +6,23 @@
     "@hotwired/turbo-rails": "^8.0.4",
     "autoprefixer": "^10.4.19",
     "esbuild": "^0.20.2",
+    "lodash.merge": "^4.6.2",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3"
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
-    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
+    "jslint": "standard --fix",
+    "rubylint": "bundle exec rubocop",
+    "rubylint:fix": "bundle exec rubocop -a",
+    "lint": "run-p -c -l rubylint jslint",
+    "lint:fix": "run-s -c -l rubylint:fix jslint"
+  },
+  "author": "Julien Knight <cjk@rabidaudio.com>",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "standard": "^17.1.0"
   }
 }

@@ -1,4 +1,6 @@
-require "active_support/core_ext/integer/time"
+# frozen_string_literal: true
+
+require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -19,25 +21,38 @@ Rails.application.configure do
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
-  if Rails.root.join("tmp/caching-dev.txt").exist?
-    config.action_controller.perform_caching = true
-    config.action_controller.enable_fragment_cache_logging = true
 
-    config.cache_store = :memory_store
-    config.public_file_server.headers = {
-      "Cache-Control" => "public, max-age=#{2.days.to_i}"
-    }
+  config.action_controller.enable_fragment_cache_logging = true
+  if ENV.fetch('USE_REDIS', 'false') == 'true'
+    config.cache_store = :redis_cache_store, config.redis_config
+    config.action_controller.perform_caching = true
   else
     config.action_controller.perform_caching = false
-
-    config.cache_store = :null_store
+    config.cache_store = :memory_store
   end
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
+
+  if ENV.fetch('DELIVER_EMAIL', 'false') == 'true'
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = Rails.application.credentials[:smtp]
+    config.action_mailer.perform_deliveries = true
+  else
+    config.action_mailer.delivery_method = :letter_opener_web
+    config.action_mailer.perform_deliveries = false
+  end
+
+  config.action_mailer.default_url_options = {
+    host: 'localhost',
+    port: 3000
+  }
+  config.action_controller.default_url_options = {
+    **config.action_mailer.default_url_options
+  }
 
   config.action_mailer.perform_caching = false
 
@@ -59,6 +74,8 @@ Rails.application.configure do
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
 
+  config.active_job.queue_adapter = ENV.fetch('USE_REDIS', 'false') == 'true' ? :sidekiq : :async
+
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
@@ -73,4 +90,9 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
+
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.rails_logger = true
+  end
 end

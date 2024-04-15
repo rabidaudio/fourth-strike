@@ -1,24 +1,48 @@
-# README
+# Fourth Strike
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a web-app for tracking projects released by [Fourth Strike](https://fourth-strike.com/). It allows browsing the complete catalog and handles accounting and payouts to artists.
 
-Things you may want to cover:
+## Setup
 
-* Ruby version
+```bash
+# Install rbenv
+sudo apt install rbenv # also update your .zshrc
+#   brew install rbenv ruby-build openssl readline libyaml
+# Install Ruby
+$ rbenv install $(cat .ruby-version)
+# Install system dependencies
+$ sudo apt install sqlite3
+#   brew install sqlite3
+# Start postgres
+# brew services start postgresql@14
+# Install Ruby dependencies
+$ gem install bundler -v '~> 2.5'
+$ bundle install
+# Install nvm
+brew install nvm # also update your .zshrc
+# Install Node:
+$ nvm install 20 --lts
+# Install JS dependencies
+$ npm install
+# Prepare database
+$ rake db:create db:schema:load data:schema:load db:seed
+```
 
-* System dependencies
+### Run migrations
 
-* Configuration
+```bash
+rake db:migrate:with_data && rake db:seed
+```
 
-* Database creation
+## Testing
 
-* Database initialization
+```bash
+rubocop -a # ruby lint
+brakeman # ruby SAST
+yarn run jslint # standard js linter
+yarn run lint:fix # autofix all files
+```
 
-* How to run the test suite
+## Deployment
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+TODO

@@ -1,4 +1,6 @@
-require "active_support/core_ext/integer/time"
+# frozen_string_literal: true
+
+require 'active_support/core_ext/integer/time'
 
 # The test environment is used exclusively to run your application's
 # test suite. You never need to work with it otherwise. Remember that
@@ -15,12 +17,12 @@ Rails.application.configure do
   # this is usually not necessary, and can slow down your test suite. However, it's
   # recommended that you enable it in continuous integration systems to ensure eager
   # loading is working properly before deploying your code.
-  config.eager_load = ENV["CI"].present?
+  config.eager_load = ENV['CI'].present?
 
   # Configure public file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true
   config.public_file_server.headers = {
-    "Cache-Control" => "public, max-age=#{1.hour.to_i}"
+    'Cache-Control' => "public, max-age=#{1.hour.to_i}"
   }
 
   # Show full error reports and disable caching.
@@ -43,6 +45,13 @@ Rails.application.configure do
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
+  config.action_mailer.perform_deliveries = false
+  config.action_mailer.default_url_options = {
+    host: 'test.host'
+  }
+  config.action_controller.default_url_options = {
+    **config.action_mailer.default_url_options
+  }
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
@@ -61,4 +70,19 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
+
+  config.log_level = :debug
+  config.colorize_logging = false
+  config.active_record.verbose_query_logs = true
+
+  # Turn this on to display logs on console
+  if ENV.fetch('DEBUG', 'false') == 'true'
+    config.logger = ActiveSupport::Logger.new($stdout)
+    config.assets.quiet = false
+
+    config.after_initialize do
+      Bullet.enable = true
+      Bullet.rails_logger = true
+    end
+  end
 end
