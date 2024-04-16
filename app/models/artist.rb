@@ -24,15 +24,18 @@
 # a cut of the proceeds.
 #
 # Artists must have a name and a discord handle.
-# Aliases are a collection of names they might also be known as (nicknames, former names, etc.).
+# Aliases are a collection of names they might also be known as (nicknames, former/dead names, etc.).
+# This information is only visible to admins, and is used for proper attribution. You can choose to
+# share this information publicly by putting it in the bio.
 # Credit is how they want to be credited on releases.
-# Bio is a place to optionally plug themselves on their profile, perhaps link out to other work.
+# Bio is a place to optionally plug themselves on their profile, perhaps link out to other work. It
+# supports markdown.
 # Contact info is an optional notes field for storing other contact info, it's only visible to
 # admins for reaching out in the event that discord isn't an option.
 # Paypal account is the email address of the paypal account they wish to be paid. Even if this
 # is populated, they may still opt to have their payments go to the organization instead.
 #
-# Only name, credit, bio, and aliases are displayed publicly. The rest of the information is only
+# Only name, credit, and bio are displayed publicly. The rest of the information is only
 # viewable by the artist and admins.
 class Artist < ApplicationRecord
   include JsonStringColumn

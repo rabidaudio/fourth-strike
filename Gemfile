@@ -18,6 +18,8 @@ gem 'sqlite3', '~> 1.4'
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem 'cssbundling-rails'
 gem 'jsbundling-rails'
+gem 'redcarpet', '~> 3.6'
+gem 'slim-rails', '~> 3.6'
 gem 'stimulus-rails'
 gem 'turbo-rails'
 

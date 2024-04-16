@@ -33,7 +33,12 @@ FactoryBot.define do
       (0..2).to_a.sample.times.map { Faker::Name.first_name }
     end
     paypal_account { Faker::Internet.email }
-    bio { Faker::Lorem.paragraph }
+    bio do
+      [
+        Faker::Lorem.paragraph,
+        "Check out my band at #{Faker::Internet.username}.bandcamp.com"
+      ].join("\n\n")
+    end
     contact_info { nil }
     discord_handle { Faker::Internet.username }
   end
