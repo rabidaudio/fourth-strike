@@ -11,13 +11,18 @@
 #  credit         :string
 #  discord_handle :string           not null
 #  name           :string           not null
-#  paypal_account :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  payee_id       :integer
 #
 # Indexes
 #
 #  index_artists_on_discord_handle  (discord_handle) UNIQUE
+#  index_artists_on_payee_id        (payee_id)
+#
+# Foreign Keys
+#
+#  payee_id  (payee_id => payees.id)
 #
 require 'rails_helper'
 
