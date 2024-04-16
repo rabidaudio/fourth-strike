@@ -6,16 +6,12 @@
     "@fontsource/jost": "^5.0.17",
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.4",
-    "autoprefixer": "^10.4.19",
-    "esbuild": "^0.20.2",
-    "lodash.merge": "^4.6.2",
-    "postcss": "^8.4.38",
-    "remixicon": "^4.2.0",
-    "tailwindcss": "^3.4.3"
+    "bulma": "^1.0.0",
+    "remixicon": "^4.2.0"
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
-    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --postcss",
+    "build:css": "postcss --no-map ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css",
     "jslint:fix": "standard --fix",
     "jslint": "standard",
     "rubylint": "bundle exec rubocop",
@@ -26,8 +22,13 @@
   "author": "Julien Knight <cjk@rabidaudio.com>",
   "license": "MIT",
   "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "esbuild": "^0.20.2",
     "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.38",
+    "postcss-cli": "^11.0.0",
     "postcss-import": "^16.1.0",
+    "postcss-nesting": "^12.1.1",
     "postcss-url": "^10.1.3",
     "standard": "^17.1.0"
   }

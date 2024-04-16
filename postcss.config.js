@@ -6,7 +6,7 @@ const fontsourceRewrite = (asset) =>
 module.exports = {
   plugins: [
     require('postcss-import'),
-    require('tailwindcss'),
+    require('postcss-nesting'),
     require('autoprefixer'),
     require('postcss-url')([
       // Rewrite font import paths to match Rails asset pipeline
@@ -19,5 +19,6 @@ module.exports = {
         url: fontsourceRewrite
       }
     ])
-  ]
+  ],
+  map: false
 }

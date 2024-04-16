@@ -1,0 +1,44 @@
+/* Entry point for your PostCSS build */
+
+
+@import "@fontsource/jost/500";
+@import "@fontsource/jetbrains-mono";
+@import "remixicon/fonts/remixicon";
+
+@import "bulma/css/bulma";
+
+:root {
+  --primary-color: #2f4792;
+  --primary-light-color: #6d9bff20;
+  --text-primary-color: #3c4043;
+  --text-second-color: #586066;
+  --text-light-color: #aeb7ca;
+  --bg-color: #ffffff;
+
+  --main-font: "Jost", Arial, Helvetica, sans-serif;
+  --code-font: "JetBrains Mono", monospace;
+  
+    /* Bulma configuration */
+
+    /* TODO: figure out color theming */
+    /* --bulma-primary-rgb: var(--primary-color); */
+    /* --bulma-primary-h: 225;
+    --bulma-primary-s: 51%;
+    --bulma-primary-l: 38%; */
+    /* --bulma-primary-h: hue(var(--primary-color)); */
+    /* --bulma-primary-s: saturation(var(--primary-color));
+    --bulma-primary-l: lightness(var(--primary-color)); */
+
+    --bulma-body-color: var(--text-primary-color);
+    --bulma-link-text: var(--primary-color);
+
+    --bulma-family-primary: var(--main-font);
+    --bulma-family-secondary: var(--code-font);
+    --bulma-family-code: var(--code-font);
+
+    --bulma-body-line-height: 1.5;
+}
+
+a {
+  text-decoration: underline var(--primary-light-color) 2px;
+}
