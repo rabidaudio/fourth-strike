@@ -10,17 +10,15 @@ ruby ENV.fetch('RUBY_VERSION', nil) || File.read('.ruby-version').chomp
 gem 'puma', '>= 5.0'
 gem 'rails', '~> 7.1.3', '>= 7.1.3.2'
 
-gem 'sprockets-rails'
 gem 'sqlite3', '~> 1.4'
 
-# redis, sidekiq, sidekiq-scheduler,
-
-# Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem 'cssbundling-rails'
 gem 'jsbundling-rails'
 gem 'redcarpet', '~> 3.6'
 gem 'slim-rails', '~> 3.6'
+gem 'sprockets-rails'
 gem 'stimulus-rails'
+gem 'tailwindcss-rails'
 gem 'turbo-rails'
 
 # Inline styles in a way supported by email clients

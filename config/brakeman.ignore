@@ -1,0 +1,40 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "4bcb388a8259d67f5a354a29057a3612ac698ab1dcc26910cf8c0e0a6ab56092",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/artists/show.html.slim",
+      "line": 6,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "render_markdown(Artist.find(params[:id]).bio)",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "ArtistsController",
+          "method": "show",
+          "line": 6,
+          "file": "app/controllers/artists_controller.rb",
+          "rendered": {
+            "name": "artists/show",
+            "file": "app/views/artists/show.html.slim"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "artists/show"
+      },
+      "user_input": "Artist.find(params[:id]).bio",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": "This should be safe because our markdown renderer is stripping html -CJK"
+    }
+  ],
+  "updated": "2024-04-16 13:01:08 -0400",
+  "brakeman_version": "6.1.2"
+}

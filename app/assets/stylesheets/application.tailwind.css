@@ -1,3 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@import "./var.css";
+
+@import "@fontsource/jost/400.css";
+@import "@fontsource/jetbrains-mono";
+@import "remixicon/fonts/remixicon.css";

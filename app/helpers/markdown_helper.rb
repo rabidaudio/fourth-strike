@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Render arbitrary markdown text to html. Limits allowed styles to avoid injection vulnerabilities.
 module MarkdownHelper
   def markdown_renderer
     @markdown_renderer ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(
