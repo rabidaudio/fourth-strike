@@ -11,7 +11,12 @@
   </head>
 
   <body>
-    <%= render 'navbar' %>
-    <%= yield %>
+    <div class="header">
+      <%= render 'navbar' %>
+      <%= render 'flash' %>
+    </div>
+    <div class="content">
+      <%= yield %>
+    </div>
   </body>
 </html>

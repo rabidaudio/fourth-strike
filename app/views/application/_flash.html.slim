@@ -1,0 +1,5 @@
+.flash style="margin: 1em"
+  - [:success, :warning, :danger, :info].each do |type|
+    - if flash[type].present?
+        article.message class="is-#{type}"
+          .message-body = flash[type]
