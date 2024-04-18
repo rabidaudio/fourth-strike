@@ -30,7 +30,9 @@ gem 'turbo-rails'
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
-gem 'bcrypt', '~> 3.1.7'
+gem 'omniauth'
+gem 'omniauth-discord'
+gem 'omniauth-rails_csrf_protection'
 
 # Faster JSON parsing
 gem 'oj'
@@ -74,6 +76,7 @@ end
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri windows]
+  gem 'dotenv'
 
   # SAST
   gem 'brakeman'

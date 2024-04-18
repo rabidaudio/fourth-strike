@@ -85,7 +85,6 @@ GEM
       rake (>= 10.4, < 14.0)
     ast (2.4.2)
     base64 (0.2.0)
-    bcrypt (3.1.20)
     bigdecimal (3.1.7)
     bindex (0.8.1)
     bootsnap (1.18.3)
@@ -126,6 +125,7 @@ GEM
       reline (>= 0.3.8)
     diff-lcs (1.5.1)
     domain_name (0.6.20240107)
+    dotenv (3.1.0)
     drb (2.2.1)
     erubi (1.12.0)
     execjs (2.9.1)
@@ -136,6 +136,10 @@ GEM
       railties (>= 5.0.0)
     faker (3.3.1)
       i18n (>= 1.8.11, < 2)
+    faraday (2.9.0)
+      faraday-net_http (>= 2.0, < 3.2)
+    faraday-net_http (3.1.0)
+      net-http
     ffi (1.16.3)
     ffi-compiler (1.3.2)
       ffi (>= 1.15.5)
@@ -143,6 +147,7 @@ GEM
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashdiff (1.1.0)
+    hashie (5.0.0)
     http (5.2.0)
       addressable (~> 2.8)
       base64 (~> 0.1)
@@ -161,6 +166,8 @@ GEM
     jsbundling-rails (1.3.0)
       railties (>= 6.0.0)
     json (2.7.2)
+    jwt (2.8.1)
+      base64
     language_server-protocol (3.17.0.3)
     launchy (3.0.0)
       addressable (~> 2.8)
@@ -202,7 +209,10 @@ GEM
       money (~> 6.13)
       railties (>= 3.0)
     msgpack (1.7.2)
+    multi_xml (0.6.0)
     mutex_m (0.2.0)
+    net-http (0.4.1)
+      uri
     net-imap (0.4.10)
       date
       net-protocol
@@ -225,8 +235,27 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.4-x86_64-linux)
       racc (~> 1.4)
+    oauth2 (2.0.9)
+      faraday (>= 0.17.3, < 3.0)
+      jwt (>= 1.0, < 3.0)
+      multi_xml (~> 0.5)
+      rack (>= 1.2, < 4)
+      snaky_hash (~> 2.0)
+      version_gem (~> 1.1)
     oj (3.16.3)
       bigdecimal (>= 3.0)
+    omniauth (2.1.2)
+      hashie (>= 3.4.6)
+      rack (>= 2.2.3)
+      rack-protection
+    omniauth-discord (1.2.0)
+      omniauth-oauth2 (~> 1.6)
+    omniauth-oauth2 (1.8.0)
+      oauth2 (>= 1.4, < 3)
+      omniauth (~> 2.0)
+    omniauth-rails_csrf_protection (1.0.1)
+      actionpack (>= 4.2)
+      omniauth (~> 2.0)
     parallel (1.24.0)
     parser (3.3.0.5)
       ast (~> 2.4.1)
@@ -238,6 +267,9 @@ GEM
       nio4r (~> 2.0)
     racc (1.7.3)
     rack (3.0.10)
+    rack-protection (4.0.0)
+      base64 (>= 0.1.0)
+      rack (>= 3.0.0, < 4)
     rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.1.0)
@@ -338,6 +370,9 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       slim (>= 3.0, < 6.0, != 5.0.0)
+    snaky_hash (2.0.1)
+      hashie
+      version_gem (~> 1.1, >= 1.1.1)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -380,7 +415,9 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
     uniform_notifier (1.16.0)
+    uri (0.13.0)
     vcr (6.2.0)
+    version_gem (1.1.4)
     wannabe_bool (0.7.1)
     web-console (4.2.1)
       actionview (>= 6.0.0)
@@ -411,7 +448,6 @@ PLATFORMS
 DEPENDENCIES
   after_commit_everywhere (~> 1.4)
   annotate (~> 3.2)
-  bcrypt (~> 3.1.7)
   bootsnap
   brakeman
   bullet
@@ -420,6 +456,7 @@ DEPENDENCIES
   cssbundling-rails
   data_migrate (~> 9.3)
   debug
+  dotenv
   execjs
   factory_bot_rails (~> 6.4)
   faker (~> 3.3)
@@ -429,6 +466,9 @@ DEPENDENCIES
   lograge
   money-rails (~> 1.15)
   oj
+  omniauth
+  omniauth-discord
+  omniauth-rails_csrf_protection
   puma (>= 5.0)
   rails (~> 7.1.3, >= 7.1.3.2)
   rails-controller-testing
