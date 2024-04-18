@@ -465,6 +465,7 @@ DEPENDENCIES
   letter_opener_web
   lograge
   money-rails (~> 1.15)
+  nokogiri
   oj
   omniauth
   omniauth-discord

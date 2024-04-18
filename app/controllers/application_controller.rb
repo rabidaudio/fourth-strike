@@ -2,4 +2,6 @@
 
 class ApplicationController < ActionController::Base
   include Session
+
+  layout 'default'
 end

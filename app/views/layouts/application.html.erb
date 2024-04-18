@@ -11,12 +11,6 @@
   </head>
 
   <body>
-    <div class="header">
-      <%= render 'navbar' %>
-      <%= render 'flash' %>
-    </div>
-    <div class="content">
-      <%= yield %>
-    </div>
+    <%= content_for?(:content) ? yield(:content) : yield %>
   </body>
 </html>

@@ -36,6 +36,8 @@ gem 'omniauth-rails_csrf_protection'
 
 # Faster JSON parsing
 gem 'oj'
+# XML parsing
+gem 'nokogiri'
 # Faster XML parsing
 # gem 'ox'
 

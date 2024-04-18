@@ -1,9 +1,11 @@
 css:
+  nav.navbar {
+    background-color: #fff !important;
+  }
   .logo {
     width: 64px;
   }
   .logo svg {
-    scale: 2;
     width: 100%;
   }
   a.navbar-item {
@@ -11,24 +13,36 @@ css:
     font-size: 1.5em;
   }
 
-nav.navbar role="navigation" aria-label="main navigation"
+  @media only screen and (max-width: 1023px) {
+    .navbar-menu {
+      position: fixed;
+      left: 0;
+      right: 0;
+    }
+  }
+
+nav.navbar role="navigation" aria-label="main navigation" data-controller="is_active"
   .navbar-brand
     a.navbar-item.logo href = root_path
-      = render inline: Rails.root.join('app/assets/images/fs-logo_markonly_transparent_blue.svg').read 
-    a.navbar-burger role="button" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample"
-      / <span aria-hidden="true"></span>
-      / <span aria-hidden="true"></span>
-      / <span aria-hidden="true"></span>
-      / <span aria-hidden="true"></span>
+      = render_svg "fs-logo_markonly_transparent_blue.svg", scale: 2
+    a.navbar-burger role="button" aria-label="menu" aria-expanded="false" aria-controls="nav_menu" data-action="click->is_active#toggle" data-is_active-target="toggleable"
+      span aria-hidden="true"
+      span aria-hidden="true"
+      span aria-hidden="true"
+      span aria-hidden="true"
 
-  .navbar-menu
+  .navbar-menu id="nav_menu" data-is_active-target="toggleable"
     .navbar-start
       a.navbar-item href="#" Releases
+      a.navbar-item href="#" Artists
 
       - if current_user && current_user.admin?
         a.navbar-item href="#" Reporting
 
     .navbar-end
+      a.navbar-item href="https://fourth-strike.bandcamp.com/" Bandcamp
+      a.navbar-item href="https://twitter.com/StrikeFourth" Twitter
+      a.navbar-item href="mailto:info@fourth-strike.com" Contact Us
       .navbar-item
         .buttons
           = render 'sessions/user_button'

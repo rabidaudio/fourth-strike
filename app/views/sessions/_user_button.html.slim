@@ -21,7 +21,7 @@ css:
   }
 
 - if logged_in?
-  .dropdown data-controller="is_active"
+  .dropdown data-controller="is_active" data-is_active-target="toggleable"
     .dropdown-trigger data-action="click->is_active#toggle"
       button.button aria-haspopup="true" aria-controls="user-menu"
         div.discord_avatar style="background-image: url(#{current_user.avatar_url})"

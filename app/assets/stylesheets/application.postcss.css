@@ -31,6 +31,7 @@
 
     --bulma-body-color: var(--text-primary-color);
     --bulma-link-text: var(--primary-color);
+    --bulma-strong-color: var(--primary-color);
 
     --bulma-family-primary: var(--main-font);
     --bulma-family-secondary: var(--code-font);
@@ -41,4 +42,9 @@
 
 a {
   text-decoration: underline var(--primary-light-color) 2px;
+}
+
+.splash {
+  background-image: url("bg.jpg");
+  min-height: 100vh;
 }

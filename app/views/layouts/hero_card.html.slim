@@ -1,0 +1,14 @@
+- content_for :content do
+  .hero.is-fullheight.splash
+    = render 'header'
+    .hero-body
+      section.section
+        .container
+          .columns.is-centered
+            .column.is-full-mobile.is-three-quarters-desktop
+              .card
+                .card-content
+                  .content
+                    = yield
+
+= render template: "layouts/application"
