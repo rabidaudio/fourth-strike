@@ -9,27 +9,30 @@ css:
     width: 40px;
     height: 40px;
     margin: 5px;
+    border-radius: 50%;
+    background-clip: padding-box;
+    background-color: none;
+    background-position: 50%;
+    background-size: 100%;
   }
 
-  .discord_avatar img {
-    border-radius: 50%;
-    width: 100%;
-    height: 100%;
+  i.ri-discord-fill {
+    margin: 5px;
   }
 
 - if logged_in?
   .dropdown data-controller="is_active"
     .dropdown-trigger data-action="click->is_active#toggle"
       button.button aria-haspopup="true" aria-controls="user-menu"
-        div.discord_avatar
-          img src=current_user.avatar_url
+        div.discord_avatar style="background-image: url(#{current_user.avatar_url})"
         span = current_user.username
         span.icon.is-small
           i.ri-arrow-down-s-fill aria-hidden="true"
 
     .dropdown-menu id="user-menu" role="menu"
       .dropdown-content
-        = button_to "Profile", "#", method: "get", form_class: "dropdown-item"
+        - if current_user.artist.present?
+          = button_to "Profile", artist_path(current_user.artist), method: "get", form_class: "dropdown-item"
         hr.dropdown-divider
         = button_to "Logout", logout_path, method: "delete", form_class: "dropdown-item"
 

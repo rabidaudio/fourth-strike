@@ -1,0 +1,33 @@
+css:
+  .logo {
+    width: 64px;
+  }
+  .logo svg {
+    scale: 2;
+    width: 100%;
+  }
+  a.navbar-item {
+    color: var(--primary-color);
+    font-size: 1.5em;
+  }
+
+nav.navbar role="navigation" aria-label="main navigation"
+  .navbar-brand
+    a.navbar-item.logo href = root_path
+      = render inline: Rails.root.join('app/assets/images/fs-logo_markonly_transparent_blue.svg').read 
+    a.navbar-burger role="button" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample"
+      / <span aria-hidden="true"></span>
+      / <span aria-hidden="true"></span>
+      / <span aria-hidden="true"></span>
+      / <span aria-hidden="true"></span>
+
+  .navbar-menu
+    .navbar-start
+      a.navbar-item href="#" Releases
+
+      / TODO: if admin, reporting
+
+    .navbar-end
+      .navbar-item
+        .buttons
+          = render 'sessions/user_button'

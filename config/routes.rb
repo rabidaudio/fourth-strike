@@ -8,10 +8,9 @@ Rails.application.routes.draw do
   get 'up' => 'rails/health#show', as: :rails_health_check
 
   get 'auth/:provider/callback', to: 'sessions#create'
-  get '/login', to: 'sessions#new'
   delete '/logout', to: 'sessions#destroy'
 
   resources :artists
 
-  root 'sessions#new' # TODO
+  root 'static_pages#home'
 end

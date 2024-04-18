@@ -1,6 +1,9 @@
 h1 = @artist.name
 
-== render_markdown @artist.bio
+- if @artist.bio.present?
+  == render_markdown @artist.bio
+- else
+  p = @artist.credit
 
 / h1 Contributions
 / TODO
