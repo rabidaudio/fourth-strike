@@ -35,6 +35,12 @@ module Session
   def log_in!
     session['user'] = request.env['omniauth.auth'].to_h
     @current_user = User.new(session['user'])
+    unless @current_user.artist? || @current_user.admin?
+      flash[:warning] = "No profile exists for discord user #{@current_user.username}. " \
+                        "If you need a profile created, contact one of the admins: #{Admin.handles.join(', ')}"
+      return log_out!
+    end
+    @current_user
   end
 
   def log_out!

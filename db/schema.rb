@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_16_204048) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_18_131032) do
+  create_table "admins", force: :cascade do |t|
+    t.string "discord_handle", null: false
+    t.datetime "granted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discord_handle"], name: "index_admins_on_discord_handle", unique: true
+  end
+
   create_table "artists", force: :cascade do |t|
     t.string "name", null: false
     t.string "credit"

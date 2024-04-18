@@ -59,5 +59,15 @@ class User
     Artist.find_by(discord_handle: username)
   end
 
-  # admin?
+  def artist?
+    artist.present?
+  end
+
+  def admin
+    Admin.find_by(discord_handle: username)
+  end
+
+  def admin?
+    admin.present?
+  end
 end

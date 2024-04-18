@@ -25,7 +25,8 @@ nav.navbar role="navigation" aria-label="main navigation"
     .navbar-start
       a.navbar-item href="#" Releases
 
-      / TODO: if admin, reporting
+      - if current_user && current_user.admin?
+        a.navbar-item href="#" Reporting
 
     .navbar-end
       .navbar-item
