@@ -10,6 +10,7 @@
 #  contact_info   :string
 #  credit         :string
 #  discord_handle :string           not null
+#  fsn            :string           not null
 #  name           :string           not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
@@ -18,6 +19,7 @@
 # Indexes
 #
 #  index_artists_on_discord_handle  (discord_handle) UNIQUE
+#  index_artists_on_fsn             (fsn) UNIQUE
 #  index_artists_on_payee_id        (payee_id)
 #
 # Foreign Keys
