@@ -34,5 +34,19 @@ FactoryBot.define do
     end
     released_at { Faker::Date.backward(days: 365) }
     upc { Faker::Number.number(digits: 12).to_s }
+
+    trait :with_splits do
+      transient do
+        distribution do
+          { association(:payee) => 1, association(:payee) => 1 }
+        end
+      end
+
+      splits do
+        distribution.map do |payee, value|
+          association(:split, payee: payee, value: value, splittable: instance)
+        end
+      end
+    end
   end
 end

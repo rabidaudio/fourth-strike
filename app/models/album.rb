@@ -31,7 +31,9 @@
 # Rather than matching on names, we use the Bandcamp URL as the unique identifier
 # for correlating with Bandcamp data.
 class Album < ApplicationRecord
-  validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/ }
+  include Splittable
 
   has_many :tracks, dependent: :restrict_with_exception
+
+  validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/ }
 end

@@ -36,6 +36,8 @@
 # for correlating with Bandcamp data.
 # Lyrics and Credits are used for informational purposes only.
 class Track < ApplicationRecord
+  include Splittable
+
   belongs_to :album
 
   validates :track_number, numericality: { greater_than_or_equal_to: 1 }

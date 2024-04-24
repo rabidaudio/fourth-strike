@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_24_182541) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_24_185711) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -68,6 +68,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_24_182541) do
     t.index ["paypal_transaction_id"], name: "index_payouts_on_paypal_transaction_id", unique: true
   end
 
+  create_table "splits", force: :cascade do |t|
+    t.integer "payee_id", null: false
+    t.string "splittable_type", null: false
+    t.integer "splittable_id", null: false
+    t.integer "value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payee_id"], name: "index_splits_on_payee_id"
+    t.index ["splittable_type", "splittable_id"], name: "index_splits_on_splittable"
+  end
+
   create_table "tracks", force: :cascade do |t|
     t.string "name", null: false
     t.integer "album_id", null: false
@@ -88,5 +99,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_24_182541) do
 
   add_foreign_key "artists", "payees"
   add_foreign_key "payouts", "payees"
+  add_foreign_key "splits", "payees"
   add_foreign_key "tracks", "albums"
 end

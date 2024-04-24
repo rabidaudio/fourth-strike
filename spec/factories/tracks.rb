@@ -40,5 +40,19 @@ FactoryBot.define do
     bandcamp_url do
       "https://#{FactoryUtils.sanitize_for_url(album.artist_name)}.bandcamp.com/track/#{FactoryUtils.sanitize_for_url(name)}"
     end
+
+    trait :with_splits do
+      transient do
+        distribution do
+          { association(:payee) => 1, association(:payee) => 1 }
+        end
+      end
+
+      splits do
+        distribution.map do |payee, value|
+          association(:split, payee: payee, value: value, splittable: instance)
+        end
+      end
+    end
   end
 end
