@@ -10,13 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_24_174611) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_24_182541) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["discord_handle"], name: "index_admins_on_discord_handle", unique: true
+  end
+
+  create_table "albums", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "catalog_number", null: false
+    t.string "artist_name", null: false
+    t.string "bandcamp_url", null: false
+    t.datetime "released_at"
+    t.string "upc", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bandcamp_url"], name: "index_albums_on_bandcamp_url", unique: true
+    t.index ["catalog_number"], name: "index_albums_on_catalog_number", unique: true
+    t.index ["upc"], name: "index_albums_on_upc", unique: true
   end
 
   create_table "artists", force: :cascade do |t|
@@ -54,6 +68,25 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_24_174611) do
     t.index ["paypal_transaction_id"], name: "index_payouts_on_paypal_transaction_id", unique: true
   end
 
+  create_table "tracks", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "album_id", null: false
+    t.integer "track_number", null: false
+    t.string "isrc", null: false
+    t.string "upc", null: false
+    t.string "bandcamp_url", null: false
+    t.text "lyrics"
+    t.text "credits"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["album_id", "track_number"], name: "index_tracks_on_album_id_and_track_number", unique: true
+    t.index ["album_id"], name: "index_tracks_on_album_id"
+    t.index ["bandcamp_url"], name: "index_tracks_on_bandcamp_url", unique: true
+    t.index ["isrc"], name: "index_tracks_on_isrc", unique: true
+    t.index ["upc"], name: "index_tracks_on_upc", unique: true
+  end
+
   add_foreign_key "artists", "payees"
   add_foreign_key "payouts", "payees"
+  add_foreign_key "tracks", "albums"
 end
