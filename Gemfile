@@ -55,7 +55,7 @@ gem 'strip_attributes', '~> 1.13'
 # active record support for money and currency
 gem 'money-rails', '~> 1.15'
 # Allow attaching a callback after the current DB transaction completes
-gem 'after_commit_everywhere', '~> 1.4'
+gem 'after_commit_everywhere', '~> 1.3'
 # add `to_b` method to objects which coerces user input to booleans
 gem 'wannabe_bool'
 # Convert addresses, IPs, etc to locations
@@ -64,6 +64,8 @@ gem 'wannabe_bool'
 # `apt install libmaxminddb-dev`
 # `brew install libmaxminddb`
 # gem 'hive_geoip2'
+# Various utils I created at FIXD
+gem 'fixd_utils', github: 'fixdauto/ruby-fixd-utils', tag: 'v1.2.4'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]

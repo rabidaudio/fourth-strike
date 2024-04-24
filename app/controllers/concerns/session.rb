@@ -52,20 +52,24 @@ module Session
 
   # Refresh the access token so they don't have to log in again, and update the stored session
   def refresh_token!
-    res = HTTP
-          .basic_auth(user: ENV.fetch('DISCORD_CLIENT_ID', nil), pass: ENV.fetch('DISCORD_CLIENT_SECRET', nil))
-          .post('https://discord.com/api/v10/oauth2/token', form: {
-                  grant_type: 'refresh_token',
-                  refresh_token: @current_user.refresh_token
-                })
+    NetworkError.handle do
+      res = HTTP
+            .basic_auth(user: ENV.fetch('DISCORD_CLIENT_ID', nil), pass: ENV.fetch('DISCORD_CLIENT_SECRET', nil))
+            .post('https://discord.com/api/v10/oauth2/token', form: {
+                    grant_type: 'refresh_token',
+                    refresh_token: @current_user.refresh_token
+                  })
 
-    raise RefreshTokenError, "Token refresh error: [#{res.status}] #{res.body}" if res.status != 200
+      raise RefreshTokenError, "Token refresh error: [#{res.status}] #{res.body}" if res.status != 200
 
-    token_data = JSON.parse(res.body)
-    @current_user.credentials['token'] = token_data['access_token']
-    @current_user.credentials['refresh_token'] = token_data['refresh_token']
-    @current_user.credentials['expires_at'] = Time.zone.now + token_data['expires_in'].seconds
-    session['user'] = @current_user.as_json
-    @current_user
+      token_data = JSON.parse(res.body)
+      @current_user.credentials['token'] = token_data['access_token']
+      @current_user.credentials['refresh_token'] = token_data['refresh_token']
+      @current_user.credentials['expires_at'] = Time.zone.now + token_data['expires_in'].seconds
+      session['user'] = @current_user.as_json
+      @current_user
+    end
+  rescue NetworkError => e
+    raise RefreshTokenError, e
   end
 end
