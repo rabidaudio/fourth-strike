@@ -34,19 +34,19 @@ RSpec.describe RoyaltyCalculator do
   end
 
   before do
-    create_list(:bandcamp_sale, 17, :album, splittable: the_fame,
+    create_list(:bandcamp_sale, 17, :album, product: the_fame,
                                             net_revenue_amount: 9.99.to_money,
                                             purchased_at: Time.zone.local(2008, 8, 19, 12, 0))
 
-    create_list(:bandcamp_sale, 200, :album, splittable: folklore,
+    create_list(:bandcamp_sale, 200, :album, product: folklore,
                                              net_revenue_amount: 30.to_money,
                                              purchased_at: Time.zone.local(2020, 6, 24, 12, 0))
 
-    create_list(:bandcamp_sale, 610, :track, splittable: single_ladies,
+    create_list(:bandcamp_sale, 610, :track, product: single_ladies,
                                              net_revenue_amount: 0.99.to_money,
                                              purchased_at: Time.zone.local(2008, 10, 8, 12, 0))
 
-    create_list(:bandcamp_sale, 25, :album, splittable: comp,
+    create_list(:bandcamp_sale, 25, :album, product: comp,
                                             net_revenue_amount: 5.55.to_money,
                                             purchased_at: Time.zone.local(2024, 1, 1, 12, 0))
   end

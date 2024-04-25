@@ -36,7 +36,7 @@
 # for correlating with Bandcamp data.
 # Lyrics and Credits are used for informational purposes only.
 class Track < ApplicationRecord
-  include Splittable
+  include Product
 
   belongs_to :album
 

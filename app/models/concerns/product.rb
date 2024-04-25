@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 # A product that has a weighted royalty distribution attached.
-module Splittable
+module Product
   extend ActiveSupport::Concern
 
   included do |base|
-    base.has_many :splits, as: :splittable, dependent: :destroy
+    base.has_many :splits, as: :product, dependent: :destroy
 
     # Too many split objects can create some performance problems, since
     # computations happen in memory rather than in the database. So set

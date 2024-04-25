@@ -31,7 +31,7 @@
 # Rather than matching on names, we use the Bandcamp URL as the unique identifier
 # for correlating with Bandcamp data.
 class Album < ApplicationRecord
-  include Splittable
+  include Product
 
   has_many :tracks, dependent: :restrict_with_exception
 

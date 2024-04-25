@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_24_212321) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_25_190026) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -63,14 +63,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_24_212321) do
     t.integer "net_revenue_amount_cents", default: 0, null: false
     t.string "net_revenue_amount_currency", default: "USD", null: false
     t.datetime "purchased_at", null: false
-    t.string "splittable_type", null: false
-    t.integer "splittable_id", null: false
+    t.string "product_type", null: false
+    t.integer "product_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["bandcamp_transaction_id"], name: "index_bandcamp_sales_on_bandcamp_transaction_id", unique: true
     t.index ["item_url"], name: "index_bandcamp_sales_on_item_url"
     t.index ["paypal_transaction_id"], name: "index_bandcamp_sales_on_paypal_transaction_id"
-    t.index ["splittable_type", "splittable_id"], name: "index_bandcamp_sales_on_splittable"
+    t.index ["product_type", "product_id"], name: "index_bandcamp_sales_on_product"
     t.index ["upc"], name: "index_bandcamp_sales_on_upc"
   end
 
@@ -95,13 +95,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_24_212321) do
 
   create_table "splits", force: :cascade do |t|
     t.integer "payee_id", null: false
-    t.string "splittable_type", null: false
-    t.integer "splittable_id", null: false
+    t.string "product_type", null: false
+    t.integer "product_id", null: false
     t.integer "value", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["payee_id"], name: "index_splits_on_payee_id"
-    t.index ["splittable_type", "splittable_id"], name: "index_splits_on_splittable"
+    t.index ["product_type", "product_id"], name: "index_splits_on_product"
   end
 
   create_table "tracks", force: :cascade do |t|

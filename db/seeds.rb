@@ -116,15 +116,15 @@ single_ladies = FactoryBot.create(:track,
 
 # 10 people bought the album
 10.times do
-  FactoryBot.create(:bandcamp_sale, :album, splittable: pop, subtotal_amount: 9.99.to_money)
+  FactoryBot.create(:bandcamp_sale, :album, product: pop, subtotal_amount: 9.99.to_money)
 end
 
 # 5 people bought Telephone as a single track
 5.times do
-  FactoryBot.create(:bandcamp_sale, :track, splittable: telephone, subtotal_amount: 0.99.to_money)
+  FactoryBot.create(:bandcamp_sale, :track, product: telephone, subtotal_amount: 0.99.to_money)
 end
 
 # 2 people bought single ladies as a single track
 2.times do
-  FactoryBot.create(:bandcamp_sale, :track, splittable: single_ladies, subtotal_amount: 0.99.to_money)
+  FactoryBot.create(:bandcamp_sale, :track, product: single_ladies, subtotal_amount: 0.99.to_money)
 end

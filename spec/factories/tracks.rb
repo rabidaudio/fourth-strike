@@ -50,7 +50,7 @@ FactoryBot.define do
 
       splits do
         distribution.map do |payee, value|
-          association(:split, payee: payee, value: value, splittable: instance)
+          association(:split, payee: payee, value: value, product: instance)
         end
       end
     end

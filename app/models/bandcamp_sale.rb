@@ -9,10 +9,10 @@
 #  net_revenue_amount_cents    :integer          default(0), not null
 #  net_revenue_amount_currency :string           default("USD"), not null
 #  notes                       :text
+#  product_type                :string           not null
 #  purchased_at                :datetime         not null
 #  quantity                    :integer          not null
 #  sku                         :string
-#  splittable_type             :string           not null
 #  subtotal_amount_cents       :integer          default(0), not null
 #  subtotal_amount_currency    :string           default("USD"), not null
 #  type                        :integer          not null
@@ -21,14 +21,14 @@
 #  updated_at                  :datetime         not null
 #  bandcamp_transaction_id     :string
 #  paypal_transaction_id       :string
-#  splittable_id               :integer          not null
+#  product_id                  :integer          not null
 #
 # Indexes
 #
 #  index_bandcamp_sales_on_bandcamp_transaction_id  (bandcamp_transaction_id) UNIQUE
 #  index_bandcamp_sales_on_item_url                 (item_url)
 #  index_bandcamp_sales_on_paypal_transaction_id    (paypal_transaction_id)
-#  index_bandcamp_sales_on_splittable               (splittable_type,splittable_id)
+#  index_bandcamp_sales_on_product                  (product_type,product_id)
 #  index_bandcamp_sales_on_upc                      (upc)
 #
 
@@ -53,15 +53,14 @@ class BandcampSale < ApplicationRecord
     track: 3
   }
 
-  belongs_to :splittable, polymorphic: true
+  belongs_to :product, polymorphic: true
   has_many :splits,
-           primary_key: [:splittable_type, :splittable_id],
-           query_constraints: [:splittable_type, :splittable_id],
+           primary_key: [:product_type, :product_id],
+           query_constraints: [:product_type, :product_id],
            dependent: nil
-
   has_many :payees, through: :splits
 
   def payout_amounts
-    splittable.payout_amounts(net_revenue_amount)
+    product.payout_amounts(net_revenue_amount)
   end
 end

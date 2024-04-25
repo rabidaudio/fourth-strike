@@ -4,18 +4,18 @@
 #
 # Table name: splits
 #
-#  id              :integer          not null, primary key
-#  splittable_type :string           not null
-#  value           :integer          not null
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  payee_id        :integer          not null
-#  splittable_id   :integer          not null
+#  id           :integer          not null, primary key
+#  product_type :string           not null
+#  value        :integer          not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  payee_id     :integer          not null
+#  product_id   :integer          not null
 #
 # Indexes
 #
-#  index_splits_on_payee_id    (payee_id)
-#  index_splits_on_splittable  (splittable_type,splittable_id)
+#  index_splits_on_payee_id  (payee_id)
+#  index_splits_on_product   (product_type,product_id)
 #
 # Foreign Keys
 #
@@ -24,7 +24,7 @@
 require 'rails_helper'
 
 RSpec.describe Split, type: :model do
-  describe 'splittable' do
+  describe 'product' do
     [:album, :track].each do |model|
       context 'single payee' do
         let(:payee) { create(:payee) }
