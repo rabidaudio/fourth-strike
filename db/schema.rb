@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_24_185711) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_24_212321) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -47,6 +47,31 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_24_185711) do
     t.index ["discord_handle"], name: "index_artists_on_discord_handle", unique: true
     t.index ["fsn"], name: "index_artists_on_fsn", unique: true
     t.index ["payee_id"], name: "index_artists_on_payee_id"
+  end
+
+  create_table "bandcamp_sales", force: :cascade do |t|
+    t.integer "type", null: false
+    t.integer "quantity", null: false
+    t.text "notes"
+    t.string "item_url", null: false
+    t.string "sku"
+    t.string "upc"
+    t.string "bandcamp_transaction_id"
+    t.string "paypal_transaction_id"
+    t.integer "subtotal_amount_cents", default: 0, null: false
+    t.string "subtotal_amount_currency", default: "USD", null: false
+    t.integer "net_revenue_amount_cents", default: 0, null: false
+    t.string "net_revenue_amount_currency", default: "USD", null: false
+    t.datetime "purchased_at", null: false
+    t.string "splittable_type", null: false
+    t.integer "splittable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bandcamp_transaction_id"], name: "index_bandcamp_sales_on_bandcamp_transaction_id", unique: true
+    t.index ["item_url"], name: "index_bandcamp_sales_on_item_url"
+    t.index ["paypal_transaction_id"], name: "index_bandcamp_sales_on_paypal_transaction_id"
+    t.index ["splittable_type", "splittable_id"], name: "index_bandcamp_sales_on_splittable"
+    t.index ["upc"], name: "index_bandcamp_sales_on_upc"
   end
 
   create_table "payees", force: :cascade do |t|

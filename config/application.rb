@@ -22,7 +22,7 @@ module FourthStrike
 
     Rails.autoloaders.log! if ENV.fetch('DEBUG', 'false') == 'true'
 
-    config.action_mailer.preview_path = config.root.join('spec/mailers/previews')
+    config.action_mailer.preview_paths << config.root.join('spec/mailers/previews')
 
     # config.redis_config = {
     #   url: ENV.fetch('REDIS_URL', 'redis://localhost:6379/1'),

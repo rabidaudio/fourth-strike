@@ -85,31 +85,46 @@ FactoryBot.create(:track,
                   LYRICS
                  )
 
-FactoryBot.create(:track,
-                  :with_splits,
-                  name: 'Telephone',
-                  album: pop,
-                  track_number: 2,
-                  credits: 'By Stefani Germanotta. Featured vocals by Beyoncé Knowles-Carter.',
-                  distribution: {
-                    gaga.payee => 2,
-                    bey.payee => 1
-                  },
-                  lyrics: <<~LYRICS
-                    Hello, hello, baby\nYou called, I can't hear a thing\nI have got no service in the club, you see, see\nWha-wha-what did you say, oh\nYou're breaking up on me\nSorry, I cannot hear you, I'm kinda busy\nK-kinda busy, k-kinda busy\nSorry, I cannot hear you, I'm kinda busy\nJust a second\nIt's my favorite song they're gonna play\nAnd I cannot text you with a drink in my hand, eh?\nYou should've made some plans with me\nYou knew that I was free\nAnd now you won't stop calling me, I'm kinda busy\nStop calling, stop calling\nI don't wanna think anymore\nI got my head and my heart on the dance floor\nStop calling, stop calling\nI don't wanna talk anymore\nI got my head and my heart on the dance floor\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nStop telephoning me\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nI'm busy\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nStop telephoning me\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nCan call all you want, but there's no one home\nAnd you're not gonna reach my Telephone\nOut in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nCall all you want, but there's no one home\nAnd you're not gonna reach my Telephone\nOut in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nBoy, the way you blowing up my phone\nWon't make me leave no faster\nPut my coat on faster\nLeave my girls no faster\nI should've left my phone at home\n'Cause this is a disaster\nCalling like a collector\nSorry, I cannot answer\nNot that I don't like you, I'm just at a party\nAnd I am sick and tired of my phone r-ringing\nSometimes I feel like I live in Grand Central Station\nTonight I'm not taking no calls, 'cause I'll be dancing\n'Cause I'll be dancing, 'cause I'll be dancing\nTonight I'm not taking no calls, 'cause I'll be dancing\nStop calling, stop calling\nI don't wanna think anymore\nI got my head and my heart on the dance floor\nStop calling, stop calling\nI don't wanna talk anymore\nI got my head and my heart on the dance floor\nStop calling, stop calling\nI don't wanna think anymore\nI got my head and my heart on the dance floor\nStop calling, stop calling\nI don't wanna talk anymore\nI got my head and my heart on the dance floor\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nStop telephoning me\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nI'm busy\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nStop telephoning me\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nCan call all you want, but there's no one home\nAnd you're not gonna reach my Telephone\n'Cause I'm out in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nCall all you want, but there's no one home\nAnd you're not gonna reach my Telephone\n'Cause I'm out in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nMy Telephone, m-m-my Telephone\n'Cause I'm out in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nMy Telephone, m-m-my Telephone\n'Cause I'm out in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nWe're sorry (we're sorry)\nThe number you have reached is not in service at this time\nPlease check the number, or try your call again
-                  LYRICS
-                 )
+telephone = FactoryBot.create(:track,
+                              :with_splits,
+                              name: 'Telephone',
+                              album: pop,
+                              track_number: 2,
+                              credits: 'By Stefani Germanotta. Featured vocals by Beyoncé Knowles-Carter.',
+                              distribution: {
+                                gaga.payee => 2,
+                                bey.payee => 1
+                              },
+                              lyrics: <<~LYRICS
+                                Hello, hello, baby\nYou called, I can't hear a thing\nI have got no service in the club, you see, see\nWha-wha-what did you say, oh\nYou're breaking up on me\nSorry, I cannot hear you, I'm kinda busy\nK-kinda busy, k-kinda busy\nSorry, I cannot hear you, I'm kinda busy\nJust a second\nIt's my favorite song they're gonna play\nAnd I cannot text you with a drink in my hand, eh?\nYou should've made some plans with me\nYou knew that I was free\nAnd now you won't stop calling me, I'm kinda busy\nStop calling, stop calling\nI don't wanna think anymore\nI got my head and my heart on the dance floor\nStop calling, stop calling\nI don't wanna talk anymore\nI got my head and my heart on the dance floor\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nStop telephoning me\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nI'm busy\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nStop telephoning me\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nCan call all you want, but there's no one home\nAnd you're not gonna reach my Telephone\nOut in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nCall all you want, but there's no one home\nAnd you're not gonna reach my Telephone\nOut in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nBoy, the way you blowing up my phone\nWon't make me leave no faster\nPut my coat on faster\nLeave my girls no faster\nI should've left my phone at home\n'Cause this is a disaster\nCalling like a collector\nSorry, I cannot answer\nNot that I don't like you, I'm just at a party\nAnd I am sick and tired of my phone r-ringing\nSometimes I feel like I live in Grand Central Station\nTonight I'm not taking no calls, 'cause I'll be dancing\n'Cause I'll be dancing, 'cause I'll be dancing\nTonight I'm not taking no calls, 'cause I'll be dancing\nStop calling, stop calling\nI don't wanna think anymore\nI got my head and my heart on the dance floor\nStop calling, stop calling\nI don't wanna talk anymore\nI got my head and my heart on the dance floor\nStop calling, stop calling\nI don't wanna think anymore\nI got my head and my heart on the dance floor\nStop calling, stop calling\nI don't wanna talk anymore\nI got my head and my heart on the dance floor\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nStop telephoning me\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nI'm busy\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nStop telephoning me\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nCan call all you want, but there's no one home\nAnd you're not gonna reach my Telephone\n'Cause I'm out in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nCall all you want, but there's no one home\nAnd you're not gonna reach my Telephone\n'Cause I'm out in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nMy Telephone, m-m-my Telephone\n'Cause I'm out in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nMy Telephone, m-m-my Telephone\n'Cause I'm out in the club, and I'm sipping that bubb\nAnd you're not gonna reach my Telephone\nWe're sorry (we're sorry)\nThe number you have reached is not in service at this time\nPlease check the number, or try your call again
+                              LYRICS
+                             )
 
-FactoryBot.create(:track,
-                  :with_splits,
-                  name: 'Single Ladies (Put a Ring on It)',
-                  album: pop,
-                  track_number: 3,
-                  credits: 'By Beyoncé Knowles, Christopher "Tricky" Stewart, and Terius "The-Dream" Nash.',
-                  distribution: {
-                    bey.payee => 1
-                  },
-                  lyrics: <<~LYRICS
-                    All the single ladies, all the single ladies\nAll the single ladies, all the single ladies\nAll the single ladies, all the single ladies\nAll the single ladies\nNow put your hands up\nUp in the club, we just broke up\nI'm doing my own little thing\nDecided to dip and now you wanna trip\nCause another brother noticed me\nI'm up on him, he up on me\nDon't pay him any attention\nJust cried my tears, for three good years\nYa can't be mad at me\nCause if you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nOh, oh, oh, oh, oh, oh, oh, o-ohh\nOh, oh, oh, oh, oh, oh, oh, o-ohh\nIf you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nI got gloss on my lips, a man on my hips\nGot me tighter in my Dereon jeans\nActing up, drink in my cup\nI can care less what you think\nI need no permission, did I mention\nDon't pay him any attention\nCause you had your turn and now you gonna learn\nWhat it really feels like to miss me\nCause if you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nOh, oh, oh, oh, oh, oh, oh\nOh, oh, oh, oh, oh, oh, oh\nIf you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nOh, oh, oh, oh, oh, oh, oh, oh\nOh, oh, oh, oh, oh, oh, oh\nDon't treat me to the things of the world\nI'm not that kind of girl\nYour love is what I prefer, what I deserve\nHere's a man that makes me then takes me\nAnd delivers me to a destiny, to infinity and beyond\nPull me into your arms, say I'm the one you want\nIf you don't, you'll be alone\nAnd like a ghost I'll be gone\nAll the single ladies, all the single ladies\nAll the single ladies, all the single ladies\nAll the single ladies, all the single ladies\nAll the single ladies\nNow put your hands up, oh, oh, oh, oh, oh, oh, oh\nOh, oh, oh, oh, oh, oh, oh\nCause if you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nOh, oh, oh\nIf you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nOh, oh, oh
-                  LYRICS
-                 )
+single_ladies = FactoryBot.create(:track,
+                                  :with_splits,
+                                  name: 'Single Ladies (Put a Ring on It)',
+                                  album: pop,
+                                  track_number: 3,
+                                  credits: 'By Beyoncé Knowles, Christopher "Tricky" Stewart, Terius "The-Dream" Nash.',
+                                  distribution: {
+                                    bey.payee => 1
+                                  },
+                                  lyrics: <<~LYRICS
+                                    All the single ladies, all the single ladies\nAll the single ladies, all the single ladies\nAll the single ladies, all the single ladies\nAll the single ladies\nNow put your hands up\nUp in the club, we just broke up\nI'm doing my own little thing\nDecided to dip and now you wanna trip\nCause another brother noticed me\nI'm up on him, he up on me\nDon't pay him any attention\nJust cried my tears, for three good years\nYa can't be mad at me\nCause if you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nOh, oh, oh, oh, oh, oh, oh, o-ohh\nOh, oh, oh, oh, oh, oh, oh, o-ohh\nIf you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nI got gloss on my lips, a man on my hips\nGot me tighter in my Dereon jeans\nActing up, drink in my cup\nI can care less what you think\nI need no permission, did I mention\nDon't pay him any attention\nCause you had your turn and now you gonna learn\nWhat it really feels like to miss me\nCause if you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nOh, oh, oh, oh, oh, oh, oh\nOh, oh, oh, oh, oh, oh, oh\nIf you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nOh, oh, oh, oh, oh, oh, oh, oh\nOh, oh, oh, oh, oh, oh, oh\nDon't treat me to the things of the world\nI'm not that kind of girl\nYour love is what I prefer, what I deserve\nHere's a man that makes me then takes me\nAnd delivers me to a destiny, to infinity and beyond\nPull me into your arms, say I'm the one you want\nIf you don't, you'll be alone\nAnd like a ghost I'll be gone\nAll the single ladies, all the single ladies\nAll the single ladies, all the single ladies\nAll the single ladies, all the single ladies\nAll the single ladies\nNow put your hands up, oh, oh, oh, oh, oh, oh, oh\nOh, oh, oh, oh, oh, oh, oh\nCause if you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nOh, oh, oh\nIf you liked it then you should have put a ring on it\nIf you liked it then you shoulda put a ring on it\nDon't be mad once you see that he want it\nIf you liked it then you shoulda put a ring on it\nOh, oh, oh
+                                  LYRICS
+                                 )
+
+# 10 people bought the album
+10.times do
+  FactoryBot.create(:bandcamp_sale, :album, splittable: pop, subtotal_amount: 9.99.to_money)
+end
+
+# 5 people bought Telephone as a single track
+5.times do
+  FactoryBot.create(:bandcamp_sale, :track, splittable: telephone, subtotal_amount: 0.99.to_money)
+end
+
+# 2 people bought single ladies as a single track
+2.times do
+  FactoryBot.create(:bandcamp_sale, :track, splittable: single_ladies, subtotal_amount: 0.99.to_money)
+end

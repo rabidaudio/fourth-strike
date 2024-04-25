@@ -26,6 +26,6 @@ class Payee < ApplicationRecord
     q = payouts
     q = q.where('paid_at >= ?', since) if since.present?
     q = q.where('paid_at < ?', before) if before.present?
-    q.sum_amount
+    q.sum_monetized(:amount)
   end
 end
