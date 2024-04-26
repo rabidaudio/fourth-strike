@@ -32,7 +32,7 @@ namespace :bandcamp do
       track_count = 0
 
       album_links.each do |album_link|
-        next if album_link.include?("bandcamp.com/track/") # skip individual tracks
+        next if album_link.include?('bandcamp.com/track/') # skip individual tracks
 
         if Rails.application.config.app_config[:bandcamp][:skip_releases].include?(album_link)
           puts("Skipping #{album_link}")
@@ -53,14 +53,14 @@ namespace :bandcamp do
         end
 
         album_data = JSON.parse(page.at_css('script[type="application/ld+json"]').text)
-        release_data = album_data["albumRelease"].find { |r| r["@id"] == album_link }
+        release_data = album_data['albumRelease'].find { |r| r['@id'] == album_link }
 
-        album_name = album_data["name"]
-        bandcamp_id = release_data.dig("additionalProperty")&.find { |p| p["name"] == "item_id" }&.dig("value")&.to_s
-        artist_name = album_data.dig("byArtist", "name")
-        album_art_url = album_data.dig("image")
-        release_date = Date.parse(album_data.dig("datePublished"))
-        upc = release_data.dig("identifier")
+        album_name = album_data['name']
+        bandcamp_id = release_data&.dig('additionalProperty')&.find { |p| p['name'] == 'item_id' }&.dig('value')&.to_s
+        artist_name = album_data.dig('byArtist', 'name')
+        album_art_url = album_data['image']
+        release_date = Date.parse(album_data['datePublished'])
+        release_data['identifier']
 
         res = Album.upsert({
                              name: album_name,
@@ -73,12 +73,12 @@ namespace :bandcamp do
         album_id = res.rows[0][0]
         album_count += 1
 
-        tracks = album_data.dig("track", "itemListElement").map do |track|
+        tracks = album_data.dig('track', 'itemListElement').map do |track|
           {
-            track_number: track["position"],
-            name: track.dig("item", "name"),
-            bandcamp_url: track.dig("item", "@id"),
-            lyrics: track.dig("item", "recordingOf", "lyrics", "text"),
+            track_number: track['position'],
+            name: track.dig('item', 'name'),
+            bandcamp_url: track.dig('item', '@id'),
+            lyrics: track.dig('item', 'recordingOf', 'lyrics', 'text'),
             album_id: album_id
           }
         end
@@ -99,7 +99,7 @@ namespace :bandcamp do
 
             track_data = JSON.parse(page.at_css('script[type="application/ld+json"]').text)
 
-            track[:credits] = track_data.dig("creditText") || track_data.dig("description")
+            track[:credits] = track_data['creditText'] || track_data['description']
           end
 
           Track.upsert(track, unique_by: :bandcamp_url)
