@@ -68,6 +68,8 @@ gem 'wannabe_bool'
 gem 'fixd_utils', github: 'fixdauto/ruby-fixd-utils', tag: 'v1.2.4'
 # A headless chrome browser, used for crawling bandcamp
 gem 'ferrum', require: false
+# Allow paging through active record results
+gem 'will_paginate', '~> 4.0'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]

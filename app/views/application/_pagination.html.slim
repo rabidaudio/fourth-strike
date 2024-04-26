@@ -1,0 +1,22 @@
+nav.pagination.is-centered role="navigation" aria-label="pagination"
+  - if prev_page
+    a.pagination-previous href=prev_page
+      | Previous
+  - else
+    a.pagination-previous.is-disabled href="#" disabled=""
+
+  - if next_page
+    a.pagination-next href=next_page
+      | Next
+  - else
+    a.pagination-next.is-disabled href="#" disabled=""
+
+  ul.pagination-list
+    - pages.each do |page|
+      li
+        - if page == :ellipsis
+          span.pagination-ellipsis &hellip;
+        - elsif page[:current]
+          a.pagination-link.is-current href="#" = page[:num]
+        - else
+          a.pagination-link href=page[:path] aria-label="Goto page #{page[:num]}" = page[:num]
