@@ -33,8 +33,8 @@ nav.navbar role="navigation" aria-label="main navigation" data-controller="is_ac
 
   .navbar-menu id="nav_menu" data-is_active-target="toggleable"
     .navbar-start
-      a.navbar-item href="#" Releases
-      a.navbar-item href="#" Artists
+      a.navbar-item href=albums_path Releases
+      / a.navbar-item href="#" Artists
 
       - if current_user && current_user.admin?
         a.navbar-item href="#" Reporting

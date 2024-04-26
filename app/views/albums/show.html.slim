@@ -1,0 +1,28 @@
+h3.is-size-2 = @album.name
+p
+  span = "by "
+  a href=albums_path(artist: @album.artist_name) = @album.artist_name
+
+  br
+  span = "Released #{localized_date(@album.release_date)}"
+
+- if @album.bandcamp_id
+  .bandcamp-embed
+    iframe { style="border: 0; width: 100%; min-width:256px; height: 120px;"
+      src="https://bandcamp.com/EmbeddedPlayer/album=#{@album.bandcamp_id}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless=""}
+      
+      a href=@album.bandcamp_url = "#{@album.name} by #{@album.artist_name}"
+- else
+  a href=@album.bandcamp_url
+    = image_tag("bandcamp-button-square-green/bandcamp-button-square-green-64.png")
+
+- if @album.tracks
+  h2.is-size-3 Track List
+  
+  table.table
+    tbody
+      - @album.tracks.order(track_number: :asc).each do |track|
+        tr
+          td = "#{track.track_number}."
+          td
+            a href=track_path(track.id) = track.name

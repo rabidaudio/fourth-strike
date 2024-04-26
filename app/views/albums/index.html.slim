@@ -1,0 +1,22 @@
+h1.is-size-2 Releases
+
+= render_pagination(@albums)
+
+.grid.is-col-min-9.is-gap-4
+  - @albums.each do |album|
+    .cell
+      a href=album_path(album)
+        .card
+          - if album.album_art_url.present?
+            .card-image
+              figure.image.is-1by1
+                img src = album.album_art_url alt = album.name
+          - else
+            .card-image
+              figure.image.is-1by1
+                img width="700" style="background-color:#cccccc;padding:1px"
+          .card-content
+            p.title.is-4 = album.name
+            p.subtitle.is-6 = album.artist_name
+
+= render_pagination(@albums)

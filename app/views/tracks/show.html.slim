@@ -1,0 +1,21 @@
+h3.is-size-2 = @track.name
+p
+  span = "from "
+  a href=album_path(@track.album) = @track.album.name
+  span = " by "
+  a href=albums_path(artist: @track.album.artist_name) = @track.album.artist_name
+
+- if @track.bandcamp_id
+  iframe { style="border: 0; width: 100%; min-width:256px; height: 120px;"
+      src="https://bandcamp.com/EmbeddedPlayer/track=#{@track.bandcamp_id}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless=""}
+    a href=@track.bandcamp_url = "#{@track.name} by #{@track.album.artist_name}"
+- else
+  a href=@track.bandcamp_url
+    = image_tag("bandcamp-button-square-green/bandcamp-button-square-green-64.png")
+
+- if @track.credits
+  == render_markdown @track.credits
+
+- if @track.lyrics
+  pre.lyrics = @track.lyrics
+  
