@@ -5,12 +5,13 @@
 # Table name: albums
 #
 #  id             :integer          not null, primary key
+#  album_art_url  :string
 #  artist_name    :string           not null
 #  bandcamp_url   :string           not null
-#  catalog_number :string           not null
+#  catalog_number :string
 #  name           :string           not null
-#  released_at    :datetime
-#  upc            :string           not null
+#  release_date   :date
+#  upc            :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #
@@ -33,7 +34,9 @@
 class Album < ApplicationRecord
   include Product
 
+  strip_attributes
+
   has_many :tracks, dependent: :restrict_with_exception
 
-  validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/ }
+  validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/, allow_nil: true }
 end

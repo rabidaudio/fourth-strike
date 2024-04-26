@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_25_190026) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_26_152641) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -21,13 +21,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_190026) do
 
   create_table "albums", force: :cascade do |t|
     t.string "name", null: false
-    t.string "catalog_number", null: false
+    t.string "catalog_number"
     t.string "artist_name", null: false
     t.string "bandcamp_url", null: false
-    t.datetime "released_at"
-    t.string "upc", null: false
+    t.date "release_date"
+    t.string "upc"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "album_art_url"
     t.index ["bandcamp_url"], name: "index_albums_on_bandcamp_url", unique: true
     t.index ["catalog_number"], name: "index_albums_on_catalog_number", unique: true
     t.index ["upc"], name: "index_albums_on_upc", unique: true
@@ -108,8 +109,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_190026) do
     t.string "name", null: false
     t.integer "album_id", null: false
     t.integer "track_number", null: false
-    t.string "isrc", null: false
-    t.string "upc", null: false
+    t.string "isrc"
+    t.string "upc"
     t.string "bandcamp_url", null: false
     t.text "lyrics"
     t.text "credits"

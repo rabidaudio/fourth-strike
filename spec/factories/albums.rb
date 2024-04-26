@@ -5,12 +5,13 @@
 # Table name: albums
 #
 #  id             :integer          not null, primary key
+#  album_art_url  :string
 #  artist_name    :string           not null
 #  bandcamp_url   :string           not null
-#  catalog_number :string           not null
+#  catalog_number :string
 #  name           :string           not null
-#  released_at    :datetime
-#  upc            :string           not null
+#  release_date   :date
+#  upc            :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #
@@ -32,7 +33,7 @@ FactoryBot.define do
     bandcamp_url do
       "https://#{FactoryUtils.sanitize_for_url(artist_name)}.bandcamp.com/album/#{FactoryUtils.sanitize_for_url(name)}"
     end
-    released_at { Faker::Date.backward(days: 365) }
+    release_date { Faker::Date.backward(days: 365) }
     upc { Faker::Number.number(digits: 12).to_s }
 
     trait :with_splits do

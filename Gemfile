@@ -66,6 +66,8 @@ gem 'wannabe_bool'
 # gem 'hive_geoip2'
 # Various utils I created at FIXD
 gem 'fixd_utils', github: 'fixdauto/ruby-fixd-utils', tag: 'v1.2.4'
+# A headless chrome browser, used for crawling bandcamp
+gem 'ferrum', require: false
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]

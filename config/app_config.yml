@@ -1,0 +1,11 @@
+organization_name: Fourth Strike
+operating_currency: USD
+payout_at:
+  cents: 4200
+  currency: USD
+bandcamp:
+  url: fourth-strike.bandcamp.com
+  skip_releases:
+    - https://fourth-strike.bandcamp.com/album/fourth-strike-song-jam-2023
+    - https://fourth-strike.bandcamp.com/album/fourth-strike-song-jam-2022
+    - https://fourth-strike.bandcamp.com/album/fourth-strike-song-jam-2021

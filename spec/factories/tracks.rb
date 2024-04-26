@@ -7,11 +7,11 @@
 #  id           :integer          not null, primary key
 #  bandcamp_url :string           not null
 #  credits      :text
-#  isrc         :string           not null
+#  isrc         :string
 #  lyrics       :text
 #  name         :string           not null
 #  track_number :integer          not null
-#  upc          :string           not null
+#  upc          :string
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  album_id     :integer          not null
