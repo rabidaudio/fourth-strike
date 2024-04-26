@@ -13,6 +13,7 @@ namespace :bandcamp do
 
     browser = Ferrum::Browser.new
     bandcamp_url = Rails.application.config.app_config[:bandcamp][:url]
+    fetch_credits = ENV.fetch('fetch_credits', 'false').to_b
 
     ActiveRecord::Base.transaction do
       page = browser.create_page
@@ -31,6 +32,8 @@ namespace :bandcamp do
       track_count = 0
 
       album_links.each do |album_link|
+        next if album_link.include?("bandcamp.com/track/") # skip individual tracks
+
         if Rails.application.config.app_config[:bandcamp][:skip_releases].include?(album_link)
           puts("Skipping #{album_link}")
           next
@@ -49,59 +52,57 @@ namespace :bandcamp do
           sleep([30, (2**attempts)].max.seconds)
         end
 
-        album_name = page.at_css('#name-section .trackTitle').text.strip
-        artist_name = page.at_css('#name-section span').text.strip
+        album_data = JSON.parse(page.at_css('script[type="application/ld+json"]').text)
+        release_data = album_data["albumRelease"].find { |r| r["@id"] == album_link }
 
-        release_date = Time.zone.parse(page.at_css('.tralbum-credits').text.strip
-          .lines.first.strip.delete_prefix('released '))
-        album_art_url = page.at_css('#tralbumArt img')&.attribute('src')
+        album_name = album_data["name"]
+        bandcamp_id = release_data.dig("additionalProperty")&.find { |p| p["name"] == "item_id" }&.dig("value")&.to_s
+        artist_name = album_data.dig("byArtist", "name")
+        album_art_url = album_data.dig("image")
+        release_date = Date.parse(album_data.dig("datePublished"))
+        upc = release_data.dig("identifier")
 
         res = Album.upsert({
                              name: album_name,
                              artist_name: artist_name,
                              release_date: release_date,
                              album_art_url: album_art_url,
+                             bandcamp_id: bandcamp_id,
                              bandcamp_url: album_link
                            }, unique_by: :bandcamp_url)
         album_id = res.rows[0][0]
         album_count += 1
 
-        # we need to load all the track data here before navigating to any other pages
-        track_data = page.css('#track_table tr[rel]').map do |el|
+        tracks = album_data.dig("track", "itemListElement").map do |track|
           {
-            track_number: el.at_css('.track-number-col').text.to_i,
-            name: el.at_css('.title').text.strip.lines[0].strip,
-            bandcamp_url: URI(album_link).tap { |u| u.path = el.at_css('.title a').attribute('href') }.to_s,
+            track_number: track["position"],
+            name: track.dig("item", "name"),
+            bandcamp_url: track.dig("item", "@id"),
+            lyrics: track.dig("item", "recordingOf", "lyrics", "text"),
             album_id: album_id
           }
         end
 
-        track_data.each do |track|
-          attempts = 0
-          loop do
-            page.go_to(track[:bandcamp_url])
-            puts(track[:bandcamp_url])
+        tracks.each do |track|
+          if fetch_credits
+            attempts = 0
+            loop do
+              page.go_to(track[:bandcamp_url])
+              puts(track[:bandcamp_url])
 
-            break unless page.at_css('body').text.empty?
+              break unless page.at_css('body').text.empty?
 
-            puts('page blank. retrying....')
-            attempts += 1
-            sleep([30, (2**attempts)].max.seconds)
+              puts('page blank. retrying....')
+              attempts += 1
+              sleep([30, (2**attempts)].max.seconds)
+            end
+
+            track_data = JSON.parse(page.at_css('script[type="application/ld+json"]').text)
+
+            track[:credits] = track_data.dig("creditText") || track_data.dig("description")
           end
 
-          credits = nil
-          if page.at_css('.tralbum-credits')
-            credits = page.at_css('.tralbum-credits').text.strip
-                          .lines&.map(&:strip)&.compact_blank&.[](2..)&.join("\n")
-                          &.delete_prefix(track[:name])&.strip
-          end
-          credits = page.at_css('.tralbum-about').text.strip if credits.blank? && page.at_css('.tralbum-about')
-
-          Track.upsert({
-                         **track,
-                         lyrics: page.at_css('.lyricsText')&.text&.strip,
-                         credits: credits
-                       }, unique_by: :bandcamp_url)
+          Track.upsert(track, unique_by: :bandcamp_url)
           track_count += 1
         end
       end

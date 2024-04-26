@@ -14,9 +14,11 @@
 #  upc            :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  bandcamp_id    :string
 #
 # Indexes
 #
+#  index_albums_on_bandcamp_id     (bandcamp_id) UNIQUE
 #  index_albums_on_bandcamp_url    (bandcamp_url) UNIQUE
 #  index_albums_on_catalog_number  (catalog_number) UNIQUE
 #  index_albums_on_upc             (upc) UNIQUE

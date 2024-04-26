@@ -15,11 +15,13 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  album_id     :integer          not null
+#  bandcamp_id  :string
 #
 # Indexes
 #
 #  index_tracks_on_album_id                   (album_id)
 #  index_tracks_on_album_id_and_track_number  (album_id,track_number) UNIQUE
+#  index_tracks_on_bandcamp_id                (bandcamp_id) UNIQUE
 #  index_tracks_on_bandcamp_url               (bandcamp_url) UNIQUE
 #  index_tracks_on_isrc                       (isrc) UNIQUE
 #  index_tracks_on_upc                        (upc) UNIQUE
@@ -38,7 +40,11 @@ FactoryBot.define do
     lyrics { Faker::Lorem.paragraphs(number: 4) }
     credits { Faker::Lorem.sentence }
     bandcamp_url do
-      "https://#{FactoryUtils.sanitize_for_url(album.artist_name)}.bandcamp.com/track/#{FactoryUtils.sanitize_for_url(name)}"
+      [
+        "https://#{FactoryUtils.sanitize_for_url(album.artist_name)}.bandcamp.com",
+        'track',
+        "#{FactoryUtils.sanitize_for_url(name)}-#{Faker::Number.number(digits: 4)}"
+      ].join('/')
     end
 
     trait :with_splits do

@@ -14,9 +14,11 @@
 #  upc            :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  bandcamp_id    :string
 #
 # Indexes
 #
+#  index_albums_on_bandcamp_id     (bandcamp_id) UNIQUE
 #  index_albums_on_bandcamp_url    (bandcamp_url) UNIQUE
 #  index_albums_on_catalog_number  (catalog_number) UNIQUE
 #  index_albums_on_upc             (upc) UNIQUE
@@ -31,7 +33,11 @@ FactoryBot.define do
     catalog_number
     artist_name { Faker::Music::RockBand.name }
     bandcamp_url do
-      "https://#{FactoryUtils.sanitize_for_url(artist_name)}.bandcamp.com/album/#{FactoryUtils.sanitize_for_url(name)}"
+      [
+        "https://#{FactoryUtils.sanitize_for_url(artist_name)}.bandcamp.com",
+        'album',
+        "#{FactoryUtils.sanitize_for_url(name)}-#{Faker::Number.number(digits: 4)}"
+      ].join('/')
     end
     release_date { Faker::Date.backward(days: 365) }
     upc { Faker::Number.number(digits: 12).to_s }
