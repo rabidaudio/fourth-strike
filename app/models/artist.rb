@@ -10,7 +10,6 @@
 #  contact_info   :string
 #  credit         :string
 #  discord_handle :string           not null
-#  fsn            :string           not null
 #  name           :string           not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
@@ -19,7 +18,6 @@
 # Indexes
 #
 #  index_artists_on_discord_handle  (discord_handle) UNIQUE
-#  index_artists_on_fsn             (fsn) UNIQUE
 #  index_artists_on_payee_id        (payee_id)
 #
 # Foreign Keys
@@ -31,7 +29,6 @@
 # a cut of the proceeds.
 #
 # Artists must have a name and a discord handle.
-# All artists are given an fsn (a unique Fourth Strike ID), like FS-001.
 # Aliases are a collection of names they might also be known as (nicknames, former/dead names, etc.).
 # This information is only visible to admins, and is used for proper attribution. You can choose to
 # share this information publicly by putting it in the bio.
@@ -55,20 +52,7 @@ class Artist < ApplicationRecord
 
   delegate :paid_out, to: :payee
 
-  validates :fsn, format: { with: /\AFS-[0-9]{3}\z/ }
-
   before_save do |artist|
     artist.aliases = artist.aliases.presence || []
-    artist.fsn ||= Artist.next_fsn
-  end
-
-  def self.next_fsn
-    last_fsn = Artist.maximum(:fsn) || 'FS-000'
-    num = last_fsn.delete_prefix('FS-').to_i
-    build_fsn(num + 1)
-  end
-
-  def self.build_fsn(number)
-    "FS-#{number.to_s.rjust(3, '0')}"
   end
 end
