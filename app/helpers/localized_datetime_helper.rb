@@ -5,7 +5,7 @@ module LocalizedDatetimeHelper
   FORMATS = {
     'US' => {
       date: '%B %d, %Y',
-      time: '%l:%M %P'
+      time: '%-l:%M %P'
     },
     'CA' => {
       date: '%B %d, %Y',
@@ -17,7 +17,7 @@ module LocalizedDatetimeHelper
     },
     'AU' => {
       date: '%d %B %Y',
-      time: '%l:%M %P'
+      time: '%-l:%M %P'
     },
     'default' => {
       date: '%F',

@@ -15,7 +15,6 @@
 #  sku                         :string
 #  subtotal_amount_cents       :integer          default(0), not null
 #  subtotal_amount_currency    :string           default("USD"), not null
-#  type                        :integer          not null
 #  upc                         :string
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
@@ -39,19 +38,11 @@
 class BandcampSale < ApplicationRecord
   include MonitizedSum
 
-  self.inheritance_column = '_type'
-
   monetize :subtotal_amount_cents
   monetize :net_revenue_amount_cents
 
   # Require sales to be in the operating currency
   validates :subtotal_amount_currency, :net_revenue_amount_currency, inclusion: { in: Money.default_currency.iso_code }
-
-  enum type: {
-    album: 1,
-    # merch: 2,
-    track: 3
-  }
 
   belongs_to :product, polymorphic: true
   has_many :splits,

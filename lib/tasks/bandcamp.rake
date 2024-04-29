@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/SkipsModelValidations
 namespace :bandcamp do
   # NOTE: this relies heavily on the structure of the bandcamp website.
   # It's liable to break eventually when bandcamp redesigns their site.
   # However, fixing it should just be a matter of updating CSS accessors.
   # Unfortunately Bandcamp doesn't have a public API and their private one
   # doesn't include release data.
-  # rubocop:disable Rails/SkipsModelValidations
   desc 'Crawls bandcamp.com for all releases and upserts them'
   task :load_releases => :environment do
     require 'ferrum'
@@ -112,5 +112,69 @@ namespace :bandcamp do
       puts("Fetched #{album_count} albums and #{track_count} tracks")
     end
   end
-  # rubocop:enable Rails/SkipsModelValidations
+
+  desc 'Loads Bandcamp sale data from their raw data report'
+  task :load_report => :environment do
+    require 'csv'
+
+    path = Rails.root.glob('exports/*_bandcamp_raw_data_Fourth-Strike-Records.csv').first
+    raise StandardError, 'Report not found' if path.nil?
+
+    ActiveRecord::Base.transaction do
+      CSV.foreach(path, headers: true, liberal_parsing: true, encoding: 'UTF-16LE') do |row|
+        bandcamp_transaction_id = row['bandcamp transaction id']
+
+        case row['item type']
+        when 'album', 'track'
+          product_class = { 'album' => Album, 'track' => Track }[row['item type']]
+          product = product_class.find_by(bandcamp_url: row['item url'])
+
+          if product.nil?
+            puts("skipping #{row['item url']}")
+            next
+          end
+
+          upc = row['upc'].gsub(' ', '').strip if row['upc'].present?
+          subtotal = row['item total'].to_money(row['currency'])
+          # For some reason, the first couple of rows do not have computed net amounts.
+          # Perhaps before that we were considered a non-profit or too small to be billed
+          # by bandcamp? anyway we'll calculate manually
+          if row['net amount']
+            net = row['net amount'].to_money(row['currency'])
+          else
+            transaction_fee = row['transaction fee'].to_money(row['currency'])
+            net = subtotal - transaction_fee
+          end
+
+        when 'package' then next # TODO: merch : sku
+        when 'bundle' then next # TODO: discog # rubocop:disable Lint/DuplicateBranch
+        when 'payout' then next # rubocop:disable Lint/DuplicateBranch
+        # TODO: should we account for this?
+        when 'pending reversal', 'cancelled reversal', 'refund' then next # rubocop:disable Lint/DuplicateBranch
+        else raise StandardError, "Unknown item type: #{row['item type']}"
+        end
+
+        # date = row['date'] # annoyingly there's some nasty utf-26 char at the beginning
+        # instead we assume that the date is the first column
+        date = row[0]
+        BandcampSale.upsert({
+                              item_url: row['item url'],
+                              product_id: product.id,
+                              product_type: product.class.name,
+                              upc: upc,
+                              subtotal_amount_cents: subtotal.cents,
+                              subtotal_amount_currency: subtotal.currency.iso_code,
+                              net_revenue_amount_cents: net.cents,
+                              net_revenue_amount_currency: net.currency.iso_code,
+                              bandcamp_transaction_id: bandcamp_transaction_id,
+                              paypal_transaction_id: row['paypal transaction id'],
+                              quantity: row['quantity'],
+                              purchased_at: Time.zone.strptime(date, '%m/%d/%y %l:%M %P'),
+                              # grab all the accounting columns but none of the customer PII
+                              notes: row.to_h.slice(*row.headers[0..36]).to_json
+                            }, unique_by: :bandcamp_transaction_id)
+      end
+    end
+  end
 end
+# rubocop:enable Rails/SkipsModelValidations

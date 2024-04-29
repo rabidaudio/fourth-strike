@@ -15,7 +15,6 @@
 #  sku                         :string
 #  subtotal_amount_cents       :integer          default(0), not null
 #  subtotal_amount_currency    :string           default("USD"), not null
-#  type                        :integer          not null
 #  upc                         :string
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
@@ -41,7 +40,6 @@ FactoryBot.define do
     purchased_at { Faker::Date.backward(days: 30) }
 
     trait :album do
-      type { :album }
       product { association(:album) }
 
       upc { Faker::Number.number(digits: 12).to_s }
@@ -50,7 +48,6 @@ FactoryBot.define do
     end
 
     trait :track do
-      type { :track }
       product { association(:track) }
 
       upc { product.upc }

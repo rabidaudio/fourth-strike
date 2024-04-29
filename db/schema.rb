@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_26_191109) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_29_134154) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -53,7 +53,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_26_191109) do
   end
 
   create_table "bandcamp_sales", force: :cascade do |t|
-    t.integer "type", null: false
     t.integer "quantity", null: false
     t.text "notes"
     t.string "item_url", null: false
