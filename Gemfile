@@ -70,6 +70,8 @@ gem 'fixd_utils', github: 'fixdauto/ruby-fixd-utils', tag: 'v1.2.4'
 gem 'ferrum', require: false
 # Allow paging through active record results
 gem 'will_paginate', '~> 4.0'
+# Parse excel files
+gem 'roo', '~> 2.10', require: false
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]

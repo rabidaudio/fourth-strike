@@ -14,7 +14,7 @@
 # Indexes
 #
 #  index_payees_on_fsn             (fsn) UNIQUE
-#  index_payees_on_paypal_account  (paypal_account) UNIQUE
+#  index_payees_on_paypal_account  (paypal_account)
 #
 require 'rails_helper'
 
