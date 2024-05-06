@@ -17,8 +17,8 @@
 #  index_payees_on_paypal_account  (paypal_account)
 #
 FactoryBot.define do
-  sequence :fsn do |n|
-    Payee.build_fsn(n)
+  sequence :fsn do
+    Payee.next_fsn
   end
 
   factory :payee do
