@@ -2,6 +2,7 @@
   "name": "app",
   "private": true,
   "dependencies": {
+    "@creativebulma/bulma-tagsinput": "^1.0.3",
     "@fontsource/jetbrains-mono": "^5.0.19",
     "@fontsource/jost": "^5.0.17",
     "@hotwired/stimulus": "^3.2.2",

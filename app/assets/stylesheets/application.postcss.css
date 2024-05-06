@@ -7,6 +7,8 @@
 
 @import "bulma/css/bulma";
 
+@import "@creativebulma/bulma-tagsinput/dist/css/bulma-tagsinput.min";
+
 :root {
   --primary-color: #2f4792;
   --primary-light-color: #6d9bff20;

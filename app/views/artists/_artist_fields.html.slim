@@ -1,9 +1,14 @@
 = bulma_field(f, :text_field, @artist, :discord_handle, label: "Discord Handle", placeholder: "slugger_mike") do
   p.help Allows them to log in to update their profile and preferences. Only visible to admins.
 
-/ aliases
+.field
+  label.label Aliases
+  .control
+    input.input name="artist[aliases]" type="tags" value=(@artist.aliases || []).join(",") placeholder="Press enter to add"
+    p.help Other names (nicknames, artist names, handles, former names) this person has used. Visible only to admins, for the purpose of properly assigning credit.
 
-= bulma_field(f, :text_area, @artist, :credit, label: "Credit (for Bandcamp releases, etc.)", placeholder: "Big Mike T ( bigmike.bandcamp.com )", class: "textarea", rows: 2)
+
+= bulma_field(f, :text_area, @artist, :credit, label: "Credit (for Bandcamp releases, etc.)", placeholder: "Mikeyboy ( staygold.bandcamp.com )", class: "textarea", rows: 2)
 
 = bulma_field(f, :text_area, @artist, :contact_info, label: "Contact Info (optional)", placeholder: "mtownsend@seattlegarages.blaseball", class: "textarea", rows: 4) do
   p.help Visible only to admins, for reaching out should the organization need to contact them.
