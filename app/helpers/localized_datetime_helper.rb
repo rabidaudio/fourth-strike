@@ -25,26 +25,26 @@ module LocalizedDatetimeHelper
     }
   }.freeze
 
-  def localized_date(date, locale: I18n.locale)
-    date.strftime(FORMATS[region(locale)][:date])
+  def localized_date(date, region: determine_region)
+    date.strftime(FORMATS[region][:date])
   end
 
-  def localized_time(time, locale: I18n.locale)
-    time.strftime(FORMATS[region(locale)][:time]).strip
+  def localized_time(time, region: determine_region)
+    time.strftime(FORMATS[region][:time]).strip
   end
 
-  def localized_datetime(time, locale: I18n.locale)
-    fmt = FORMATS[region(locale)]
+  def localized_datetime(time, region: determine_region)
+    fmt = FORMATS[region]
     time.strftime("#{fmt[:date]} #{fmt[:time]}")
   end
 
   private
 
-  def region(locale)
-    r = locale.to_s.to_s.split('-', 2)[1]
-    return 'default' if r.blank?
-
-    r = r.upcase
+  def determine_region
+    r = controller&.region
+    # Use US if no region is defined
+    return 'US' if r.nil?
+    # Use default if a region other than those supported is supplied
     return 'default' unless FORMATS.key?(r)
 
     r

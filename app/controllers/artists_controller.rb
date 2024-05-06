@@ -9,8 +9,10 @@ class ArtistsController < ApplicationController
   # def index
   # end
 
-  # def new
-  # end
+  def new
+    @payee = Payee.new(fsn: Payee.next_fsn)
+    @artist = Artist.new(payee: @payee)
+  end
 
   # def edit
   # end

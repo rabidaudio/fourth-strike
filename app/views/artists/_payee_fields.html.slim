@@ -1,0 +1,6 @@
+= bulma_field(f, :text_field, @payee, :fsn, label: "FSN", disabled: !@payee.new_record?, placeholder: "FS-000") do
+  p.help Don't change this unless one has already been assigned
+
+= bulma_field(f, :text_field, @payee, :name, label: 'Name', placeholder: "Mike Townsend")
+
+= bulma_field(f, :text_field, @payee, :paypal_account, label: "Paypal Account", placeholder: "mtownsend@seattlegarages.blaseball")

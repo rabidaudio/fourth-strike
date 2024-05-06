@@ -27,7 +27,7 @@ class Payee < ApplicationRecord
   has_many :artists, dependent: :restrict_with_exception
   has_many :payouts, dependent: :restrict_with_exception
 
-  validates :fsn, format: { with: /\AFS-[0-9]{3}\z/ }
+  validates :fsn, format: { with: /\AFS-[0-9]{3}\z/, message: 'should match the form FS-XXX' }
 
   before_save do |payee|
     payee.fsn ||= Payee.next_fsn

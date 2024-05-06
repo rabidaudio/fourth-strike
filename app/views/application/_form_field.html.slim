@@ -1,0 +1,9 @@
+/ see BulmaFormHelper
+.field
+  - if label
+    label.label = label
+  .control
+    = f.send(type, field_name, **field_args)
+    = yield
+    - if error
+      p.help.is-danger = error
