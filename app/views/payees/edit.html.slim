@@ -1,0 +1,6 @@
+h1.is-size-2 = @payee.fsn
+
+section.section
+  = form_for(@payee) do |f|
+    = render 'payee_fields', f: f
+    = f.submit "Save", class: "button is-link"

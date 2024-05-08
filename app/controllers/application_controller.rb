@@ -2,6 +2,7 @@
 
 class ApplicationController < ActionController::Base
   include Session
+  include FormErrors
 
   layout 'default'
 

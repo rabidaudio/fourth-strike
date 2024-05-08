@@ -1,41 +1,68 @@
 # frozen_string_literal: true
 
 class PayeesController < ApplicationController
+  before_action :raise_unless_admin!
+
+  def index
+    @payees = Payee.order(fsn: :desc).paginate(page: params[:page] || 1, per_page: 200)
+  end
+
   def new
     @payee = Payee.new(fsn: Payee.next_fsn)
     @artist = Artist.new(payee: @payee)
+    restore_changes!(@payee)
+    restore_changes!(@artist)
   end
 
-  # def edit
-  # end
+  def edit
+    @payee = Payee.find(params[:id])
+    restore_changes!(@payee)
+  end
 
   def create
     ActiveRecord::Base.transaction do
-      payee_params = params.require(:payee).permit(:fsn, :name, :paypal_account)
-
-      @payee = Payee.new(payee_params)
+      @payee = Payee.new(new_payee_params)
       @artist = Artist.new
-
-      if params[:with_artist].to_b
-        artist_params = params.require(:payee).require(:artist).permit(:discord_handle, :credit, :contact_info, :bio, :aliases)
-        artist_params[:aliases] = artist_params[:aliases].split(',')
-        artist_params[:name] = payee_params[:name]
-        artist_params[:payee] = @payee
-        @artist = Artist.new(artist_params)
-        @payee.save!
-        @artist.save!
-        redirect_to artist_path(@artist)
-      else
-        @payee.save!
-      end
+      @artist.assign_attributes(new_artist_params) if params[:with_artist].to_b
+      @payee.save!
+      @artist.save! if params[:with_artist].to_b
       flash[:success] = "Added #{@payee.name}"
-      redirect_to root_path # TODO: admin payees page??
+      redirect_to payees_path
     end
   rescue StandardError => e
     flash[:error] = e.message
-    render :new
+    record_changes!(@payee)
+    record_changes!(@artist)
+    redirect_to new_payee_path(with_artist: params[:with_artist])
   end
 
-  # def update
-  # end
+  def update
+    ActiveRecord::Base.transaction do
+      @payee = Payee.find(params[:id])
+      @payee.update!(params.require(:payee).permit(:name, :paypal_account))
+      flash[:success] = 'Updated'
+      redirect_to payees_path
+    end
+  rescue StandardError => e
+    flash[:error] = e.message
+    record_changes!(@payee)
+    redurect_to edit_payee_path(@payee)
+  end
+
+  private
+
+  def new_payee_params
+    params.require(:payee).permit(:fsn, :name, :paypal_account)
+  end
+
+  def new_artist_params
+    artist_params = params
+                    .require(:payee)
+                    .require(:artist)
+                    .permit(:discord_handle, :credit, :contact_info, :bio, :aliases)
+    artist_params[:aliases] = (artist_params[:aliases] || '').split(',')
+    artist_params[:name] = new_payee_params[:name]
+    artist_params[:payee] = @payee
+    artist_params
+  end
 end

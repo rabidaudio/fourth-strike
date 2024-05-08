@@ -43,6 +43,10 @@ class Payee < ApplicationRecord
     "FS-#{number.to_s.rjust(3, '0')}"
   end
 
+  def artist
+    artists.first if artists.count == 1
+  end
+
   def paid_out(since: nil, before: nil)
     q = payouts
     q = q.where('paid_at >= ?', since) if since.present?

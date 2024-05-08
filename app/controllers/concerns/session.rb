@@ -7,9 +7,13 @@ module Session
 
   included do
     helper_method :current_user, :logged_in?
+
+    rescue_from UnauthenticatedError, with: :render_unauthenticated
   end
 
   class RefreshTokenError < StandardError; end
+
+  class UnauthenticatedError < StandardError; end
 
   def current_user
     return @current_user if @current_user.present?
@@ -46,6 +50,20 @@ module Session
   def log_out!
     session['user'] = nil
     @current_user = nil
+  end
+
+  def raise_unless_logged_in!
+    raise UnauthenticatedError, 'Authentication required' unless logged_in?
+  end
+
+  def raise_unless_admin!
+    raise_unless_logged_in!
+    raise UnauthenticatedError, 'Admin access required' unless current_user.admin?
+  end
+
+  def render_unauthenticated(error)
+    flash[:danger] = error.message
+    redirect_to root_path
   end
 
   private

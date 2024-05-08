@@ -53,6 +53,6 @@ class Artist < ApplicationRecord
   delegate :paid_out, to: :payee
 
   before_save do |artist|
-    artist.aliases = artist.aliases.presence || []
+    artist.aliases = [] if artist.aliases.blank?
   end
 end

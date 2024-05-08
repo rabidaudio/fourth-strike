@@ -9,7 +9,7 @@ css:
     width: 100%;
   }
   a.navbar-item {
-    color: var(--primary-color);
+  color: var(--primary-color);
     font-size: 1.5em;
   }
 
@@ -37,6 +37,7 @@ nav.navbar role="navigation" aria-label="main navigation" data-controller="is_ac
       / a.navbar-item href="#" Artists
 
       - if current_user && current_user.admin?
+        a.navbar-item href=payees_path Payees
         a.navbar-item href="#" Reporting
 
     .navbar-end

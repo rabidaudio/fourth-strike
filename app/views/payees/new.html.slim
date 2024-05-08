@@ -7,28 +7,28 @@ css:
     display: block;
   }
 
-  .with-artist {
-    margin: 2em 0;
-  }
+nav.level
+  .level-left
+    .level-item
+      h1.is-size-2 Create Payee
 
-h1.is-size-2 Create Payee
+section.section
+  .new-artist-form-container data-controller="is_active"
 
-.new-artist-form-container data-controller="is_active"
+    = form_for(@payee, method: :create) do |f|
+      = render 'payee_fields', f: f
 
-  = form_for(@artist, url: artists_path, method: :create) do |f|
+      .field
+        .control
+          label.checkbox
+            input name="with_artist" type="checkbox" data-is_active-target="checkbox" data-action="input->is_active#checkbox" checked=params[:with_artist].to_b
+            = ' '
+            span Also create an artist profile
 
-    section
-      = f.fields_for @payee do |payee_form|
-        = render 'payee_fields', f: payee_form
+      .artist-form data-is_active-target="toggleable"
+        = f.fields_for @artist do |artist_form|
+          = render 'artists/artist_fields', f: artist_form
 
-    section.with-artist
-      label.checkbox
-        input name="with_artist" type="checkbox" data-is_active-target="checkbox" data-action="input->is_active#checkbox"
-        = ' '
-        span Also create an artist profile
-
-    section.artist-form data-is_active-target="toggleable"
-      = render 'artist_fields', f: f
-
-    section
-      = f.submit "Add", class: "button is-link"
+      .field
+        .control
+          = f.submit "Add", class: "button is-link"

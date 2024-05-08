@@ -14,7 +14,11 @@ module JsonStringColumn
         end
 
         define_method("#{attribute}=") do |value|
-          self[attribute] = value.to_json
+          self[attribute] = if value.is_a?(String)
+                              value
+                            else
+                              value.to_json
+                            end
         end
       end
     end
