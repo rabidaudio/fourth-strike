@@ -5,4 +5,7 @@
 import { application } from './application'
 
 import IsActiveController from './is_active_controller'
+import SplitsController from './splits_controller'
+
 application.register('is_active', IsActiveController)
+application.register('splits', SplitsController)

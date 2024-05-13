@@ -1,0 +1,13 @@
+tr.split data-splits-target=(split ? "split" : "template") class=(split ? "" : "template")
+  td
+    .field
+      .control
+        = text_field_tag('splits[][fsn]', split&.payee&.fsn, class: 'input split-fsn')
+  td
+    .field
+      .control
+        = number_field_tag('splits[][value]', split&.value || 1, class: 'input split-value', 'data-action' => 'input->splits#recomputeSplits')
+  td
+    span.computed
+  td
+    button.delete data-action="click->splits#removeContributor"
