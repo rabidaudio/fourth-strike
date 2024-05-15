@@ -5,29 +5,19 @@ import { Controller } from '@hotwired/stimulus'
  * and validates values. See splits/edit.html.slim
  */
 export default class extends Controller {
-  static targets = ['tbody', 'template', 'split']
+  static targets = ['split']
 
-  connect() {
+  connect () {
     this.recomputeSplits()
   }
 
-  addContributor(event) {
-    event.preventDefault()
-
-    const node = this.templateTarget.cloneNode(true)
-    node.setAttribute('data-splits-target', 'split')
-    node.classList.remove('template')
-    this.tbodyTarget.append(node)
-    this.recomputeSplits()
-  }
-
-  removeContributor(event) {
+  removeContributor (event) {
     event.preventDefault()
 
     event.target.closest('tr.split').remove()
   }
 
-  recomputeSplits() {
+  recomputeSplits () {
     const total = this.totalSplitValue
     for (const split of this.splitTargets) {
       const value = this.getValue(split)
@@ -42,15 +32,15 @@ export default class extends Controller {
     }
   }
 
-  setComputed(split, value) {
+  setComputed (split, value) {
     if (value === null) {
-      split.querySelector('.computed').textContent = ""
+      split.querySelector('.computed').textContent = ''
     } else {
       split.querySelector('.computed').textContent = `${Math.round(value * 100 * 100) / 100}%`
     }
   }
 
-  setIsValid(split, isValid) {
+  setIsValid (split, isValid) {
     if (isValid) {
       split.querySelector('.split-value').classList.remove('is-danger')
     } else {
@@ -58,7 +48,7 @@ export default class extends Controller {
     }
   }
 
-  getValue(split) {
+  getValue (split) {
     const textValue = split.querySelector('.split-value').value
     if (!textValue.match(/^-?[0-9]+$/)) return null
     return parseInt(textValue, 10)

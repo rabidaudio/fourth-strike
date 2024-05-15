@@ -1,31 +1,17 @@
 h1.is-size-2 Payees
 
-a.button.is-primary href=new_payee_path
-  span Add
+.block
+  .field
+    a.button.is-primary href=new_payee_path
+      span Add
 
-section.section
-  = render_pagination(@payees)
+.block
+  = form_with url: payees_search_path, method: :post do |form|
+    .field
+      p.control.has-icons-left
+        = form.text_field :search, oninput: "this.form.requestSubmit()", class: "input", placeholder: "Search"
+        span.icon.is-left
+          i.ri-search-line aria-hidden="true"
 
-  table.table
-    thead
-      tr
-        th FSN
-        th Name
-        th Paypal Acount
-        / TODO: balance
-        th
-    tbody
-      - @payees.each do |payee|
-        tr
-          td
-            span = payee.fsn
-          td
-            - if payee.artist
-              a href=artist_path(payee.artist) = payee.name
-            - else
-              span = payee.name
-          td = payee.paypal_account
-          td
-            a href=edit_payee_path(payee) Edit
-
-  = render_pagination(@payees)
+section.section id="search_results"
+  = render 'table'

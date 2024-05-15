@@ -1,12 +1,10 @@
-tr.split data-splits-target=(split ? "split" : "template") class=(split ? "" : "template")
+tr.split
+  td
+    = render 'payees/lookup_field', payee: split.payee, index: SecureRandom.urlsafe_base64(5), name: "splits[][fsn]"
   td
     .field
       .control
-        = text_field_tag('splits[][fsn]', split&.payee&.fsn, class: 'input split-fsn')
-  td
-    .field
-      .control
-        = number_field_tag('splits[][value]', split&.value || 1, class: 'input split-value', 'data-action' => 'input->splits#recomputeSplits')
+        = number_field_tag('splits[][value]', split.value || 1, class: 'input split-value', 'data-action' => 'input->splits#recomputeSplits')
   td
     span.computed
   td

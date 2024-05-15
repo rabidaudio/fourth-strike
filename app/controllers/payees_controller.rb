@@ -4,7 +4,26 @@ class PayeesController < ApplicationController
   before_action :raise_unless_admin!
 
   def index
-    @payees = Payee.order(fsn: :desc).paginate(page: params[:page] || 1, per_page: 200)
+    @payees = Payee.order(fsn: :desc)
+    @payees = @payees.search(params[:search]) if params[:search].present?
+    @payees = @payees.paginate(page: params[:page] || 1, per_page: 200)
+
+    respond_to do |format|
+      format.turbo_stream do
+        target = 'search_results'
+        partial = 'payees/table'
+        if params[:autocomplete_index]
+          target = "search_results_#{params[:autocomplete_index]}"
+          partial = 'payees/autocomplete_results'
+        end
+        render turbo_stream: [
+          turbo_stream.update(target, partial: partial, locals: { payees: @payees })
+        ]
+      end
+      format.html do
+        render :index
+      end
+    end
   end
 
   def new

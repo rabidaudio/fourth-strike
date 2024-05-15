@@ -33,6 +33,18 @@ class Payee < ApplicationRecord
     payee.fsn ||= Payee.next_fsn
   end
 
+  scope :search, lambda { |keyword|
+    search_value = "%#{keyword.strip.downcase}%"
+    left_outer_joins(:artists).where(
+      # TODO: lazy json searching, treating as string
+      'lower(payees.fsn) like ? OR ' \
+      'lower(payees.name) like ? OR lower(payees.paypal_account) like ? ' \
+      'OR lower(artists.name) like ? OR lower(artists.aliases) like ? ' \
+      'OR lower(artists.contact_info) like ?',
+      *6.times.map { search_value }
+    )
+  }
+
   def self.next_fsn
     last_fsn = Payee.maximum(:fsn) || 'FS-000'
     num = last_fsn.delete_prefix('FS-').to_i

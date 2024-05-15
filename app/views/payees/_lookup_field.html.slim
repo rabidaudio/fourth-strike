@@ -1,0 +1,16 @@
+/ This is an input field that allows you to search for a Payee by name (or if an artist, by any of their aliases).
+/ It supports autocomplete. The underlying field value is the payee's FSN.
+/ See:
+/   payee_search_controller.js
+/   _autocomplete_results.html.slim
+/   payees_controller#index
+nav.panel
+  div
+    = form_with url: payees_search_path(autocomplete_index: index), method: :post, html: { "data-controller" => "payee_search" } do |form|
+      p.control.has-icons-left
+        = text_field_tag :search, payee ? "#{payee.name} / #{payee.fsn}" : "", class: "input", placeholder: "Search", autocomplete: "off", "data-payee_search-target" => 'searchField', "data-action" => "input->payee_search#onInput blur->payee_search#onBlur"
+        span.icon.is-left
+          i.ri-search-line aria-hidden="true"
+      = turbo_frame_tag(['search_results', index], "data-payee_search-target" => 'results')
+      input type="hidden" data-payee_search-target="hiddenField" name=name value=payee&.fsn
+  

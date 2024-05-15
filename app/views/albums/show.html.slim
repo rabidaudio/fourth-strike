@@ -26,3 +26,17 @@ p
           td = "#{track.track_number}."
           td
             a href=track_path(track.id) = track.name
+
+- if current_user&.admin?
+  section.section
+    h3.is-size-3 Splits
+    
+    .block
+      a.button href=edit_splits_path(product_type: 'album', product_id: @album) Edit Splits
+
+    table.table
+      tbody
+        - @album.splits.each do |split|
+          tr
+            td = "#{split.payee.name} / #{split.payee.fsn}"
+            td = "#{split.value} (#{split.to_percentage_string})"

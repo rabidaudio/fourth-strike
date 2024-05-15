@@ -14,25 +14,26 @@ css:
   }
 
 section.section
-  = form_for(@product, url: splits_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post) do |f|
+  / = form_for(@product, url: splits_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post) do |f|
 
-    table.table.is-fullwidth data-controller="splits"
-      thead
-        tr
-          th Contributor
-          th Share
-          th
-          th
-      tfoot
-        tr
-          th colspan=4
-            button.button data-action="click->splits#addContributor" Add Contributor
-      tbody data-splits-target="tbody"
-        / template
-        = render 'split', split: nil
-        - @product.splits.each do |split|
-            = render 'split', split: split
+  table.table.is-fullwidth data-controller="splits"
+    thead
+      tr
+        th Contributor
+        th Share
+        th
+        th
+    tfoot
+      tr
+        th colspan=4
+          = form_with url: append_split_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post do |f|
+            = f.hidden_field :index
+            = f.submit "Add Contributor", class: "button"
+    tbody id="splits"
+      - @product.splits.each do |split|
+          = render 'split', split: split
 
-    .field
-      .control
-        = f.submit "Update Splits", class: "button is-link"
+  .field
+    .control
+      / = f.submit "Update Splits", class: "button is-link"
+

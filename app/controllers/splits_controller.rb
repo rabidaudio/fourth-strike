@@ -1,9 +1,17 @@
 # frozen_string_literal: true
 
 class SplitsController < ApplicationController
+  before_action :raise_unless_admin!
+
   before_action :find_product
 
   def edit; end
+
+  def append
+    render turbo_stream: [
+      turbo_stream.append("splits", partial: "splits/split", locals: { split: Split.new })
+    ]
+  end
 
   def update
     ActiveRecord::Base.transaction do
