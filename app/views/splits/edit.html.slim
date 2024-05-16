@@ -1,43 +1,10 @@
 h1.is-size-2 = "#{@product.class.name} Splits"
 h2.is-size-3 = @product.name
 
-css:
-  tr.split.template {
-    display: none;
-  }
-  td {
-    /* Make the text cells have the same height as the inputs */
-    line-height: var(--bulma-control-height);
-  }
-  td button.delete {
-    vertical-align: text-top;
-  }
-
 section.section
-
-  div vue-component="PayeeSearch"
-
   = form_for(@product, url: splits_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post) do |f|
-    / div vue-component="EditSplitsComponent" props=@product.splits.map { |s| { payee: { name: s.payee.name, fsn: s.payee.fsn }, value: s.value } }.to_json
+    div vue-component="EditSplits" props=@props.to_json
 
-  table.table.is-fullwidth data-controller="splits"
-    thead
-      tr
-        th Contributor
-        th Share
-        th
-        th
-    tfoot
-      tr
-        th colspan=4
-          = form_with url: append_split_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post do |f|
-            = f.hidden_field :index
-            = f.submit "Add Contributor", class: "button"
-    tbody id="splits"
-      - @product.splits.each do |split|
-          = render 'split', split: split
-
-  .field
-    .control
-      / = f.submit "Update Splits", class: "button is-link"
-
+    .field
+      .control
+        = f.submit "Update Splits", class: "button is-link"

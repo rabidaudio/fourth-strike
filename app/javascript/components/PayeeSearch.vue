@@ -1,10 +1,15 @@
 <script setup>
-  import { ref, computed } from 'vue'
+  import { ref, computed, defineModel } from 'vue'
 
   import { payees_path } from '../routes'
 
-  const searchValue = ref("")
-  const selectedFsn = ref("")
+  const props = defineProps({
+    fieldName: String
+  })
+
+  const payee = defineModel({ default: { name: '', fsn: '' } })
+  const selectedFsn = computed(() => payee.value.fsn)
+  const searchValue = ref(payee.value.fsn === '' ? '' : `${payee.value.name} / ${payee.value.fsn}`)
   const searchResults = ref([])
   const isFocused = ref(false)
   const isDirty = ref(false)
@@ -12,19 +17,30 @@
   const isInvalid = computed(() => !isFocused.value && isDirty.value)
 
   async function search(event) {
+    payee.value = { name: '', fsn: '' }
+    searchValue.value = event.target.value
+    
     if (event.target.value === "") {
-      clearSelection()
+      isDirty.value = false
       return
     }
-
     isDirty.value = true
-    selectedFsn.value = ""
-    searchValue.value = event.target.value
 
+    await loadResults(event.target.value)
+  }
+
+  async function loadResults(search) {
     // TODO: debounce? queue?
-    const res = await fetch(payees_path({ search: event.target.value, limit: 10, format: 'json' }))
+    const res = await fetch(payees_path({ search, limit: 10, format: 'json' }))
     const data = await res.json()
     searchResults.value = data
+  }
+
+  async function resume() {
+    isFocused.value = true
+    if (isDirty.value) {
+      await loadResults(searchValue.value)
+    }
   }
 
   function clear(event) {
@@ -38,38 +54,31 @@
     searchResults.value = []
   }
 
-  function select(payee, event) {
-    event.preventDefault()
-    selectedFsn.value = payee.fsn
+  function select(selectedPayee) {
+    payee.value = selectedPayee
+    searchValue.value = `${selectedPayee.name} / ${selectedPayee.fsn}`
     searchResults.value = []
-    isDirty.value = false
-    searchValue.value = `${payee.name} / ${payee.fsn}`
-  }
-
-  function clearSelection() {
-    searchValue.value = ""
-    selectedFsn.value = ""
     isDirty.value = false
   }
 </script>
 
 <style>
-.filled {
+.payee-search .filled {
   text-decoration: underline;
 }
 </style>
 
 <template>
-  <nav class="panel">
+  <nav class="panel payee-search">
     <div>
-      <p class="control has-icons-left has-icons-right">
+      <p class="control" :class="{'has-icons-left': !isFilled, 'has-icons-right': isFilled}">
         <input type="text" class="input" placeholder="Search" autocomplete="off"
           @input="search"
-          @focus="isFocused = true"
+          @focus="resume"
           @blur="clear"
           :class="{ 'filled': isFilled, 'is-danger': isInvalid }"
           :value="searchValue" />
-        <span class="icon is-left">
+        <span v-if="!isFilled" class="icon is-left">
           <i class="ri-search-line" aria-hidden="true"></i>
         </span>
         <span v-if="isFilled" class="icon is-small is-right has-text-success">
@@ -77,10 +86,10 @@
         </span>
         
         <div v-for="payee in searchResults" v-bind:key="payee.fsn">
-          <a href="#" class="panel-block is-active" @click="select(payee, $event)">{{ payee.name }} / {{ payee.fsn }}</a>
+          <a href="#" class="panel-block is-active" @click.prevent="select(payee)">{{ payee.name }} / {{ payee.fsn }}</a>
         </div>
       </p>
-      <input type="hidden" name="fsn" :value="selectedFsn"/>
+      <input type="hidden" :name="fieldName" :value="selectedFsn"/>
     </div>
   </nav>
 </template>

@@ -5,7 +5,11 @@ class SplitsController < ApplicationController
 
   before_action :find_product
 
-  def edit; end
+  def edit
+    @props = {
+      splits: @product.splits.map { |s| { payee: { name: s.payee.name, fsn: s.payee.fsn }, value: s.value } }
+    }
+  end
 
   def update
     ActiveRecord::Base.transaction do
