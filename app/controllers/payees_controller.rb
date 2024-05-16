@@ -6,19 +6,17 @@ class PayeesController < ApplicationController
   def index
     @payees = Payee.order(fsn: :desc)
     @payees = @payees.search(params[:search]) if params[:search].present?
-    @payees = @payees.paginate(page: params[:page] || 1, per_page: 200)
+    per_page = (params[:limit]&.to_i || 200).clamp(1, 200)
+    @payees = @payees.paginate(page: params[:page] || 1, per_page: per_page)
 
     respond_to do |format|
       format.turbo_stream do
-        target = 'search_results'
-        partial = 'payees/table'
-        if params[:autocomplete_index]
-          target = "search_results_#{params[:autocomplete_index]}"
-          partial = 'payees/autocomplete_results'
-        end
         render turbo_stream: [
-          turbo_stream.update(target, partial: partial, locals: { payees: @payees })
+          turbo_stream.update('search_results', partial: 'payees/table', locals: { payees: @payees })
         ]
+      end
+      format.json do
+        render json: @payees.map { |p| p.slice(:name, :fsn) }
       end
       format.html do
         render :index

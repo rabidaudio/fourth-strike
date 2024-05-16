@@ -14,7 +14,11 @@ css:
   }
 
 section.section
-  / = form_for(@product, url: splits_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post) do |f|
+
+  div vue-component="PayeeSearch"
+
+  = form_for(@product, url: splits_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post) do |f|
+    / div vue-component="EditSplitsComponent" props=@product.splits.map { |s| { payee: { name: s.payee.name, fsn: s.payee.fsn }, value: s.value } }.to_json
 
   table.table.is-fullwidth data-controller="splits"
     thead

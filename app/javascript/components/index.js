@@ -1,6 +1,9 @@
 import { createApp } from 'vue'
 
+import PayeeSearch from './PayeeSearch.vue'
+
 const Components = {
+  PayeeSearch
 }
 
 window.addEventListener('turbo:load', () => {

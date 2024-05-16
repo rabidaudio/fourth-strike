@@ -7,12 +7,6 @@ class SplitsController < ApplicationController
 
   def edit; end
 
-  def append
-    render turbo_stream: [
-      turbo_stream.append("splits", partial: "splits/split", locals: { split: Split.new })
-    ]
-  end
-
   def update
     ActiveRecord::Base.transaction do
       @product.splits.destroy_all
