@@ -31,7 +31,11 @@ class User
   end
 
   def expires_at
-    Time.zone.at(credentials['expires_at'])
+    if credentials['expires_at'].is_a?(Integer)
+      Time.zone.at(credentials['expires_at'])
+    else
+      Time.zone.parse(credentials['expires_at'])
+    end
   end
 
   def locale
