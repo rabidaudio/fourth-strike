@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     post '/', to: 'splits#update', as: 'splits'
 
     post '/append', to: 'splits#append', as: 'append_split'
-  end  
+  end
 
   root 'static_pages#home'
 end

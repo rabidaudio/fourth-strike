@@ -43,3 +43,7 @@
 
 /exports
 
+
+# Ignore automatically generated js-routes files.
+/app/javascript/routes.js
+/app/javascript/routes.d.ts
