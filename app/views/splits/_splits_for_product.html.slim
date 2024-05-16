@@ -1,0 +1,21 @@
+- if current_user&.admin?
+  section.section
+    - if product.splits.empty?
+      div.notification.is-warning
+        p No splits defined!
+    
+        a.button href=edit_splits_path(product_type: product.class.name.downcase, product_id: product.id) Add Splits
+
+    - else
+      h3.is-size-3 Splits
+      
+      .block
+        a.button href=edit_splits_path(product_type: product.class.name.downcase, product_id: product.id) Edit Splits
+
+      table.table
+        tbody
+          - product.splits.each do |split|
+            tr
+              td = "#{split.payee.name} / #{split.payee.fsn}"
+              td = "#{split.value}"
+              td = "(#{split.to_percentage_string})"

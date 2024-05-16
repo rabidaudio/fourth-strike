@@ -37,7 +37,7 @@ class Split < ApplicationRecord
   validates :value, numericality: { greater_than_or_equal_to: 1 }
 
   def to_percentage_string
-    decimal = value / product.splits.sum(:value)
+    decimal = value.to_f / product.splits.sum(:value)
     "#{(decimal * 100).round(2)}%"
   end
 end
