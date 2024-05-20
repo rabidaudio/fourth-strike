@@ -49,6 +49,13 @@ RSpec.describe 'Payout calculations' do
     create_list(:bandcamp_sale, 25, :album, product: comp,
                                             net_revenue_amount: 5.55.to_money,
                                             purchased_at: Time.zone.local(2024, 1, 1, 12, 0))
+
+    (0...12).each do |m|
+      create(:distrokid_sale, product: single_ladies,
+                              quantity: 7_823_220,
+                              earnings_usd: (0.00318 * 7_823_220),
+                              sale_period: Time.zone.local(2023, 1, 1) + m.months)
+    end
   end
 
   describe RoyaltyCalculator do
@@ -68,6 +75,16 @@ RSpec.describe 'Payout calculations' do
                                                                  bey => (0.85 * 0.60 * (25 * 5.55)).to_money,
                                                                  gaga => (0.85 * 0.20 * (25 * 5.55)).to_money
                                                                })
+      end
+    end
+
+    describe 'distrokid' do
+      it 'should compute streaming revenue' do
+        expect(described_class.new(single_ladies).distrokid_revenue).to eq 298_534.08.to_money
+
+        expect(described_class.new(single_ladies).royalties_owed).to eq({
+                                                                          bey => (0.85 * (603.90 + 298_534.08)).to_money
+                                                                        })
       end
     end
 
@@ -96,7 +113,7 @@ RSpec.describe 'Payout calculations' do
         )
 
         expect(described_class.new(bey).total_owed).to be_within(0.01.to_money).of(
-          0.85 * ((610 * 0.99) + (0.60 * (25 * 5.55))).to_money
+          0.85 * ((610 * 0.99) + 298_534.08 + (0.60 * (25 * 5.55))).to_money
         )
 
         expect(described_class.new(gaga).total_owed).to be_within(0.01.to_money).of(
@@ -113,7 +130,7 @@ RSpec.describe 'Payout calculations' do
           0.85 * ((200 * 30) + (0.20 * (25 * 5.55))).to_money
         )
         expect(described_class.new(bey, from: from).total_owed).to be_within(0.01.to_money).of(
-          0.85 * ((0 * 0.99) + (0.60 * (25 * 5.55))).to_money
+          0.85 * ((0 * 0.99) + 298_534.08 + (0.60 * (25 * 5.55))).to_money
         )
         expect(described_class.new(gaga, from: from).total_owed).to be_within(0.01.to_money).of(
           0.85 * ((0 * 9.99) + (0.20 * (25 * 5.55))).to_money

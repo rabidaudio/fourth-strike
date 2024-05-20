@@ -21,6 +21,8 @@ class RoyaltyCalculator
 
   # Revenue from bandcamp digial sales, excluding Bandcamp and payment processor fees
   def bandcamp_revenue
+    # return 0.to_money if @product.is_a?(Merch)
+
     bandcamp_sales.sum_monetized(:net_revenue_amount)
   end
 
@@ -28,7 +30,7 @@ class RoyaltyCalculator
   def distrokid_revenue
     # return 0.to_money if @product.is_a?(Merch)
 
-    0.to_money # TODO
+    distrokid_sales.sum(:earnings_usd).to_money('USD')
   end
 
   # Bandcamp merchandise revenue (how much came in)
@@ -68,6 +70,10 @@ class RoyaltyCalculator
 
   def bandcamp_sales
     @product.bandcamp_sales.where('purchased_at >= ? and purchased_at < ?', @start_at, @end_at)
+  end
+
+  def distrokid_sales
+    @product.distrokid_sales.where('reported_at >= ? and reported_at < ?', @start_at, @end_at)
   end
 
   def payout_amounts
