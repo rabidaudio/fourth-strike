@@ -40,9 +40,9 @@ RSpec.describe Payee, type: :model do
       end
     end
 
-    context 'since' do
+    context 'from' do
       it 'should sum the total amount paid out' do
-        expect(payee.paid_out(since: Time.zone.local(2023, 1, 1))).to eq 50.25.to_money
+        expect(payee.paid_out(from: Time.zone.local(2023, 1, 1))).to eq 50.25.to_money
       end
     end
 

@@ -6,7 +6,7 @@ table.table
       th FSN
       th Name
       th Paypal Acount
-      / TODO: balance
+      th Balance
       th
   tbody
     - @payees.each do |payee|
@@ -28,6 +28,9 @@ table.table
             span.tag.is-normal.is-success Supporter
 
         td = payee.paypal_account
+        td
+          / TODO: cache results
+          / = payee.balance.format
         td
           a href=edit_payee_path(payee) Edit
 

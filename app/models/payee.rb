@@ -71,10 +71,15 @@ class Payee < ApplicationRecord
     opted_out_of_royalties
   end
 
-  def paid_out(since: nil, before: nil)
-    q = payouts
-    q = q.where('paid_at >= ?', since) if since.present?
-    q = q.where('paid_at < ?', before) if before.present?
-    q.sum_monetized(:amount)
+  def owed(**)
+    PayoutCalculator.new(self, **).total_owed
+  end
+
+  def paid_out(from: Time.zone.at(0), to: Time.zone.now)
+    payouts.where('paid_at >= ?', from).where('paid_at < ?', to).sum_monetized(:amount)
+  end
+
+  def balance(**)
+    owed(**) - paid_out(**)
   end
 end
