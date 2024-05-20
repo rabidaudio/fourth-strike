@@ -36,20 +36,13 @@
 # Subtotal amount is the amount the customer paid (including shipping and tax if applicable).
 # Net Revenue amount is the amount received after transaction fees and Bandcamp's cut.
 class BandcampSale < ApplicationRecord
-  include MonitizedSum
+  include Sale
 
   monetize :subtotal_amount_cents
   monetize :net_revenue_amount_cents
 
   # Require sales to be in the operating currency
   validates :subtotal_amount_currency, :net_revenue_amount_currency, inclusion: { in: Money.default_currency.iso_code }
-
-  belongs_to :product, polymorphic: true
-  has_many :splits,
-           primary_key: [:product_type, :product_id],
-           query_constraints: [:product_type, :product_id],
-           dependent: nil
-  has_many :payees, through: :splits
 
   def payout_amounts
     product.payout_amounts(net_revenue_amount)

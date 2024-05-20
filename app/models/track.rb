@@ -45,4 +45,8 @@ class Track < ApplicationRecord
   belongs_to :album
 
   validates :track_number, numericality: { greater_than_or_equal_to: 1 }
+
+  def total_streams(from: Time.zone.at(0), to: Time.zone.now)
+    distrokid_sales.streaming.where('reported_at >= ?', from).where('reported_at < ?', to).sum(:quantity)
+  end
 end

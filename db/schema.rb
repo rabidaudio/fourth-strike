@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_20_173333) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_20_200016) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -72,6 +72,26 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_20_173333) do
     t.index ["paypal_transaction_id"], name: "index_bandcamp_sales_on_paypal_transaction_id"
     t.index ["product_type", "product_id"], name: "index_bandcamp_sales_on_product"
     t.index ["upc"], name: "index_bandcamp_sales_on_upc"
+  end
+
+  create_table "distrokid_sales", force: :cascade do |t|
+    t.date "sale_period"
+    t.date "reported_at"
+    t.string "store"
+    t.string "artist_name"
+    t.string "title"
+    t.string "isrc"
+    t.string "upc"
+    t.integer "quantity"
+    t.string "product_type", null: false
+    t.integer "product_id", null: false
+    t.decimal "earnings_usd"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["isrc"], name: "index_distrokid_sales_on_isrc"
+    t.index ["product_type", "product_id"], name: "index_distrokid_sales_on_product"
+    t.index ["reported_at"], name: "index_distrokid_sales_on_reported_at"
+    t.index ["upc"], name: "index_distrokid_sales_on_upc"
   end
 
   create_table "payees", force: :cascade do |t|
