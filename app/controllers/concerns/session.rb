@@ -83,7 +83,7 @@ module Session
       token_data = JSON.parse(res.body)
       @current_user.credentials['token'] = token_data['access_token']
       @current_user.credentials['refresh_token'] = token_data['refresh_token']
-      @current_user.credentials['expires_at'] = Time.zone.now + token_data['expires_in'].seconds
+      @current_user.credentials['expires_at'] = (Time.zone.now + token_data['expires_in'].seconds).to_i
       session['user'] = @current_user.as_json
       @current_user
     end
