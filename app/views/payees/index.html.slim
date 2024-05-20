@@ -6,10 +6,10 @@ h1.is-size-2 Payees
       span Add
 
 .block
-  = form_with url: payees_search_path, method: :post do |form|
+  = form_with url: payees_path, method: :get do |form|
     .field
       p.control.has-icons-left
-        = form.text_field :search, oninput: "this.form.requestSubmit()", class: "input", placeholder: "Search"
+        = form.text_field :search, value: params[:search], class: "input", placeholder: "Search"
         span.icon.is-left
           i.ri-search-line aria-hidden="true"
 

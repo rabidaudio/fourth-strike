@@ -1,8 +1,17 @@
-h1.is-size-2 = @artist.name
+h1.is-size-2 Update Artist Profile
 
 section.section
   = form_for(@artist) do |f|
     = bulma_field(f, :text_field, @artist, :name, label: 'Name', placeholder: "Mike Townsend")
+
+    h2.is-size-4 Payment info
+
+    = f.fields_for @artist.payee do |payee_form|
+      = bulma_field(payee_form, :text_field, @artist.payee, :paypal_account, label: "Paypal Account", placeholder: "mtownsend@seattlegarages.blaseball")
+      = bulma_field(payee_form, :check_box, @artist.payee, :opted_out_of_royalties, label: "I wish for my royalties to be donated to #{Rails.application.config.app_config[:organization_name]}")
+
+    h2.is-size-4 Artist info
+
     = render 'artist_fields', f: f
 
     .field

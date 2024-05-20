@@ -4,8 +4,9 @@
 module BulmaFormHelper
   def bulma_field(form, type, record, field_name, **kwargs, &)
     label = kwargs.delete(:label)
+    label = " #{label}" if label && type == :check_box
     css_classes = kwargs.delete(:class)&.split || []
-    css_classes << 'input'
+    css_classes << 'input' unless type == :check_box
     error = nil
     if !record.valid? && record.errors[field_name].present?
       error = record.errors.full_messages_for(field_name).join(', ')

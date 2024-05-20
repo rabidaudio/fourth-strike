@@ -12,8 +12,6 @@ Rails.application.routes.draw do
 
   resources :artists, :payees, :albums, :tracks
 
-  post 'payees/search', to: 'payees#index'
-
   scope path: '/products/:product_type/:product_id/splits' do
     get '/edit', to: 'splits#edit', as: 'edit_splits'
     post '/', to: 'splits#update', as: 'splits'

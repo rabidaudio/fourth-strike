@@ -1,9 +1,19 @@
 / see BulmaFormHelper
-.field
-  - if label
-    label.label = label
-  .control
-    = f.send(type, field_name, **field_args)
-    = yield
-    - if error
-      p.help.is-danger = error
+- if type == :check_box
+  .field
+    .control
+      label.checkbox
+        = f.send(type, field_name, **field_args)
+        span = label
+      = yield
+      - if error
+        p.help.is-danger = error
+- else
+  .field
+    - if label
+      label.label = label
+    .control
+      = f.send(type, field_name, **field_args)
+      = yield
+      - if error
+        p.help.is-danger = error

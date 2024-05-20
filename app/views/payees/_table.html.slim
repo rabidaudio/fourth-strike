@@ -18,6 +18,15 @@ table.table
             a href=artist_path(payee.artist) = payee.name
           - else
             span = payee.name
+
+          - if payee.charity?
+            = ' '
+            span.tag.is-normal.is-primary Charity
+          
+          - if payee.opted_out_of_royalties?
+            = ' '
+            span.tag.is-normal.is-success Supporter
+
         td = payee.paypal_account
         td
           a href=edit_payee_path(payee) Edit

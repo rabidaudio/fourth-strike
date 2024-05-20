@@ -10,11 +10,6 @@ class PayeesController < ApplicationController
     @payees = @payees.paginate(page: params[:page] || 1, per_page: per_page)
 
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.update('search_results', partial: 'payees/table', locals: { payees: @payees })
-        ]
-      end
       format.json do
         render json: @payees.map { |p| p.slice(:name, :fsn) }
       end
@@ -56,7 +51,7 @@ class PayeesController < ApplicationController
   def update
     ActiveRecord::Base.transaction do
       @payee = Payee.find(params[:id])
-      @payee.update!(params.require(:payee).permit(:name, :paypal_account))
+      @payee.update!(params.require(:payee).permit(:name, :paypal_account, :is_charity, :opted_out_of_royalties))
       flash[:success] = 'Updated'
       redirect_to payees_path
     end
@@ -69,7 +64,7 @@ class PayeesController < ApplicationController
   private
 
   def new_payee_params
-    params.require(:payee).permit(:fsn, :name, :paypal_account)
+    params.require(:payee).permit(:fsn, :name, :paypal_account, :is_charity, :opted_out_of_royalties)
   end
 
   def new_artist_params

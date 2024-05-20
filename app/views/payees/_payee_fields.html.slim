@@ -4,3 +4,7 @@
 = bulma_field(f, :text_field, @payee, :name, label: 'Name', placeholder: "Mike Townsend")
 
 = bulma_field(f, :text_field, @payee, :paypal_account, label: "Paypal Account", placeholder: "mtownsend@seattlegarages.blaseball")
+
+= bulma_field(f, :check_box, @payee, :is_charity, label: "This is a charity")
+
+= bulma_field(f, :check_box, @payee, :opted_out_of_royalties, label: "This recipient has chosen to donate their royalties to #{Rails.application.config.app_config[:organization_name]}")
