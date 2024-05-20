@@ -4,12 +4,14 @@
 #
 # Table name: payees
 #
-#  id             :integer          not null, primary key
-#  fsn            :string           not null
-#  name           :string           not null
-#  paypal_account :string
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
+#  id                     :integer          not null, primary key
+#  fsn                    :string           not null
+#  is_charity             :boolean          default(FALSE), not null
+#  name                   :string           not null
+#  opted_out_of_royalties :boolean          default(FALSE), not null
+#  paypal_account         :string
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #
 # Indexes
 #
@@ -26,6 +28,8 @@
 class Payee < ApplicationRecord
   has_many :artists, dependent: :restrict_with_exception
   has_many :payouts, dependent: :restrict_with_exception
+
+  has_many :splits, dependent: :destroy
 
   validates :fsn, format: { with: /\AFS-[0-9]{3}\z/, message: 'should match the form FS-XXX' }
 
@@ -57,6 +61,14 @@ class Payee < ApplicationRecord
 
   def artist
     artists.first if artists.count == 1
+  end
+
+  def charity?
+    is_charity
+  end
+
+  def opted_out_of_royalties?
+    opted_out_of_royalties
   end
 
   def paid_out(since: nil, before: nil)

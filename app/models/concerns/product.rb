@@ -12,6 +12,8 @@ module Product
     # a limit to an arbitrary but sufficiently high amount.
     # Can be increased if needed.
     base.validates :splits, length: { maximum: 50 }
+
+    base.has_many :bandcamp_sales, as: :product, dependent: :nullify
   end
 
   # Returns a hash mapping payees to a fractional split of funds (0,1]

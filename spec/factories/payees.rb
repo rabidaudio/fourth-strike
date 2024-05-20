@@ -4,12 +4,14 @@
 #
 # Table name: payees
 #
-#  id             :integer          not null, primary key
-#  fsn            :string           not null
-#  name           :string           not null
-#  paypal_account :string
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
+#  id                     :integer          not null, primary key
+#  fsn                    :string           not null
+#  is_charity             :boolean          default(FALSE), not null
+#  name                   :string           not null
+#  opted_out_of_royalties :boolean          default(FALSE), not null
+#  paypal_account         :string
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #
 # Indexes
 #

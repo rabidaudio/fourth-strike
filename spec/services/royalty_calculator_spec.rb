@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe RoyaltyCalculator do
+RSpec.describe 'Payout calculations' do
   let!(:tay) { create(:payee) }
   let!(:bey) { create(:payee) }
   let!(:gaga) { create(:payee) }
@@ -51,48 +51,73 @@ RSpec.describe RoyaltyCalculator do
                                             purchased_at: Time.zone.local(2024, 1, 1, 12, 0))
   end
 
-  context 'everything' do
-    let(:service) { described_class.new }
+  describe RoyaltyCalculator do
+    # upfront_costs
+    # bandcamp_revenue
+    # distrokid_revenue
+    # merchandise_revenue
+    # net_income
+    # organization_cut
+    # donated_royalites
+    # organization_income
 
-    describe 'bandcamp_sale_payouts' do
+    describe 'royalties_owed' do
       it 'should compute the amount owed' do
-        expect(service.bandcamp_sale_payouts).to eq({
-                                                      tay => ((200 * 30) + (0.20 * (25 * 5.55))).to_money,
-                                                      bey => ((610 * 0.99) + (0.60 * (25 * 5.55))).to_money,
-                                                      gaga => ((17 * 9.99) + (0.20 * (25 * 5.55))).to_money
-                                                    })
+        expect(described_class.new(comp).royalties_owed).to eq({
+                                                                 tay => (0.85 * 0.20 * (25 * 5.55)).to_money,
+                                                                 bey => (0.85 * 0.60 * (25 * 5.55)).to_money,
+                                                                 gaga => (0.85 * 0.20 * (25 * 5.55)).to_money
+                                                               })
+      end
+    end
+
+    context 'for time period' do
+      let(:from) { Time.zone.local(2020, 1, 1) }
+
+      describe 'bandcamp_sale_payouts' do
+        it 'should compute the amount owed' do
+          expect(described_class.new(folklore, from: from).royalties_owed).to eq({
+                                                                                   tay => (0.85 * 200 * 30).to_money
+                                                                                 })
+
+          expect(described_class.new(the_fame, from: from).royalties_owed).to eq({
+                                                                                   gaga => 0.to_money
+                                                                                 })
+        end
       end
     end
   end
 
-  context 'for user' do
-    describe 'bandcamp_sale_payouts' do
+  describe PayoutCalculator do
+    describe 'total_owed' do
       it 'should compute the amount owed' do
-        expect(described_class.new(for_payee: tay).bandcamp_sale_payouts).to eq(
-          { tay => ((200 * 30) + (0.20 * (25 * 5.55))).to_money }
+        expect(described_class.new(tay).total_owed).to be_within(0.01.to_money).of(
+          0.85 * ((200 * 30) + (0.20 * (25 * 5.55))).to_money
         )
 
-        expect(described_class.new(for_payee: bey).bandcamp_sale_payouts).to eq(
-          { bey => ((610 * 0.99) + (0.60 * (25 * 5.55))).to_money }
+        expect(described_class.new(bey).total_owed).to be_within(0.01.to_money).of(
+          0.85 * ((610 * 0.99) + (0.60 * (25 * 5.55))).to_money
         )
 
-        expect(described_class.new(for_payee: gaga).bandcamp_sale_payouts).to eq(
-          { gaga => ((17 * 9.99) + (0.20 * (25 * 5.55))).to_money }
+        expect(described_class.new(gaga).total_owed).to be_within(0.01.to_money).of(
+          0.85 * ((17 * 9.99) + (0.20 * (25 * 5.55))).to_money
         )
       end
     end
-  end
 
-  context 'for time period' do
-    let(:service) { described_class.new(from: Time.zone.local(2020, 1, 1)) }
+    context 'for time period' do
+      let(:from) { Time.zone.local(2020, 1, 1) }
 
-    describe 'bandcamp_sale_payouts' do
       it 'should compute the amount owed' do
-        expect(service.bandcamp_sale_payouts).to eq({
-                                                      tay => ((200 * 30) + (0.20 * (25 * 5.55))).to_money,
-                                                      bey => ((0 * 0.99) + (0.60 * (25 * 5.55))).to_money,
-                                                      gaga => ((0 * 9.99) + (0.20 * (25 * 5.55))).to_money
-                                                    })
+        expect(described_class.new(tay, from: from).total_owed).to be_within(0.01.to_money).of(
+          0.85 * ((200 * 30) + (0.20 * (25 * 5.55))).to_money
+        )
+        expect(described_class.new(bey, from: from).total_owed).to be_within(0.01.to_money).of(
+          0.85 * ((0 * 0.99) + (0.60 * (25 * 5.55))).to_money
+        )
+        expect(described_class.new(gaga, from: from).total_owed).to be_within(0.01.to_money).of(
+          0.85 * ((0 * 9.99) + (0.20 * (25 * 5.55))).to_money
+        )
       end
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_29_153212) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_20_173333) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -80,6 +80,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_29_153212) do
     t.datetime "updated_at", null: false
     t.string "name", null: false
     t.string "fsn", null: false
+    t.boolean "is_charity", default: false, null: false
+    t.boolean "opted_out_of_royalties", default: false, null: false
     t.index ["fsn"], name: "index_payees_on_fsn", unique: true
     t.index ["paypal_account"], name: "index_payees_on_paypal_account"
   end

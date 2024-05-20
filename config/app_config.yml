@@ -1,5 +1,6 @@
 organization_name: Fourth Strike
 operating_currency: USD
+organization_cut: 0.15
 payout_at:
   cents: 4200
   currency: USD
