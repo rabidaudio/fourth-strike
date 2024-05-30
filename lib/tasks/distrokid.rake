@@ -10,4 +10,82 @@ namespace :distrokid do
 
     DistrokidReport.upsert_all!(path)
   end
+
+  desc 'Crawl distrokid website and export a report of all UPC/ISRCs'
+  task :export_isrcs => :environment do
+    require 'ferrum'
+    require 'csv'
+    require 'tty-prompt'
+
+    browser = Ferrum::Browser.new
+    prompt = TTY::Prompt.new
+
+    page = browser.create_page
+
+    # Doesn't work, Captcha :/
+    # page.go_to('https://distrokid.com/signin/')
+    # email = prompt.ask("email", default: "info@fourth-strike.com")
+    # password = prompt.mask("password")
+    # page.at_css('input#inputEmail').type(email)
+    # page.at_css('input#inputPassword').type(password)
+    # page.at_css('#signInButtonStandalonePage').click
+    # page.network.wait_for_idle!
+
+    # Instead, grab cookies. Less than ideal but shouldn't need to be done often
+    cookies = prompt.ask('Log into DistroKid in your browser. ' \
+                         'Then open a console and get cookies with `document.cookie`. Paste the result here: ')
+    cookies.split('; ').each do |cookie|
+      name, value = cookie.split('=', 2)
+      page.cookies.set(name: name, value: value, domain: 'distrokid.com')
+    end
+
+    page.go_to('https://distrokid.com/mymusic/')
+
+    CSV.open(Rails.root.join('exports/isrcs.csv'), 'w', force_quotes: true) do |csv|
+      # headers
+      csv << [
+        'album_name',
+        'artist_name',
+        'album_uuid',
+        'album_upc',
+        'release_date',
+        'upload_date',
+        'track_number',
+        'track_name',
+        'track_isrc'
+      ]
+
+      album_links = page.css('section.releases-list a.tableRow').map do |album_row|
+        href = album_row.attribute('href')
+        href = "https://distrokid.com#{href}" unless href.starts_with?('http')
+        href
+      end
+
+      album_links.each do |album_link|
+        puts(album_link)
+        page.go_to(album_link)
+
+        album_uuid = Rack::Utils.parse_nested_query(URI(album_link).query)['albumuuid']
+
+        album_name = page.at_css('.albumTitleBig').text.strip
+        artist_name = page.at_css('.bandNameBig').text.strip
+        album_upc = page.at_css('#js-album-upc').text.strip
+
+        release_info = page.at_css('.UPC').text.lines.map(&:strip)
+        release_date = release_info.find { |l| l.start_with?('Release date: ') }.delete_prefix('Release date: ')
+        upload_date = release_info.find { |l| l.start_with?('Uploaded: ') }.delete_prefix('Uploaded: ')
+
+        page.css('tr[id^=tracknum]').each do |song_row|
+          track_isrc = song_row.at_css('.myISRC').text.gsub('ISRC', '').strip
+          track_name = song_row.at_css('span[title]').text.strip
+          track_number = song_row.attribute('id').delete_prefix('tracknum').to_i
+
+          csv << [
+            album_name, artist_name, album_uuid, album_upc, release_date, upload_date,
+            track_number, track_name, track_isrc
+          ]
+        end
+      end
+    end
+  end
 end

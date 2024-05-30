@@ -74,6 +74,8 @@ gem 'will_paginate', '~> 4.0'
 gem 'roo', '~> 2.10', require: false
 # Access rails route helpers from JS
 gem 'js-routes'
+# Ask for information from the console
+gem 'tty-prompt', require: false
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]
