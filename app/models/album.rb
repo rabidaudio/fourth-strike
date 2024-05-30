@@ -11,7 +11,7 @@
 #  catalog_number :string
 #  name           :string           not null
 #  release_date   :date
-#  upc            :string
+#  upcs           :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  bandcamp_id    :string
@@ -21,7 +21,6 @@
 #  index_albums_on_bandcamp_id     (bandcamp_id) UNIQUE
 #  index_albums_on_bandcamp_url    (bandcamp_url) UNIQUE
 #  index_albums_on_catalog_number  (catalog_number) UNIQUE
-#  index_albums_on_upc             (upc) UNIQUE
 #
 
 # Albums are collections of tracks. They have their own splits distinct
@@ -33,10 +32,14 @@
 # Distrokid identifies albums by UPC. Bandcamp does not have IDs for albums.
 # Rather than matching on names, we use the Bandcamp URL as the unique identifier
 # for correlating with Bandcamp data.
+# The same album can be uploaded under multiple versions to different streaming platforms,
+# so an album can have more than one UPC.
 class Album < ApplicationRecord
   include Product
+  include JsonStringColumn
 
-  strip_attributes
+  strip_attributes except: [:upcs]
+  json_string_attributes :upcs
 
   has_many :tracks, dependent: :restrict_with_exception
 

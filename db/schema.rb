@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_20_200016) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_30_175015) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -25,7 +25,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_20_200016) do
     t.string "artist_name", null: false
     t.string "bandcamp_url", null: false
     t.date "release_date"
-    t.string "upc"
+    t.string "upcs"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "album_art_url"
@@ -33,7 +33,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_20_200016) do
     t.index ["bandcamp_id"], name: "index_albums_on_bandcamp_id", unique: true
     t.index ["bandcamp_url"], name: "index_albums_on_bandcamp_url", unique: true
     t.index ["catalog_number"], name: "index_albums_on_catalog_number", unique: true
-    t.index ["upc"], name: "index_albums_on_upc", unique: true
   end
 
   create_table "artists", force: :cascade do |t|
@@ -132,10 +131,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_20_200016) do
   create_table "tracks", force: :cascade do |t|
     t.string "name", null: false
     t.integer "album_id", null: false
-    t.integer "track_number", null: false
+    t.integer "track_number"
     t.string "isrc"
-    t.string "upc"
-    t.string "bandcamp_url", null: false
+    t.string "bandcamp_url"
     t.text "lyrics"
     t.text "credits"
     t.datetime "created_at", null: false
@@ -146,7 +144,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_20_200016) do
     t.index ["bandcamp_id"], name: "index_tracks_on_bandcamp_id", unique: true
     t.index ["bandcamp_url"], name: "index_tracks_on_bandcamp_url", unique: true
     t.index ["isrc"], name: "index_tracks_on_isrc", unique: true
-    t.index ["upc"], name: "index_tracks_on_upc", unique: true
   end
 
   add_foreign_key "artists", "payees"

@@ -5,13 +5,12 @@
 # Table name: tracks
 #
 #  id           :integer          not null, primary key
-#  bandcamp_url :string           not null
+#  bandcamp_url :string
 #  credits      :text
 #  isrc         :string
 #  lyrics       :text
 #  name         :string           not null
-#  track_number :integer          not null
-#  upc          :string
+#  track_number :integer
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  album_id     :integer          not null
@@ -24,7 +23,6 @@
 #  index_tracks_on_bandcamp_id                (bandcamp_id) UNIQUE
 #  index_tracks_on_bandcamp_url               (bandcamp_url) UNIQUE
 #  index_tracks_on_isrc                       (isrc) UNIQUE
-#  index_tracks_on_upc                        (upc) UNIQUE
 #
 # Foreign Keys
 #

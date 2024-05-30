@@ -51,6 +51,14 @@ yarn run jslint:fix # standard js linter
 yarn run lint # lint and auto-fix everything
 ```
 
+## Loading data
+
+```bash
+rake db:drop db:create db:migrate
+rake bandcamp:load_releases
+rake distrokid:import_isrcs
+```
+
 ## Deployment
 
 TODO
