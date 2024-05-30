@@ -6,7 +6,7 @@ p
   br
   span = "Released #{localized_date(@album.release_date)}"
 
-  - if admin?
+  - if admin? && @album.upcs
     br
     span = "UPC: "
     - @album.upcs.each do |upc|
@@ -28,8 +28,7 @@ p
   
   table.table
     tbody
-      - tracks = admin? ? @album.tracks : @album.tracks.visible
-      - tracks.order(track_number: :asc).each do |track|
+      - (admin? ? @album.tracks : @album.tracks.visible).in_album_order.each do |track|
         tr
           td
             - if track.hidden?

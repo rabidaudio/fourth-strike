@@ -11,7 +11,7 @@ namespace :distrokid do
     DistrokidReport.upsert_all!(path)
   end
 
-  desc 'Crawl distrokid website and export a report of all UPC/ISRCs'
+  desc 'Crawl distrokid website and export a report of all UPC/ISRCs. This likely only needs to be done once.'
   task :export_isrcs => :environment do
     require 'ferrum'
     require 'csv'

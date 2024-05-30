@@ -100,6 +100,9 @@ namespace :bandcamp do
             track_data = JSON.parse(page.at_css('script[type="application/ld+json"]').text)
 
             track[:credits] = track_data['creditText'] || track_data['description']
+            track[:bandcamp_id] = track_data['additionalProperty']&.find do |p|
+                                    p['name'] == 'track_id'
+                                  end&.dig('value')&.to_s
           end
 
           Track.upsert(track, unique_by: :bandcamp_url)
@@ -130,8 +133,18 @@ namespace :bandcamp do
           product = product_class.find_by(bandcamp_url: row['item url'])
 
           if product.nil?
-            puts("skipping #{row['item url']}")
-            next
+            if row['item url'].in?(Rails.application.config.app_config[:bandcamp][:skip_releases])
+              puts("skipping #{row['item url']}")
+              next
+            end
+
+            if row['item url'].in?(Rails.application.config.app_config[:bandcamp][:remaps].keys)
+              remap_url = Rails.application.config.app_config[:bandcamp][:remaps][row['item url']]
+              # Sometimes we remap an album sale to a track
+              product = Album.find_by(bandcamp_url: remap_url) || Track.find_by(bandcamp_url: remap_url)
+            end
+
+            raise StandardError, "No #{row['item type']} found for sale of #{row['item url']}" if product.nil?
           end
 
           upc = row['upc'].gsub(' ', '').strip if row['upc'].present?
@@ -154,9 +167,9 @@ namespace :bandcamp do
         else raise StandardError, "Unknown item type: #{row['item type']}"
         end
 
-        # date = row['date'] # annoyingly there's some nasty utf-26 char at the beginning
+        # annoyingly there's some nasty utf-26 char at the beginning
         # instead we assume that the date is the first column
-        date = row[0]
+        date = row[0] # row['date']
         BandcampSale.upsert({
                               item_url: row['item url'],
                               product_id: product.id,

@@ -6,7 +6,126 @@ payout_at:
   currency: USD
 bandcamp:
   url: fourth-strike.bandcamp.com
+  # Albums that we are explicitly ignoring
   skip_releases:
     - https://fourth-strike.bandcamp.com/album/fourth-strike-song-jam-2023
     - https://fourth-strike.bandcamp.com/album/fourth-strike-song-jam-2022
     - https://fourth-strike.bandcamp.com/album/fourth-strike-song-jam-2021
+    - https://sigfigscollective.bandcamp.com/album/voxes-stimulant
+    - https://sigfigscollective.bandcamp.com/album/voxes-somnolent
+    - https://sigfigscollective.bandcamp.com/album/significant-figures-20
+    - https://sigfigscollective.bandcamp.com/track/jet-black-shadow
+    - https://sigfigscollective.bandcamp.com/track/seed-guy-war-guy
+    - https://sigfigscollective.bandcamp.com/album/sucrosi-road-king-size
+    # TODO: confirm these:
+    - https://garlicbreadandroses.bandcamp.com/album/take-care-of-yourself
+    - https://thegarages.bandcamp.com/album/limiter-released
+  # Tracks/Albums that used to exist at one point and have been replaced with a different version.
+  # Treats all the left-hand side ones as equivalent to the right-hand side
+  remaps:
+    "https://thegarages.bandcamp.com/track/tiana-cash": https://thegarages.bandcamp.com/track/tiana-cash-2
+    "https://thegarages.bandcamp.com/album/about-a-squirrel": https://thegarages.bandcamp.com/track/about-a-squirrel-2
+    "https://thegarages.bandcamp.com/track/gwiffins-here": https://thegarages.bandcamp.com/track/gwiffins-here-2
+    "https://thegarages.bandcamp.com/track/garagesong": https://thegarages.bandcamp.com/track/garagesong-2
+    "https://thegarages.bandcamp.com/track/heart-shaped-hotdog": https://thegarages.bandcamp.com/track/heart-shaped-hotdog-2
+    "https://thegarages.bandcamp.com/track/ron-monstera-fundamentals": https://thegarages.bandcamp.com/track/ron-monstera-fundamentals-2
+    "https://thegarages.bandcamp.com/album/the-mike-townsend-trilogy-2": https://thegarages.bandcamp.com/album/the-mike-townsend-quintilogy
+    "https://thegarages.bandcamp.com/album/strike-two": https://fourth-strike.bandcamp.com/album/strike-two
+    "https://thegarages.bandcamp.com/album/discipline-2": https://thegarages.bandcamp.com/album/discipline
+    "https://thegarages.bandcamp.com/track/mike-townsend-is-a-disappointment": https://thegarages.bandcamp.com/track/mike-townsend-is-a-disappointment-5
+distrokid:
+  skip:
+    artists:
+      - Sig Figs Collective
+master_sheet:
+  payees:
+    charities:
+      - FS-048 # the 343
+      - FS-047 # Rainbow Railroad
+      - FS-046 # NAMI
+      - FS-032 # Child's Play
+      - FS-031 # ACLU
+  splits:
+    overrides:
+      # Hard-code split for child's play
+      "https://thegarages.bandcamp.com/album/the-garages-vs-desert-bus-2021":
+        'FS-032': 1
+    album_mappings:
+      # When the album names in the master sheet don't match by name
+      'the mike townsend trilogy': https://thegarages.bandcamp.com/album/the-mike-townsend-quintilogy
+      'THE GARAGES 101': https://thegarages.bandcamp.com/album/the-garages-101
+      'STRIKE TWO!!': https://fourth-strike.bandcamp.com/album/strike-two
+      'Putrid Shark #1': https://putridshark.bandcamp.com/album/2
+      'BTM / TDOST': https://blaseballmusical.bandcamp.com/album/the-deaths-of-sebastian-telephone
+    skip_albums:
+      - "Voxes: Stimulant"
+      - "Voxes: Somnolent"
+      - Significant Figures 2.0
+      - Fourth Strike Song Jam 2021
+      - full digital discography (40 releases)
+      - full digital discography (41 releases)
+      - full digital discography (42 releases)
+      - full digital discography (43 releases)
+      - full digital discography (44 releases)
+      - full digital discography (45 releases)
+      - full digital discography (46 releases)
+      - full digital discography (47 releases)
+      - full digital discography (48 releases)
+      - full digital discography (49 releases)
+      - full digital discography (50 releases)
+      - full digital discography (51 releases)
+      - full digital discography (52 releases)
+      - full digital discography (53 releases)
+      - full digital discography (54 releases)
+      - full digital discography (55 releases)
+      - full digital discography (56 releases)
+      # TODO: confirm these:
+      - ron monstera (fundamentals)
+    skip_tracks:
+      # sig figs
+      - QZDA52171312
+      - QZDA52171313
+      - QZDA52171314
+      - QZDA52171315
+      - QZDA52171316
+      - QZDA52171317
+      - QZDA52171318
+      - QZDA52171319
+      - QZDA52171320
+      - QZDA52171321
+      - QZDA52171322
+      - QZDA52171323
+      - QZHN72142371
+      - QZHN72142372
+      - QZHN72142373
+      - QZHN72142374
+      - QZHN72142375
+      - QZHN72142376
+      - QZHN72142377
+      - QZHN72142378
+      - QZHN72142379
+      - QZHN72142380
+      - QZHN72142381
+      - QZHN72142382
+      - QZHN72142383
+      - QZHN72142384
+      - QZHN72142385
+      - QZHN72142386
+      - QZHN72142387
+      - QZHN72142388
+      - QZNWS2114811
+      - QZNWS2114812
+      - QZNWS2114813
+      - QZNWS2193235
+      - QZNWS2114815
+      - QZNWS2114816
+      - QZNWS2114817
+      - QZNWS2114818
+      - QZNWS2114819
+      - QZNWS2114820
+      - QZNWS2114821
+      - QZNWS2114822
+      - QZNWS2114823
+      - QZNWS2114824
+      - QZNWS2114825
+      - QZNWS2114826

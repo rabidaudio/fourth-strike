@@ -26,13 +26,7 @@ nvm install 20 --lts
 # Install JS dependencies
 npm install
 # Prepare database
-rake db:create db:schema:load data:schema:load db:seed
-```
-
-### Run migrations
-
-```bash
-rake db:migrate:with_data && rake db:seed
+rake db:create db:schema:load data:schema:load
 ```
 
 ## Run server
@@ -51,15 +45,34 @@ yarn run jslint:fix # standard js linter
 yarn run lint # lint and auto-fix everything
 ```
 
-## Loading data
+## Populating data from scratch
+
+To load data up to the point of the switchover, the following was done.
+To recreate requires several reports from the Drive to be placed in the `/exports` directory.
 
 ```bash
 rake db:drop db:create db:migrate
-rake bandcamp:load_releases
+# Load all album and track information from Bandcamp by crawling the website
+rake bandcamp:load_releases fetch_credits=true
+# Attach ISRC/UPC data to albums and tracks, adding any tracks that were removed from Bandcamp as hidden tracks
 rake distrokid:import_isrcs
+# Load contributor splits from master sheet
+rake master_sheet:load_splits
+# Load sales data from bandcamp
+rake bandcamp:load_report
+# Load sales data from DistroKid
+rake distrokid:load_report
 
-# Admin.create!(discord_handle: ...)
+# Manually fix Bandcamp sale that wasn't in USD. There's only one, from Sept 2020, when the conversion rate was 1USD = 0.7790GBP
+rails console # sale = BandcampSale.find_by!(bandcamp_transaction_id: '1685538022'); sale.update!(subtotal_amount: (sale.subtotal_amount.amount / 0.7790).to_money('USD'), net_revenue_amount: (sale.net_revenue_amount.amount / 0.7790).to_money('USD'))
+
+
+# Grant appropriate users admin access
+rails console # Admin.create!(discord_handle: ...)
 ```
+
+This should not have to be redone, as the `.sqlite` file is saved to the drive. This is only for
+record keeping purposes.
 
 ## Deployment
 

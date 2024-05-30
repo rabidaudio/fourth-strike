@@ -15,6 +15,8 @@ module Product
 
     base.has_many :bandcamp_sales, as: :product, dependent: :nullify
     base.has_many :distrokid_sales, as: :product, dependent: :nullify
+
+    base.scope :without_splits, -> { where.missing(:splits) }
   end
 
   # Returns a hash mapping payees to a fractional split of funds (0,1]

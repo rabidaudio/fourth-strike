@@ -12,22 +12,24 @@ namespace :master_sheet do
       # skip header and Fourth Strike / FS-000
       xlsx.sheet('LOOKUP').column(2)[2..].each do |payee|
         name, fsn = payee.split(' / ')[-2..]
-        Payee.create_with(name: name).find_or_create_by!(fsn: fsn)
+        payee = Payee.create_with(name: name).find_or_create_by!(fsn: fsn)
+        if fsn.in?(Rails.application.config.app_config[:master_sheet][:payees][:charities])
+          payee.update!(is_charity: true)
+        end
       end
 
       # Add their paypal info
 
-      xlsx.sheet('ROYALTIES').each.with_index do |row, i|
-        next if i.zero?
+      xlsx.sheet('ROYALTIES').parse(name: 'NAME', paypal: 'PAYPAL')[2..].each do |row|
         next unless row[:name]
         next unless row[:paypal]
 
         _, fsn = row[:name].split(' / ')[-2..]
+        next if fsn == 'FS-000' # org TODO
+
         payee = Payee.find_by(fsn: fsn)
-        unless payee
-          puts("Payee not found: #{row[:name]}")
-          next
-        end
+        raise StandardError, "Payee not found: #{row[:name]}" unless payee
+
         payee.update!(paypal_account: row[:paypal])
       end
 
@@ -35,17 +37,34 @@ namespace :master_sheet do
       xlsx.sheet('ALBUM SALES').each_row_streaming(offset: 2, pad_cells: true) do |row|
         next if row[0].value.blank?
 
-        album = Album.find_by(name: row[0].value)
-        unless album
-          puts("Album not found: #{row[0].value}")
+        if row[0].value.in?(Rails.application.config.app_config[:master_sheet][:splits][:skip_albums])
+          puts("skipping #{row[0].value}")
           next
         end
 
+        album = Album.find_by(name: row[0].value)
+
+        # overrides
+        if album.nil? && Rails.application.config.app_config[:master_sheet][:splits][:album_mappings].key?(row[0].value)
+          true_url = Rails.application.config.app_config[:master_sheet][:splits][:album_mappings][row[0].value]
+          album = Album.find_by(bandcamp_url: true_url)
+        end
+
+        # safe to skip any missing albums that don't have any splits either
+        if album.nil? && row[10..].all?(&:empty?)
+          puts("skipping #{row[0].value}")
+          next
+        end
+
+        raise StandardError, "Album not found: #{row[0].value}" unless album
+
         album.splits.destroy_all
 
-        if album.bandcamp_url == 'https://thegarages.bandcamp.com/album/the-garages-vs-desert-bus-2021'
-          # Hard-code split for child's play
-          Split.create!(product: album, payee: Payee.find_by!(fsn: 'FS-032'), value: 1)
+        overrides = Rails.application.config.app_config[:master_sheet][:splits][:overrides]
+        if overrides.key?(album.bandcamp_url)
+          overrides[album.bandcamp_url].each do |fsn, value|
+            Split.create!(product: album, payee: Payee.find_by!(fsn: fsn), value: value)
+          end
         else
           row[10..].map { |cell| cell&.value }.each_slice(2) do |payee_name, split|
             next if payee_name.blank?
@@ -58,7 +77,35 @@ namespace :master_sheet do
         end
       end
 
-      # TODO: track splits
+      # Track splits
+      xlsx.sheet('STREAMING (IND)').each_row_streaming(offset: 2, pad_cells: true) do |row|
+        next if row[1].value.blank?
+
+        next if row[1].value.in?(Rails.application.config.app_config[:master_sheet][:splits][:skip_tracks])
+
+        track = Track.find_by(isrc: row[1].value)
+        raise StandardError, "Unable to find track #{row[0].value} (#{row[1].value})" if track.nil?
+
+        payees = []
+        row[7..].map { |cell| cell&.value }.each_slice(2) do |payee_name, split|
+          next if payee_name.blank?
+
+          _name, fsn = payee_name.split(' / ')[-2..]
+          next if fsn == 'FS-000' # org TODO
+
+          payee = Payee.find_by(fsn: fsn)
+          if payee.nil?
+            puts("Skipping #{row[0].value} (#{row[1].value}): unable to find payee: #{payee_name}")
+            payees = []
+            break
+          end
+          payees << [payee, split.to_i]
+        end
+
+        payees.each do |payee, value|
+          Split.create!(product: track, payee: payee, value: value)
+        end
+      end
     end
 
     xlsx.close

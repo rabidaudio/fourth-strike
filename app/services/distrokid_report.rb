@@ -27,7 +27,7 @@ class DistrokidReport
       @product ||= if row['Song/Album'] == 'Album'
                      find_album_by_upc || find_album_by_name
                    elsif row['Song/Album'] == 'Song'
-                     find_track_by_isrc || find_track_by_upc || find_track_by_name
+                     find_track_by_isrc || find_track_by_name
                    else
                      raise StandardError, 'Unknown type'
                    end
@@ -39,11 +39,18 @@ class DistrokidReport
 
     def record_sale!
       if product.nil?
-        puts("skipping #{row['Title']}")
-        return
+        if skipped_artist?
+          puts("Skipping #{row['Artist']} | #{row['Title']}")
+          return
+        end
+
+        raise StandardError, "Unknown product: #{row['Title']}"
       end
 
-      puts("skipping return of #{row['Title']} (#{earnings_usd})") if return?
+      if return?
+        puts("skipping return of #{row['Title']} (#{earnings_usd})")
+        return
+      end
       validate!
       DistrokidSale.create!(
         artist_name: row['Artist'],
@@ -60,6 +67,10 @@ class DistrokidReport
     end
 
     private
+
+    def skipped_artist?
+      row['Artist'].in?(Rails.application.config.app_config[:distrokid][:skip][:artists])
+    end
 
     def reported_at
       Date.parse(row['Reporting Date'])
@@ -90,7 +101,7 @@ class DistrokidReport
     def find_album_by_upc
       return if row['UPC'].blank?
 
-      Album.find_by(upc: row['UPC'])
+      Album.find_by_upc(row['UPC']) # rubocop:disable Rails/DynamicFindBy
     end
 
     def find_album_by_name
@@ -101,12 +112,6 @@ class DistrokidReport
       return if row['ISRC'].blank?
 
       Track.find_by(isrc: row['ISRC'])
-    end
-
-    def find_track_by_upc
-      return if row['UPC'].blank?
-
-      Track.find_by(upc: row['UPC'])
     end
 
     def find_track_by_name
