@@ -36,7 +36,7 @@ nav.navbar role="navigation" aria-label="main navigation" data-controller="is_ac
       a.navbar-item href=albums_path Releases
       / a.navbar-item href="#" Artists
 
-      - if current_user && current_user.admin?
+      - if admin?
         a.navbar-item href=payees_path Payees
         a.navbar-item href="#" Reporting
 

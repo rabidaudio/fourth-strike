@@ -5,6 +5,11 @@ p
   span = " by "
   a href=albums_path(artist: @track.album.artist_name) = @track.album.artist_name
 
+  - if admin? && @track.isrc
+    br
+    span = "ISRC: "
+    code = @track.isrc
+
 - if @track.bandcamp_id
   iframe { style="border: 0; width: 100%; min-width:256px; height: 120px;"
       src="https://bandcamp.com/EmbeddedPlayer/track=#{@track.bandcamp_id}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless=""}

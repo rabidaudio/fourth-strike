@@ -1,6 +1,6 @@
 h1.is-size-2 = @artist.name
 
-- if current_user&.admin? || current_user&.artist == @artist
+- if admin? || current_user&.artist == @artist
   a.button href=edit_artist_path(@artist)
     span Edit
 

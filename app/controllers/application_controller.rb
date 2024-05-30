@@ -10,12 +10,19 @@ class ApplicationController < ActionController::Base
 
   helper_method :base_locale, :region
 
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+
   def base_locale
     locale_parts[0]
   end
 
   def region
     locale_parts[1]
+  end
+
+  def not_found
+    flash[:danger] = "Oops! We couldn't find what you're looking for."
+    redirect_to root_path
   end
 
   private

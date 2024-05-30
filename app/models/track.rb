@@ -47,6 +47,9 @@ class Track < ApplicationRecord
 
   validates :track_number, numericality: { greater_than_or_equal_to: 1, allow_nil: true }
 
+  scope :hidden, -> { where(track_number: nil) }
+  scope :visible, -> { where.not(track_number: nil) }
+
   def total_streams(from: Time.zone.at(0), to: Time.zone.now)
     distrokid_sales.streaming.where('reported_at >= ?', from).where('reported_at < ?', to).sum(:quantity)
   end

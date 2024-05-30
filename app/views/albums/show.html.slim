@@ -6,6 +6,13 @@ p
   br
   span = "Released #{localized_date(@album.release_date)}"
 
+  - if admin?
+    br
+    span = "UPC: "
+    - @album.upcs.each do |upc|
+      code = upc
+
+
 - if @album.bandcamp_id
   .bandcamp-embed
     iframe { style="border: 0; width: 100%; min-width:256px; height: 120px;"
@@ -21,9 +28,14 @@ p
   
   table.table
     tbody
-      - @album.tracks.order(track_number: :asc).each do |track|
+      - tracks = admin? ? @album.tracks : @album.tracks.visible
+      - tracks.order(track_number: :asc).each do |track|
         tr
-          td = "#{track.track_number}."
+          td
+            - if track.hidden?
+              span.is-italic = "<hidden>"
+            - else 
+              span = "#{track.track_number}."
           td
             a href=track_path(track.id) = track.name
 

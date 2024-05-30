@@ -6,7 +6,7 @@ module Session
   extend ActiveSupport::Concern
 
   included do
-    helper_method :current_user, :logged_in?
+    helper_method :current_user, :logged_in?, :admin?
 
     rescue_from UnauthenticatedError, with: :render_unauthenticated
   end
@@ -34,6 +34,10 @@ module Session
 
   def logged_in?
     current_user.present?
+  end
+
+  def admin?
+    current_user&.admin?
   end
 
   def log_in!

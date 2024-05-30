@@ -57,6 +57,8 @@ yarn run lint # lint and auto-fix everything
 rake db:drop db:create db:migrate
 rake bandcamp:load_releases
 rake distrokid:import_isrcs
+
+# Admin.create!(discord_handle: ...)
 ```
 
 ## Deployment
