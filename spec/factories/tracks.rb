@@ -34,7 +34,6 @@ FactoryBot.define do
     album
     track_number { 1 }
     isrc { Faker::Code.nric }
-    upc { Faker::Number.number(digits: 12).to_s }
     lyrics { Faker::Lorem.paragraphs(number: 4) }
     credits { Faker::Lorem.sentence }
     bandcamp_url do

@@ -41,7 +41,7 @@ FactoryBot.define do
       ].join('/')
     end
     release_date { Faker::Date.backward(days: 365) }
-    upc { Faker::Number.number(digits: 12).to_s }
+    upcs { [Faker::Number.number(digits: 12).to_s] }
 
     trait :with_splits do
       transient do

@@ -42,15 +42,13 @@ FactoryBot.define do
     trait :album do
       product { association(:album) }
 
-      upc { Faker::Number.number(digits: 12).to_s }
+      upc { product.upcs.sample }
 
       subtotal_amount { 6.66.to_money * quantity }
     end
 
     trait :track do
       product { association(:track) }
-
-      upc { product.upc }
 
       subtotal_amount { 1.11 * quantity }
     end

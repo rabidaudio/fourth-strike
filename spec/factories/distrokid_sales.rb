@@ -52,7 +52,6 @@ FactoryBot.define do
     artist_name { product.album.artist_name }
     title { product.name }
     isrc { product.isrc }
-    upc { product.upc }
 
     trait :album do
       product { association(:album) }
@@ -62,7 +61,7 @@ FactoryBot.define do
       quantity { 1 }
       earnings_usd { 9.99 }
       isrc { nil }
-      upc { product.upc }
+      upc { product.upcs.sample }
     end
   end
 end
