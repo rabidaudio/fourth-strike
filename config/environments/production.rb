@@ -80,7 +80,9 @@ Rails.application.configure do
   end
 
   # Use a different cache store in production.
-  config.cache_store = :mem_cache_store
+
+  config.cache_store = :file_store, Rails.root.join('storage/cache')
+
   # config.cache_store = :redis_cache_store, config.redis_config
 
   # Use a real queuing backend for Active Job (and separate queues per environment).

@@ -8,6 +8,10 @@
 # but we've got small enough data that I'm banking that the performance shouldn't be too bad.
 # If it does get really bad, we could create a caching system to recompute
 class RoyaltyCalculator
+  prepend CalculatorCache
+
+  cache_calculations :upfront_costs, :bandcamp_revenue, :distrokid_revenue, :payout_amounts
+
   def initialize(product, from: Time.zone.at(0), to: Time.zone.now)
     @product = product
     @start_at = from
@@ -62,6 +66,10 @@ class RoyaltyCalculator
   # Returns Hash[Payee => Money]
   def royalties_owed
     payout_amounts[:in]
+  end
+
+  def total_royalties_owed
+    payout_amounts[:in].values.sum || 0.to_money
   end
 
   def royalties_owed_to(payee)
