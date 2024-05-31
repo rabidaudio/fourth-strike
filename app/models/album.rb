@@ -4,17 +4,19 @@
 #
 # Table name: albums
 #
-#  id             :integer          not null, primary key
-#  album_art_url  :string
-#  artist_name    :string           not null
-#  bandcamp_url   :string           not null
-#  catalog_number :string
-#  name           :string           not null
-#  release_date   :date
-#  upcs           :string
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  bandcamp_id    :string
+#  id                      :integer          not null, primary key
+#  album_art_url           :string
+#  artist_name             :string           not null
+#  bandcamp_price_cents    :integer          default(0), not null
+#  bandcamp_price_currency :string           default("USD"), not null
+#  bandcamp_url            :string           not null
+#  catalog_number          :string
+#  name                    :string           not null
+#  release_date            :date
+#  upcs                    :string
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  bandcamp_id             :string
 #
 # Indexes
 #
@@ -37,9 +39,12 @@
 class Album < ApplicationRecord
   include Product
   include JsonStringColumn
+  include MonitizedSum
 
   strip_attributes except: [:upcs]
   json_string_attributes :upcs
+
+  monetize :bandcamp_price_cents
 
   has_many :tracks, dependent: :restrict_with_exception
 

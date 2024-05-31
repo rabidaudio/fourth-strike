@@ -60,6 +60,7 @@ namespace :bandcamp do
         artist_name = album_data.dig('byArtist', 'name')
         album_art_url = album_data['image']
         release_date = Date.parse(album_data['datePublished'])
+        price = release_data['offers']['price'].to_money(release_data['offers']['priceCurrency'])
         release_data['identifier']
 
         res = Album.upsert({
@@ -67,6 +68,8 @@ namespace :bandcamp do
                              artist_name: artist_name,
                              release_date: release_date,
                              album_art_url: album_art_url,
+                             bandcamp_price_cents: price.cents,
+                             bandcamp_price_currency: price.currency.iso_code,
                              bandcamp_id: bandcamp_id,
                              bandcamp_url: album_link
                            }, unique_by: :bandcamp_url)
@@ -127,6 +130,27 @@ namespace :bandcamp do
       CSV.foreach(path, headers: true, liberal_parsing: true, encoding: 'UTF-16LE') do |row|
         bandcamp_transaction_id = row['bandcamp transaction id']
 
+        upc = row['upc'].gsub(' ', '').strip if row['upc'].present?
+        subtotal = row['item total'].to_money(row['currency'])
+
+        # grab all the accounting columns but none of the customer PII
+        notes = row.to_h.slice(*row.headers[0..36]).to_json
+
+        # annoyingly there's some nasty utf-26 char at the beginning
+        # instead we assume that the date is the first column
+        date = row[0] # row['date']
+        purchased_at = Time.zone.strptime(date, '%m/%d/%y %l:%M %P')
+
+        # For some reason, the first couple of rows do not have computed net amounts.
+        # Perhaps before that we were considered a non-profit or too small to be billed
+        # by bandcamp? anyway we'll calculate manually
+        if row['net amount']
+          net = row['net amount'].to_money(row['currency'])
+        else
+          transaction_fee = row['transaction fee'].to_money(row['currency'])
+          net = subtotal - transaction_fee
+        end
+
         case row['item type']
         when 'album', 'track'
           product_class = { 'album' => Album, 'track' => Track }[row['item type']]
@@ -147,45 +171,56 @@ namespace :bandcamp do
             raise StandardError, "No #{row['item type']} found for sale of #{row['item url']}" if product.nil?
           end
 
-          upc = row['upc'].gsub(' ', '').strip if row['upc'].present?
-          subtotal = row['item total'].to_money(row['currency'])
-          # For some reason, the first couple of rows do not have computed net amounts.
-          # Perhaps before that we were considered a non-profit or too small to be billed
-          # by bandcamp? anyway we'll calculate manually
-          if row['net amount']
-            net = row['net amount'].to_money(row['currency'])
-          else
-            transaction_fee = row['transaction fee'].to_money(row['currency'])
-            net = subtotal - transaction_fee
-          end
+          BandcampSale.upsert({
+                                item_url: row['item url'],
+                                product_id: product.id,
+                                product_type: product.class.name,
+                                upc: upc,
+                                subtotal_amount_cents: subtotal.cents,
+                                subtotal_amount_currency: subtotal.currency.iso_code,
+                                net_revenue_amount_cents: net.cents,
+                                net_revenue_amount_currency: net.currency.iso_code,
+                                bandcamp_transaction_id: bandcamp_transaction_id,
+                                paypal_transaction_id: row['paypal transaction id'],
+                                quantity: row['quantity'],
+                                purchased_at: purchased_at,
+                                notes: notes
+                              }, unique_by: :bandcamp_transaction_id)
 
         when 'package' then next # TODO: merch : sku
-        when 'bundle' then next # TODO: discog # rubocop:disable Lint/DuplicateBranch
+        when 'bundle'
+          # Bundles are sales of the entire discography
+          # For discography purchases, what we do is take the entire discography released up to that point,
+          # divide the money proportionally based on the sale value of the albums, then create a sale for
+          # each album for that weighted amount
+          albums = Album.where('bandcamp_url like ?', "#{row['item url']}%").where('release_date <= ?', purchased_at)
+          total_value = albums.sum_monetized(:bandcamp_price)
+          weighted_values = albums.index_with { |a| a.bandcamp_price / total_value }
+          albums.each_with_index do |album, i|
+            weighted_subtotal = weighted_values[album] * subtotal
+            weighted_net = weighted_values[album] * net
+            BandcampSale.upsert({
+                                  item_url: row['item url'],
+                                  product_id: album.id,
+                                  product_type: 'Album',
+                                  upc: upc,
+                                  subtotal_amount_cents: weighted_subtotal.cents,
+                                  subtotal_amount_currency: weighted_subtotal.currency.iso_code,
+                                  net_revenue_amount_cents: weighted_net.cents,
+                                  net_revenue_amount_currency: weighted_net.currency.iso_code,
+                                  bandcamp_transaction_id: "#{bandcamp_transaction_id}:#{i}",
+                                  paypal_transaction_id: row['paypal transaction id'],
+                                  quantity: row['quantity'],
+                                  purchased_at: purchased_at,
+                                  notes: notes
+                                }, unique_by: :bandcamp_transaction_id)
+          end
+
         when 'payout' then next # rubocop:disable Lint/DuplicateBranch
         # TODO: should we account for this?
         when 'pending reversal', 'cancelled reversal', 'refund' then next # rubocop:disable Lint/DuplicateBranch
         else raise StandardError, "Unknown item type: #{row['item type']}"
         end
-
-        # annoyingly there's some nasty utf-26 char at the beginning
-        # instead we assume that the date is the first column
-        date = row[0] # row['date']
-        BandcampSale.upsert({
-                              item_url: row['item url'],
-                              product_id: product.id,
-                              product_type: product.class.name,
-                              upc: upc,
-                              subtotal_amount_cents: subtotal.cents,
-                              subtotal_amount_currency: subtotal.currency.iso_code,
-                              net_revenue_amount_cents: net.cents,
-                              net_revenue_amount_currency: net.currency.iso_code,
-                              bandcamp_transaction_id: bandcamp_transaction_id,
-                              paypal_transaction_id: row['paypal transaction id'],
-                              quantity: row['quantity'],
-                              purchased_at: Time.zone.strptime(date, '%m/%d/%y %l:%M %P'),
-                              # grab all the accounting columns but none of the customer PII
-                              notes: row.to_h.slice(*row.headers[0..36]).to_json
-                            }, unique_by: :bandcamp_transaction_id)
       end
     end
   end
