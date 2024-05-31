@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_30_221054) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_31_125411) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -119,6 +119,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_30_221054) do
     t.index ["paypal_transaction_id"], name: "index_payouts_on_paypal_transaction_id", unique: true
   end
 
+  create_table "rendered_services", force: :cascade do |t|
+    t.integer "payee_id", null: false
+    t.date "rendered_at"
+    t.integer "type"
+    t.decimal "hours"
+    t.text "description"
+    t.string "artist_name"
+    t.integer "compensation_cents", default: 0, null: false
+    t.string "compensation_currency", default: "USD", null: false
+    t.integer "album_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["album_id"], name: "index_rendered_services_on_album_id"
+    t.index ["payee_id"], name: "index_rendered_services_on_payee_id"
+  end
+
   create_table "splits", force: :cascade do |t|
     t.integer "payee_id", null: false
     t.string "product_type", null: false
@@ -150,6 +166,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_30_221054) do
 
   add_foreign_key "artists", "payees"
   add_foreign_key "payouts", "payees"
+  add_foreign_key "rendered_services", "albums"
+  add_foreign_key "rendered_services", "payees"
   add_foreign_key "splits", "payees"
   add_foreign_key "tracks", "albums"
 end
