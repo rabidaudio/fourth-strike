@@ -1,3 +1,12 @@
+css:
+  .two-line {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+  }
+
 h1.is-size-2 Releases
 
 = render_pagination(@albums)
@@ -15,8 +24,8 @@ h1.is-size-2 Releases
             .card-image
               figure.image.is-1by1
                 img width="700" style="background-color:#cccccc;padding:1px"
-          .card-content
-            p.title.is-4 = album.name
+          .card-content style="min-height: 7.5em"
+            p.title.is-4.two-line = album.name
             p.subtitle.is-6 = album.artist_name
 
 = render_pagination(@albums)
