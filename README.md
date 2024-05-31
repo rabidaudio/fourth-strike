@@ -62,6 +62,8 @@ rake master_sheet:load_splits
 rake bandcamp:load_report
 # Load sales data from DistroKid
 rake distrokid:load_report
+# Load rendered services
+rake master_sheet:load_rendered_services
 
 # Manually fix Bandcamp sale that wasn't in USD. There's only one, from Sept 2020, when the conversion rate was 1USD = 0.7790GBP
 rails console # sale = BandcampSale.find_by!(bandcamp_transaction_id: '1685538022'); sale.update!(subtotal_amount: (sale.subtotal_amount.amount / 0.7790).to_money('USD'), net_revenue_amount: (sale.net_revenue_amount.amount / 0.7790).to_money('USD'))

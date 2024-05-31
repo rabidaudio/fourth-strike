@@ -9,7 +9,7 @@
 #  compensation_cents    :integer          default(0), not null
 #  compensation_currency :string           default("USD"), not null
 #  description           :text
-#  hours                 :decimal(, )
+#  hours                 :decimal(6, 2)
 #  rendered_at           :date
 #  type                  :integer
 #  created_at            :datetime         not null
@@ -36,12 +36,6 @@ RSpec.describe RenderedService, type: :model do
         s = build(:rendered_service, :hourly, hours: nil, compensation: 5.to_money)
         expect(s).not_to be_valid
         expect(s.errors.full_messages_for(:hours)).to include("Hours can't be blank")
-      end
-
-      it 'should require hours be a multiple of 15 minutes' do
-        s = build(:rendered_service, :hourly, hours: Math::PI)
-        expect(s).not_to be_valid
-        expect(s.errors.full_messages_for(:hours)).to include('Hours must be a multiple of 15 minutes')
       end
 
       it 'should compute compensation if not provided' do

@@ -4,7 +4,7 @@ namespace :master_sheet do
   desc 'Populate payees and splits from master spreadsheet'
   task :load_splits => :environment do
     require 'roo'
-    xlsx = Roo::Spreadsheet.open(Rails.root.join('exports/home sheet copy for fox.xlsx').to_s)
+    xlsx = Roo::Spreadsheet.open(Rails.root.glob('exports/FOURTH STRIKE HOME SHEET*.xlsx').first.to_s)
 
     ActiveRecord::Base.transaction do
       # Load all the known payees
@@ -36,6 +36,7 @@ namespace :master_sheet do
       # Album splits
       xlsx.sheet('ALBUM SALES').each_row_streaming(offset: 2, pad_cells: true) do |row|
         next if row[0].value.blank?
+        next if row[10].blank?
 
         if row[0].value.in?(Rails.application.config.app_config[:master_sheet][:splits][:skip_albums])
           puts("skipping #{row[0].value}")
@@ -66,13 +67,26 @@ namespace :master_sheet do
             Split.create!(product: album, payee: Payee.find_by!(fsn: fsn), value: value)
           end
         else
+          payees = []
           row[10..].map { |cell| cell&.value }.each_slice(2) do |payee_name, split|
             next if payee_name.blank?
 
             _name, fsn = payee_name.split(' / ')[-2..]
-            payee = Payee.find_by!(fsn: fsn)
-
-            Split.create!(product: album, payee: payee, value: split.to_i)
+            payee = Payee.find_by(fsn: fsn)
+            if payee.nil?
+              puts("Skipping #{row[0].value} (#{row[1].value}): unable to find payee: #{payee_name}")
+              payees = []
+              break
+            end
+            if split.blank?
+              puts("Skipping #{row[0].value} (#{row[1].value}): no value assigned for #{payee_name}")
+              payees = []
+              break
+            end
+            payees << [payee, split.to_i]
+          end
+          payees.each do |payee, value|
+            Split.create!(product: album, payee: payee, value: value)
           end
         end
       end
@@ -80,6 +94,7 @@ namespace :master_sheet do
       # Track splits
       xlsx.sheet('STREAMING (IND)').each_row_streaming(offset: 2, pad_cells: true) do |row|
         next if row[1].value.blank?
+        next if row[7].blank?
 
         next if row[1].value.in?(Rails.application.config.app_config[:master_sheet][:splits][:skip_tracks])
 
@@ -99,6 +114,11 @@ namespace :master_sheet do
             payees = []
             break
           end
+          if split.blank?
+            puts("Skipping #{row[0].value} (#{row[1].value}): no value assigned for #{payee_name}")
+            payees = []
+            break
+          end
           payees << [payee, split.to_i]
         end
 
@@ -109,5 +129,65 @@ namespace :master_sheet do
     end
 
     xlsx.close
+  end
+
+  task :load_rendered_services => :environment do
+    require 'csv'
+
+    ActiveRecord::Base.transaction do
+      RenderedService.destroy_all
+
+      artist_names = Album.distinct.pluck(:artist_name)
+      strip = ->(v) { v&.strip }
+
+      CSV.foreach(Rails.root.join('exports/FS SERVICES RENDERED - WORK LIST.csv'), headers: true, converters: strip,
+                                                                                   header_converters: strip) do |row|
+        next if row['NAME'].blank?
+
+        date = Date.parse(row['DATE'])
+        _, fsn = row['FSN'].split(' / ')[-2..]
+        payee = Payee.find_by!(fsn: fsn)
+        type = { 'amount' => :fixed, 'hourly' => :hourly }[row['COMPENSATION TYPE']]
+        hours = row['amount / hours'].to_f if type == :hourly
+        compensation = row['AMOUNT'].delete_prefix('$').strip.to_f.to_money
+        albums = if row['ALBUMS'] == 'TODO'
+                   []
+                 else
+                   (row['ALBUMS'] || '').split('|').map do |n|
+                     unless n.strip.in?(Rails.application.config.app_config[:master_sheet][:splits][:skip_albums])
+                       Album.find_by!(name: n.strip)
+                     end
+                   end
+                 end
+        artist_name = row['ARTIST'] if row['ARTIST'].in?(artist_names)
+
+        if albums.empty?
+          RenderedService.create!(
+            type: type,
+            payee: payee,
+            compensation: compensation,
+            description: row['PROJECT'],
+            hours: hours,
+            rendered_at: date,
+            artist_name: artist_name,
+            album: nil
+          )
+        else
+          # divide the amount evenly amongst all albums
+          albums.each do |album|
+            RenderedService.create!(
+              type: type,
+              payee: payee,
+              compensation: compensation / albums.count,
+              description: row['PROJECT'],
+              hours: hours,
+              rendered_at: date,
+              artist_name: artist_name,
+              album: album
+            )
+          end
+        end
+      end
+    end
   end
 end

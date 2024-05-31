@@ -9,7 +9,7 @@
 #  compensation_cents    :integer          default(0), not null
 #  compensation_currency :string           default("USD"), not null
 #  description           :text
-#  hours                 :decimal(, )
+#  hours                 :decimal(6, 2)
 #  rendered_at           :date
 #  type                  :integer
 #  created_at            :datetime         not null
@@ -35,6 +35,7 @@
 # If there is an album associated with it, these fees will come off the top of
 # album income before paying out royalties.
 class RenderedService < ApplicationRecord
+  include MonitizedSum
   self.inheritance_column = '_type'
 
   belongs_to :payee
@@ -52,7 +53,6 @@ class RenderedService < ApplicationRecord
   validates :hours, numericality: { greater_than: 0, allow_nil: true }
   validates :hours, presence: true, if: :hourly?
   validates :hours, absence: true, if: :fixed?
-  validate :validate_hours_multiple_of_fifteen_minutes
   validates :artist_name, inclusion: { in: Album.distinct.pluck(:artist_name), allow_nil: true }
 
   before_validation do |service|
@@ -61,13 +61,5 @@ class RenderedService < ApplicationRecord
 
   def self.hourly_rate
     Rails.application.config.app_config[:services_rendered][:hourly_rate].to_money('USD')
-  end
-
-  protected
-
-  def validate_hours_multiple_of_fifteen_minutes
-    return if hours.blank?
-
-    errors.add(:hours, 'must be a multiple of 15 minutes') unless ((hours.to_f * 100) % 25).zero?
   end
 end

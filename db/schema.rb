@@ -123,7 +123,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_31_125411) do
     t.integer "payee_id", null: false
     t.date "rendered_at"
     t.integer "type"
-    t.decimal "hours"
+    t.decimal "hours", precision: 6, scale: 2
     t.text "description"
     t.string "artist_name"
     t.integer "compensation_cents", default: 0, null: false

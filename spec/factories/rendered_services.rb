@@ -9,7 +9,7 @@
 #  compensation_cents    :integer          default(0), not null
 #  compensation_currency :string           default("USD"), not null
 #  description           :text
-#  hours                 :decimal(, )
+#  hours                 :decimal(6, 2)
 #  rendered_at           :date
 #  type                  :integer
 #  created_at            :datetime         not null

@@ -47,6 +47,7 @@ class Album < ApplicationRecord
   monetize :bandcamp_price_cents
 
   has_many :tracks, dependent: :restrict_with_exception
+  has_many :rendered_services, dependent: :restrict_with_exception
 
   validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/, allow_nil: true }
 
