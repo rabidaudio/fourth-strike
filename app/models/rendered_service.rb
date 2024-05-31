@@ -54,7 +54,7 @@ class RenderedService < ApplicationRecord
   validates :hours, numericality: { greater_than: 0, allow_nil: true }
   validates :hours, presence: true, if: :hourly?
   validates :hours, absence: true, if: :fixed?
-  validates :artist_name, inclusion: { in: Album.distinct.pluck(:artist_name), allow_nil: true }
+  validates :artist_name, inclusion: { in: -> { Album.distinct.pluck(:artist_name) }, allow_nil: true }
   validate :ensure_payee_not_a_charity
 
   before_validation do |service|

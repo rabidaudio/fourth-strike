@@ -55,7 +55,7 @@ class Album < ApplicationRecord
     where('upcs like ?', "%\"#{upc}\"%").first
   end
 
-  def production_expenses
-    rendered_services.sum_monetized(:compensation)
+  def production_expenses(from: Time.zone.at(0), to: Time.zone.now)
+    rendered_services.where('rendered_at >= ? and rendered_at < ?', from, to).sum_monetized(:compensation)
   end
 end

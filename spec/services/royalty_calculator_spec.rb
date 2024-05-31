@@ -33,6 +33,8 @@ RSpec.describe 'Payout calculations' do
            })
   end
 
+  let(:producer) { create(:payee) }
+
   before do
     create_list(:bandcamp_sale, 17, :album, product: the_fame,
                                             net_revenue_amount: 9.99.to_money,
@@ -59,10 +61,8 @@ RSpec.describe 'Payout calculations' do
   end
 
   describe RoyaltyCalculator do
-    # upfront_costs
     # bandcamp_revenue
     # distrokid_revenue
-    # merchandise_revenue
     # net_income
     # organization_cut
     # donated_royalites
@@ -75,6 +75,12 @@ RSpec.describe 'Payout calculations' do
                                                                  bey => (0.85 * 0.60 * (25 * 5.55)).to_money,
                                                                  gaga => (0.85 * 0.20 * (25 * 5.55)).to_money
                                                                })
+      end
+    end
+
+    describe 'bandcamp_revenue' do
+      it 'should compute album sale revenue' do
+        expect(described_class.new(single_ladies).bandcamp_revenue).to eq 603.90.to_money
       end
     end
 
@@ -103,10 +109,58 @@ RSpec.describe 'Payout calculations' do
         end
       end
     end
+
+    describe 'services rendered' do
+      context 'for project' do
+        before do
+          create(:rendered_service, :fixed, compensation: 50.to_money, album: the_fame, description: 'Artwork')
+          create(:rendered_service, :hourly, hours: 2, album: the_fame, description: 'Mastering', payee: producer)
+        end
+
+        it 'should exclude project costs before computing distribution' do
+          expect(described_class.new(the_fame).upfront_costs).to eq (50 + 30).to_money
+          expect(described_class.new(the_fame).royalties_owed).to eq({
+                                                                       gaga => ((169.83 - 80) * 0.85).to_money
+                                                                     })
+        end
+
+        context 'negative revenue' do
+          before do
+            create(:rendered_service, :hourly, hours: 10, album: the_fame, description: 'Additional Mastering',
+                                               payee: producer)
+          end
+
+          it 'should report $0 royalties and a loss for org' do
+            expect(described_class.new(the_fame).upfront_costs).to eq (50 + 30 + 150).to_money
+
+            expect(described_class.new(the_fame).organization_income).to eq (169.83 - 230).to_money
+            expect(described_class.new(the_fame).royalties_owed[gaga]).to be_nil
+          end
+        end
+      end
+
+      context 'administrative' do
+        before do
+          create(:rendered_service, description: 'Merch fulfillment', album: nil)
+        end
+
+        it 'should not be included in royalty payments' do
+          expect(described_class.new(the_fame).upfront_costs).to eq 0.to_money
+          expect(described_class.new(the_fame).royalties_owed).to eq({
+                                                                       gaga => (169.83 * 0.85).to_money
+                                                                     })
+        end
+      end
+    end
   end
 
   describe PayoutCalculator do
     describe 'total_owed' do
+      before do
+        create(:rendered_service, :fixed, compensation: 50.to_money, album: the_fame, description: 'Artwork')
+        create(:rendered_service, :hourly, hours: 2, album: the_fame, description: 'Mastering', payee: producer)
+      end
+      
       it 'should compute the amount owed' do
         expect(described_class.new(tay).total_owed).to be_within(0.01.to_money).of(
           0.85 * ((200 * 30) + (0.20 * (25 * 5.55))).to_money
@@ -117,7 +171,7 @@ RSpec.describe 'Payout calculations' do
         )
 
         expect(described_class.new(gaga).total_owed).to be_within(0.01.to_money).of(
-          0.85 * ((17 * 9.99) + (0.20 * (25 * 5.55))).to_money
+          0.85 * ((17 * 9.99) + (0.20 * (25 * 5.55) - 50 - 30)).to_money
         )
       end
     end

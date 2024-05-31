@@ -2,6 +2,8 @@
 
 # This class computes the amount owed to contributors for a single product (optionally over a time period).
 # All methods return Money inless otherwise indicated.
+# NOTE: Time period includes both sales and costs from that time range. That means that royalties can actually
+# decrease over time, since product expenses can come *after* sales occur.
 # TODO: this does a lot of computing in ruby. Doing in the database would be better for performance,
 # but we've got small enough data that I'm banking that the performance shouldn't be too bad.
 # If it does get really bad, we could create a caching system to recompute
@@ -15,14 +17,15 @@ class RoyaltyCalculator
   # One time expenses for a project. For example: album art, mastering, etc.
   # These are taken out before any royalties are paid.
   def upfront_costs
-    # TODO: implement on top of services_rendered
-    0.to_money
+    # TODO: should we really only take upfront costs out of album sales?
+    return 0.to_money if @product.is_a?(Track)
+
+    @product.production_expenses(from: @start_at, to: @end_at) if @product.is_a?(Album)
+    # TODO: remove product and fulfillment costs for merch
   end
 
-  # Revenue from bandcamp digial sales, excluding Bandcamp and payment processor fees
+  # Revenue from bandcamp digial sales and merch items, excluding Bandcamp and payment processor fees
   def bandcamp_revenue
-    # return 0.to_money if @product.is_a?(Merch)
-
     bandcamp_sales.sum_monetized(:net_revenue_amount)
   end
 
@@ -33,20 +36,15 @@ class RoyaltyCalculator
     distrokid_sales.sum(:earnings_usd).to_money('USD')
   end
 
-  # Bandcamp merchandise revenue (how much came in)
-  def merchandise_revenue
-    # return 0.to_money unless @product.is_a?(Merch)
-
-    0.to_money # TODO
-  end
-
   # The total income to be divided between the organization and payees
   def net_income
-    (bandcamp_revenue + distrokid_revenue + merchandise_revenue) - upfront_costs
+    (bandcamp_revenue + distrokid_revenue) - upfront_costs
   end
 
   # The distribution to the organization, before any contributor donations
   def organization_cut
+    return net_income if net_income.negative?
+
     organization_distribution * net_income
   end
 
@@ -77,6 +75,8 @@ class RoyaltyCalculator
   end
 
   def payout_amounts
+    return { in: {}, out: {} } if net_income.negative?
+
     @payout_amounts ||= begin
       opted_out, opted_in = @product.payout_amounts(net_income - organization_cut).partition do |payee, _amount|
         payee.opted_out_of_royalties?
