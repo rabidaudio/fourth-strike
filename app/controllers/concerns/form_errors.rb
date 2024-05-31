@@ -7,7 +7,8 @@ module FormErrors
 
   def record_changes!(record)
     flash[:form_params] ||= {}
-    flash[:form_params][record.class.name] = record.attributes.slice(*record.changed_attributes.keys)
+    flash[:form_params][record.class.name] =
+      record.new_record? ? record.attributes : record.attributes.slice(*record.changed_attributes.keys)
   end
 
   def restore_changes!(record)

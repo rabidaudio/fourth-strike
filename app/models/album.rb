@@ -54,4 +54,8 @@ class Album < ApplicationRecord
   def self.find_by_upc(upc)
     where('upcs like ?', "%\"#{upc}\"%").first
   end
+
+  def production_expenses
+    rendered_services.sum_monetized(:compensation)
+  end
 end

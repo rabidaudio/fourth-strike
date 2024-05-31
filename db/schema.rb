@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_31_125411) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_31_173542) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -124,7 +124,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_31_125411) do
     t.date "rendered_at"
     t.integer "type"
     t.decimal "hours", precision: 6, scale: 2
-    t.text "description"
+    t.text "description", null: false
     t.string "artist_name"
     t.integer "compensation_cents", default: 0, null: false
     t.string "compensation_currency", default: "USD", null: false

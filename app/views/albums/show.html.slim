@@ -39,3 +39,9 @@ p
             a href=track_path(track.id) = track.name
 
 = render 'splits/splits_for_product', product: @album
+
+- if admin?
+  section.section
+    h2.is-size-3 = "Expenses: #{@album.production_expenses.format}"
+
+    = render partial: 'rendered_services/table', locals: { rendered_services: @album.rendered_services }

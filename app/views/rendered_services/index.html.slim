@@ -1,0 +1,11 @@
+h1.is-size-2 Services Rendered
+
+.block
+  .field
+    a.button.is-primary href=new_rendered_service_path
+      span Add
+
+section.section 
+  = render_pagination(@rendered_services)
+  = render partial: 'rendered_services/table', locals: { rendered_services: @rendered_services }
+  = render_pagination(@rendered_services)

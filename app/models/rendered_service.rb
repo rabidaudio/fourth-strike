@@ -8,7 +8,7 @@
 #  artist_name           :string
 #  compensation_cents    :integer          default(0), not null
 #  compensation_currency :string           default("USD"), not null
-#  description           :text
+#  description           :text             not null
 #  hours                 :decimal(6, 2)
 #  rendered_at           :date
 #  type                  :integer
@@ -42,6 +42,7 @@ class RenderedService < ApplicationRecord
   belongs_to :album, optional: true
 
   monetize :compensation_cents
+  strip_attributes only: [:description]
 
   enum type: {
     fixed: 1,
@@ -54,6 +55,7 @@ class RenderedService < ApplicationRecord
   validates :hours, presence: true, if: :hourly?
   validates :hours, absence: true, if: :fixed?
   validates :artist_name, inclusion: { in: Album.distinct.pluck(:artist_name), allow_nil: true }
+  validate :ensure_payee_not_a_charity
 
   before_validation do |service|
     service.compensation = service.hours * RenderedService.hourly_rate if service.hourly? && service.compensation.zero?
@@ -61,5 +63,13 @@ class RenderedService < ApplicationRecord
 
   def self.hourly_rate
     Rails.application.config.app_config[:services_rendered][:hourly_rate].to_money('USD')
+  end
+
+  protected
+
+  def ensure_payee_not_a_charity
+    return if payee.blank?
+
+    errors.add(:payee, 'cannot be a charity') if payee.charity?
   end
 end

@@ -1,0 +1,33 @@
+table.table
+  thead
+    tr
+      th Date
+      th Payee
+      th Description
+      th Project
+      th Type
+      th Compensation
+      th
+  tbody
+    - rendered_services.each do |service|
+      tr
+        td
+          span = localized_date(service.rendered_at)
+        td
+          a href=payees_path(search: service.payee.fsn)
+            span = service.payee.name
+        td = service.description
+        td
+          - if service.album
+            a href=album_path(service.album) = service.album.name
+        td
+          - if service.hourly?
+            span.tag.is-normal.is-primary Hourly
+          - elsif service.fixed?
+            span.tag.is-normal.is-info Flat
+          - if service.hours?
+            br
+            span = " #{service.hours} hrs"
+        td = service.compensation.format
+        td
+          a href=edit_rendered_service_path(service) Edit

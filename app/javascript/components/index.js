@@ -2,10 +2,12 @@ import { createApp } from 'vue'
 
 import PayeeSearch from './PayeeSearch.vue'
 import EditSplits from './EditSplits.vue'
+import RenderedServiceForm from './RenderedServiceForm.vue'
 
 const Components = {
   PayeeSearch,
-  EditSplits
+  EditSplits,
+  RenderedServiceForm
 }
 
 window.addEventListener('turbo:load', () => {

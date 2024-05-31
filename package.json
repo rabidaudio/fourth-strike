@@ -26,6 +26,7 @@
   "devDependencies": {
     "@vue/cli": "^5.0.8",
     "autoprefixer": "^10.4.19",
+    "bulma-calendar": "^6.1.19",
     "esbuild": "^0.20.2",
     "esbuild-plugin-alias": "^0.2.1",
     "esbuild-plugin-vue3": "^0.4.2",

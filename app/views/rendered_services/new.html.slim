@@ -1,0 +1,10 @@
+section.section
+  h1.is-size-2 Track Service Rendered
+
+  = form_for(@rendered_service, method: :create) do |f|
+    
+    div vue-component="RenderedServiceForm" props=@props.to_json
+
+    .field
+      .control
+        = f.submit "Submit", class: "button is-link"

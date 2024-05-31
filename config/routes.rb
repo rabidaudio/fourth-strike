@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
 
   resources :artists, :payees, :albums, :tracks
+  resources :rendered_services, path: 'services_rendered'
 
   scope path: '/products/:product_type/:product_id/splits' do
     get '/edit', to: 'splits#edit', as: 'edit_splits'
