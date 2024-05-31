@@ -64,6 +64,10 @@ class RoyaltyCalculator
     payout_amounts[:in]
   end
 
+  def royalties_owed_to(payee)
+    royalties_owed[payee] || 0.to_money
+  end
+
   private
 
   def bandcamp_sales

@@ -51,6 +51,8 @@ class Track < ApplicationRecord
   scope :visible, -> { where.not(track_number: nil) }
   scope :in_album_order, -> { order(Arel.sql('track_number ASC NULLS LAST')) }
 
+  scope :order_by_release_date_desc, -> { joins(:album).order(Arel.sql('albums.release_date desc')).in_album_order }
+
   def total_streams(from: Time.zone.at(0), to: Time.zone.now)
     distrokid_sales.streaming.where('reported_at >= ?', from).where('reported_at < ?', to).sum(:quantity)
   end

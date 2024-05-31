@@ -26,15 +26,21 @@ class PayoutCalculator
     0.to_money # TODO
   end
 
+  def for_royalties
+    [
+      for_album_sales,
+      for_track_sales,
+      for_merch_sales
+    ].sum
+  end
+
   def for_services_rendered
     services_rendered.sum_monetized(:compensation)
   end
 
   def total_owed
     [
-      for_album_sales,
-      for_track_sales,
-      for_merch_sales,
+      for_royalties,
       for_services_rendered
     ].sum
   end

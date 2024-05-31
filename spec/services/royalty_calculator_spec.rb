@@ -160,7 +160,7 @@ RSpec.describe 'Payout calculations' do
         create(:rendered_service, :fixed, compensation: 50.to_money, album: the_fame, description: 'Artwork')
         create(:rendered_service, :hourly, hours: 2, album: the_fame, description: 'Mastering', payee: producer)
       end
-      
+
       it 'should compute the amount owed' do
         expect(described_class.new(tay).total_owed).to be_within(0.01.to_money).of(
           0.85 * ((200 * 30) + (0.20 * (25 * 5.55))).to_money
@@ -171,7 +171,7 @@ RSpec.describe 'Payout calculations' do
         )
 
         expect(described_class.new(gaga).total_owed).to be_within(0.01.to_money).of(
-          0.85 * ((17 * 9.99) + (0.20 * (25 * 5.55) - 50 - 30)).to_money
+          0.85 * ((17 * 9.99) + ((0.20 * (25 * 5.55)) - 50 - 30)).to_money
         )
       end
     end

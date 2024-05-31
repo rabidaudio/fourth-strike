@@ -2,10 +2,8 @@ organization_name: Fourth Strike
 operating_currency: USD
 organization_cut: 0.15
 services_rendered:
-  hourly_rate: 15.0
-payout_at:
-  cents: 4200
-  currency: USD
+  hourly_rate: 15.00 # USD/hr
+payout_at: 42.00 # USD
 bandcamp:
   url: fourth-strike.bandcamp.com
   # Albums that we are explicitly ignoring

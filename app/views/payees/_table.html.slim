@@ -12,7 +12,7 @@ table.table
     - @payees.each do |payee|
       tr
         td
-          span = payee.fsn
+          a href=payee_path(payee) = payee.fsn
         td
           - if payee.artist
             a href=artist_path(payee.artist) = payee.name

@@ -19,6 +19,10 @@ class PayeesController < ApplicationController
     end
   end
 
+  def show
+    @payee = Payee.find(params[:id])
+  end
+
   def new
     @payee = Payee.new(fsn: Payee.next_fsn)
     @artist = Artist.new(payee: @payee)

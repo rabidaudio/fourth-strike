@@ -1,0 +1,98 @@
+section.section
+  h1.is-size-2
+    code = @payee.fsn
+  h2.is-size-3
+    span = @payee.name
+    - if @payee.charity?
+      = ' '
+      span.tag.is-normal.is-primary Charity
+
+  - if @payee.paypal_account
+    p
+      span Paypal Account:
+      pre = @payee.paypal_account
+  - else
+    .notification.is-warning No Paypal information on file!
+    
+  - if @payee.opted_out_of_royalties?
+    p This user has opted for their royalties to be donated to the organization.
+    i.ri-hearts-line.is-primary
+
+  a.button href=edit_payee_path(@payee)
+    span Edit
+
+
+section.section
+  h1.is-size-2 Accounting
+
+  table.table
+    thead
+      tr
+        th
+          a href="#royalties" Royalties
+        th
+          a href="#services_rendered" Services Renedered
+        th
+          a href="#payouts" Paid
+        th Balance
+    tbody
+      tr
+        td = @payee.royalties_owed.format
+        td = @payee.services_rendered_owed.format
+        td = @payee.paid_out.format
+        
+        - balance = @payee.balance
+        - if balance.negative?
+          td.is-danger = balance.format
+        - elsif balance > Payout.payout_at
+          td.is-warning = balance.format
+        - else
+          td = balance.format
+
+section.section id="royalties"
+  h2.is-size-3 Royalties
+
+  .columns
+    .column
+      table.table
+        thead
+          tr
+            th Album
+            th Royalties
+        tbody
+          - @payee.albums.order(release_date: :desc).each do |album|
+            tr
+              td
+                a href=album_path(album) = album.name
+              td = @payee.royalties_owed_for(album).format
+    
+    .column
+      table.table
+        thead
+          tr
+            th Track
+            th Royalties
+        tbody
+          - @payee.tracks.order_by_release_date_desc.each do |track|
+            tr
+              td
+                a href=track_path(track) = track.name
+              td = @payee.royalties_owed_for(track).format
+
+    .column
+      table.table
+        thead
+          tr
+            th Merch
+            th Royalties
+          / TODO
+
+- unless @payee.charity?
+  section.section id="services_rendered"
+    h2.is-size-3 Services Rendered
+
+    = render partial: 'rendered_services/table', locals: { rendered_services: @payee.rendered_services }
+
+section.section id="payouts"
+  h2.is-size-3 Payouts
+  / TODO

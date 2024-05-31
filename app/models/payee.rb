@@ -50,6 +50,14 @@ class Payee < ApplicationRecord
     )
   }
 
+  def albums
+    Album.joins(:splits).where(splits: { payee: self }).distinct
+  end
+
+  def tracks
+    Track.joins(:splits).where(splits: { payee: self }).distinct
+  end
+
   def self.next_fsn
     last_fsn = Payee.maximum(:fsn) || 'FS-000'
     num = last_fsn.delete_prefix('FS-').to_i
@@ -72,7 +80,19 @@ class Payee < ApplicationRecord
     opted_out_of_royalties
   end
 
-  def owed(**)
+  def royalties_owed_for(product)
+    RoyaltyCalculator.new(product).royalties_owed_to(self)
+  end
+
+  def royalties_owed(**)
+    PayoutCalculator.new(self, **).for_royalties
+  end
+
+  def services_rendered_owed(**)
+    PayoutCalculator.new(self, **).for_services_rendered
+  end
+
+  def total_owed(**)
     PayoutCalculator.new(self, **).total_owed
   end
 
@@ -81,6 +101,6 @@ class Payee < ApplicationRecord
   end
 
   def balance(**)
-    owed(**) - paid_out(**)
+    total_owed(**) - paid_out(**)
   end
 end
