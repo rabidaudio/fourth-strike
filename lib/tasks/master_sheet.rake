@@ -101,6 +101,8 @@ namespace :master_sheet do
         track = Track.find_by(isrc: row[1].value)
         raise StandardError, "Unable to find track #{row[0].value} (#{row[1].value})" if track.nil?
 
+        track.splits.destroy_all
+
         payees = []
         row[7..].map { |cell| cell&.value }.each_slice(2) do |payee_name, split|
           next if payee_name.blank?

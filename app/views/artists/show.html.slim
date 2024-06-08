@@ -12,3 +12,7 @@ section.section
 
   / h1 Contributions
   / TODO
+
+- if admin? || current_user&.artist == @artist
+  - @payee = @artist.payee
+  = render 'payees/show'
