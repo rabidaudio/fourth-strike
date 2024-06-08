@@ -36,6 +36,14 @@ class Split < ApplicationRecord
 
   validates :value, numericality: { greater_than_or_equal_to: 1 }
 
+  after_save do |split|
+    CalculatorCache::Manager.recompute_for_split!(split)
+  end
+
+  after_destroy do |split|
+    CalculatorCache::Manager.recompute_for_split!(split)
+  end
+
   def to_percentage_string
     decimal = value.to_f / product.splits.sum(:value)
     "#{(decimal * 100).round(2)}%"

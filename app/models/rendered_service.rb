@@ -61,6 +61,14 @@ class RenderedService < ApplicationRecord
     service.compensation = service.hours * RenderedService.hourly_rate if service.hourly? && service.compensation.zero?
   end
 
+  after_save do |service|
+    CalculatorCache::Manager.recompute_for_service_rendered!(service)
+  end
+
+  after_destroy do |service|
+    CalculatorCache::Manager.recompute_for_service_rendered!(service)
+  end
+
   def self.hourly_rate
     Rails.application.config.app_config[:services_rendered][:hourly_rate].to_money('USD')
   end

@@ -25,6 +25,13 @@ class ApplicationController < ActionController::Base
     redirect_to root_path
   end
 
+  protected
+
+  def log_error!(error)
+    Rails.logger.error("#{error.class.name}: #{error.message}")
+    Rails.logger.error(error.backtrace.join("\n"))
+  end
+
   private
 
   def set_locale

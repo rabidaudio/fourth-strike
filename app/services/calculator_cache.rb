@@ -15,8 +15,14 @@ module CalculatorCache
   module Manager
     extend self
 
+    # Should we automatically recompute on write, or simply cache bust and lazy load on the next request
+    def eager_recompute?
+      !Rails.env.test?
+    end
+
     def calculator_cache_key(calc_class, *args, **kwargs)
-      "calc/#{calc_class.name.underscore}/#{args.map(&:cache_key).join('/')}?#{kwargs.to_query}"
+      arg_path = args.map { |a| a.respond_to?(:cache_key) ? a.cache_key : a.to_s }.join('/')
+      "calc/#{calc_class.name.underscore}/#{arg_path}?#{kwargs.to_query}"
     end
 
     def recompute_all!
@@ -28,45 +34,79 @@ module CalculatorCache
 
     # This should be called when a sale (BandcampSale or DistrokidSale) is created/updated/destroyed
     def recompute_for_sale!(sale)
-      # Rails.cache.delete_matched("calc/royalties_owed")
+      recompute_royalties!(sale.product)
+      if sale.product_changed? && sale.changes['product_id'].first.present?
+        old_product = sale.changes['product_type'].first.constantize.find_by(id: sale.changes['product_id'])
+        recompute_royalties!(old_product) if old_product.present?
+      end
     end
 
     # This should be called when a RenderedService is created/updated/destroyed
     def recompute_for_service_rendered!(service_rendered)
-      # now_or_at_end_of_transaction do
-      #   # Recompute expenses for the album
-      #   if service_rendered.album
+      recompute_royalties!(service_rendered.album) if service_rendered.album
 
-      #   end
+      # if the album was changed and there was an old one, recompute expenses for that too
+      if service_rendered.album_changed? && service_rendered.changes['album_id'].first.present?
+        old_album = Album.find_by(id: service_rendered.changes['album_id'].first)
+        recompute_royalties!(old_album) if old_album.present?
+      end
 
-      #   # if the album was changed and there was an old one, recompute expenses for that too
-      #   if service_rendered.album_changed? && s.changes['album_id'].first.present?
-
-      #   end
-
-      #   # recompute payee info
-      #   PayeeCalculator.new(service_rendered.payee).for_services_rendered
-      # end
+      recompute_payouts!(service_rendered.payee)
+      if service_rendered.payee_changed? && service_rendered.changes['payee_id'].first.present?
+        old_payee = Payee.find_by(id: service_rendered.changes['payee_id'].first)
+        recompute_payouts!(old_payee) if old_payee.present?
+      end
     end
 
-    # This should be called when a Payout is created/updated/destroyed
-    def recompute_for_payout!(payout); end
-
     # This should be called when a Split is created/updated/destroyed
-    def recompute_for_split!(split); end
+    def recompute_for_split!(split)
+      recompute_royalties!(split.product)
+      recompute_payouts!(split.payee)
+    end
 
     private
 
-    def now_or_at_end_of_transaction(&block)
-      block.call
-      # return block.call unless AfterCommitEverywhere.in_transaction?
+    def recompute_royalties!(product)
+      now_or_once_per_transaction(RoyaltyCalculator, product) do
+        clear_cache(RoyaltyCalculator, product)
+        RoyaltyCalculator.new(product).total_royalties_owed if eager_recompute?
+        product.payees.find_each do |payee|
+          recompute_payouts!(payee)
+        end
+      end
+    end
 
-      # @pending_
+    def recompute_payouts!(payee)
+      now_or_once_per_transaction(PayoutCalculator, payee) do
+        clear_cache(PayoutCalculator, payee)
+        PayoutCalculator.new(payee).for_services_rendered if eager_recompute?
+      end
+    end
+
+    def clear_cache(*)
+      Rails.cache.delete_matched(/#{Regexp.escape(calculator_cache_key(*))}.*/)
+    end
+
+    def now_or_once_per_transaction(calc_class, *, &block)
+      return block.call unless AfterCommitEverywhere.in_transaction?
+
+      key = calculator_cache_key(calc_class, *)
+      if @pending_transactions.nil?
+        @pending_transactions = {}
+        AfterCommitEverywhere.after_commit do
+          @pending_transactions.each_value do |block|
+            block.call
+          end
+          @pending_transactions = nil
+        end
+      end
+      @pending_transactions[key] ||= block
     end
   end
 
   def initialize(*, **)
     @key = Manager.calculator_cache_key(self.class, *, **)
+    @cache_enabled = true
     super
   end
 

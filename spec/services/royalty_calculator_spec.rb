@@ -134,7 +134,7 @@ RSpec.describe 'Payout calculations' do
             expect(described_class.new(the_fame).upfront_costs).to eq (50 + 30 + 150).to_money
 
             expect(described_class.new(the_fame).organization_income).to eq (169.83 - 230).to_money
-            expect(described_class.new(the_fame).royalties_owed[gaga]).to be_nil
+            expect(described_class.new(the_fame).royalties_owed_to(gaga)).to eq 0.to_money
           end
         end
       end
@@ -159,6 +159,7 @@ RSpec.describe 'Payout calculations' do
       before do
         create(:rendered_service, :fixed, compensation: 50.to_money, album: the_fame, description: 'Artwork')
         create(:rendered_service, :hourly, hours: 2, album: the_fame, description: 'Mastering', payee: producer)
+        CalculatorCache::Manager.recompute_all!
       end
 
       it 'should compute the amount owed' do

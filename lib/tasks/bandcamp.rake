@@ -222,6 +222,8 @@ namespace :bandcamp do
         else raise StandardError, "Unknown item type: #{row['item type']}"
         end
       end
+
+      CalculatorCache::Manager.recompute_all!
     end
   end
 end

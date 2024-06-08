@@ -42,6 +42,7 @@ class RenderedServicesController < ApplicationController
     flash[:success] = 'Added to services rendered'
     redirect_to rendered_services_path
   rescue StandardError => e
+    log_error!(e)
     flash[:danger] = e.message
     record_changes!(@rendered_service)
     redirect_to new_rendered_service_path
@@ -54,6 +55,7 @@ class RenderedServicesController < ApplicationController
     flash[:success] = 'Updated services rendered'
     redirect_to rendered_services_path
   rescue StandardError => e
+    log_error!(e)
     flash[:danger] = e.message
     record_changes!(@rendered_service)
     redirect_to edit_rendered_service_path(@rendered_service)

@@ -7,6 +7,8 @@ module Product
   included do |base|
     base.has_many :splits, as: :product, dependent: :destroy
 
+    base.has_many :payees, through: :splits
+
     # Too many split objects can create some performance problems, since
     # computations happen in memory rather than in the database. So set
     # a limit to an arbitrary but sufficiently high amount.
