@@ -119,6 +119,31 @@ namespace :bandcamp do
     end
   end
 
+  desc 'Loads Merch items by looking at items sold from sale report'
+  task :load_merch_items => :environment do
+    require 'csv'
+
+    path = Rails.root.glob('exports/*_bandcamp_raw_data_Fourth-Strike-Records.csv').first
+    raise StandardError, 'Report not found' if path.nil?
+
+    merch = {}
+    ActiveRecord::Base.transaction do
+      CSV.foreach(path, headers: true, liberal_parsing: true, encoding: 'UTF-16LE') do |row|
+        next unless row['item type'] == 'package'
+        next if row['item url'].in?(Rails.application.config.app_config[:bandcamp][:skip_merch])
+
+        merch[row['item url']] = Merch.create_with(
+          name: row['item name'].delete_prefix('[PREORDER] '),
+          sku: row['sku'],
+          bandcamp_url: row['item url'],
+          artist_name: row['artist'],
+          list_price: row['item price'].to_money(row['currency'])
+        ).find_or_create_by!(bandcamp_url: row['item url'])
+      end
+    end
+    puts "Loaded #{merch.size} merch items"
+  end
+
   desc 'Loads Bandcamp sale data from their raw data report'
   task :load_report => :environment do
     require 'csv'
@@ -141,14 +166,28 @@ namespace :bandcamp do
         date = row[0] # row['date']
         purchased_at = Time.zone.strptime(date, '%m/%d/%y %l:%M %P')
 
-        # For some reason, the first couple of rows do not have computed net amounts.
-        # Perhaps before that we were considered a non-profit or too small to be billed
-        # by bandcamp? anyway we'll calculate manually
         if row['net amount']
+          # (41.11+3.89+2.77+5) sub+additional+tax+ship = 52.77 item total
+          # - 1.46 transaction fee
+          # - 4.50 rev share
+          # - 5 shipping
+          # = 39.04 net amount
           net = row['net amount'].to_money(row['currency'])
         else
+          # net amount is not defined for some transactions, probably when revenues were
+          # so low that Bandcamp wasn't taking a cut.
+          # None of these have tax collected, so we only need to remove transction fee and
+          # shipping from these
           transaction_fee = row['transaction fee'].to_money(row['currency'])
-          net = subtotal - transaction_fee
+          shipping = row['shipping'].to_money(row['currency'])
+          net = subtotal - transaction_fee - shipping
+        end
+
+        # Convert other currencies to USD
+        if Rails.application.config.app_config[:bandcamp][:currency_corrections].key?(bandcamp_transaction_id)
+          conversion = Rails.application.config.app_config[:bandcamp][:currency_corrections][bandcamp_transaction_id]
+          subtotal = (subtotal.amount / conversion).to_money('USD')
+          net = (net.amount / conversion).to_money('USD')
         end
 
         case row['item type']
@@ -185,9 +224,46 @@ namespace :bandcamp do
                                 quantity: row['quantity'],
                                 purchased_at: purchased_at,
                                 notes: notes
-                              }, unique_by: :bandcamp_transaction_id)
+                              }, unique_by: [:bandcamp_transaction_id, :item_url])
 
-        when 'package' then next # TODO: merch : sku
+        when 'package'
+          # This step only creates merch items and bandcamp sales. Fulfillments will need to be
+          # created by hand :/
+
+          # additional fan contribution does happen
+          # paypal transaction id can include "<-- collected to cover your revenue share balance"
+          # balances can include "n/a" instead of blank/zero
+          # skus don't line up exactly with master doc
+          # tax sometimes collected
+
+          merch = Merch.find_by(bandcamp_url: row['item url'])
+          if merch.nil?
+            if row['item url'].in?(Rails.application.config.app_config[:bandcamp][:skip_merch])
+              puts("skipping #{row['item url']}")
+              next
+            end
+            raise StandardError, "Merch not found: #{row['sku']} - #{row['item name']}"
+          end
+
+          unless row['paypal transaction id']&.starts_with?('<-- collected to cover your revenue share balance')
+            paypal_transaction_id = row['paypal transaction id'] # :eyeroll:
+          end
+
+          BandcampSale.upsert({
+                                item_url: row['item url'],
+                                product_id: merch.id,
+                                product_type: 'Merch',
+                                subtotal_amount_cents: subtotal.cents,
+                                subtotal_amount_currency: subtotal.currency.iso_code,
+                                net_revenue_amount_cents: net.cents,
+                                net_revenue_amount_currency: net.currency.iso_code,
+                                bandcamp_transaction_id: bandcamp_transaction_id,
+                                paypal_transaction_id: paypal_transaction_id,
+                                quantity: row['quantity'],
+                                purchased_at: purchased_at,
+                                notes: notes
+                              }, unique_by: [:bandcamp_transaction_id, :item_url])
+
         when 'bundle'
           # Bundles are sales of the entire discography
           # For discography purchases, what we do is take the entire discography released up to that point,
@@ -196,9 +272,11 @@ namespace :bandcamp do
           albums = Album.where('bandcamp_url like ?', "#{row['item url']}%").where('release_date <= ?', purchased_at)
           total_value = albums.sum_monetized(:bandcamp_price)
           weighted_values = albums.index_with { |a| a.bandcamp_price / total_value }
-          albums.each_with_index do |album, i|
+
+          albums.each do |album|
             weighted_subtotal = weighted_values[album] * subtotal
             weighted_net = weighted_values[album] * net
+
             BandcampSale.upsert({
                                   item_url: row['item url'],
                                   product_id: album.id,
@@ -208,15 +286,15 @@ namespace :bandcamp do
                                   subtotal_amount_currency: weighted_subtotal.currency.iso_code,
                                   net_revenue_amount_cents: weighted_net.cents,
                                   net_revenue_amount_currency: weighted_net.currency.iso_code,
-                                  bandcamp_transaction_id: "#{bandcamp_transaction_id}:#{i}",
+                                  bandcamp_transaction_id: bandcamp_transaction_id,
                                   paypal_transaction_id: row['paypal transaction id'],
                                   quantity: row['quantity'],
                                   purchased_at: purchased_at,
                                   notes: notes
-                                }, unique_by: :bandcamp_transaction_id)
+                                }, unique_by: [:bandcamp_transaction_id, :item_url])
           end
 
-        when 'payout' then next # rubocop:disable Lint/DuplicateBranch
+        when 'payout' then next
         # TODO: should we account for this?
         when 'pending reversal', 'cancelled reversal', 'refund' then next # rubocop:disable Lint/DuplicateBranch
         else raise StandardError, "Unknown item type: #{row['item type']}"

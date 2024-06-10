@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_31_173542) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_10_175332) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -68,7 +68,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_31_173542) do
     t.integer "product_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["bandcamp_transaction_id"], name: "index_bandcamp_sales_on_bandcamp_transaction_id", unique: true
+    t.string "option"
+    t.index ["bandcamp_transaction_id", "item_url"], name: "index_bandcamp_sales_on_bandcamp_transaction_id_and_item_url", unique: true
     t.index ["item_url"], name: "index_bandcamp_sales_on_item_url"
     t.index ["paypal_transaction_id"], name: "index_bandcamp_sales_on_paypal_transaction_id"
     t.index ["product_type", "product_id"], name: "index_bandcamp_sales_on_product"
@@ -93,6 +94,31 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_31_173542) do
     t.index ["product_type", "product_id"], name: "index_distrokid_sales_on_product"
     t.index ["reported_at"], name: "index_distrokid_sales_on_reported_at"
     t.index ["upc"], name: "index_distrokid_sales_on_upc"
+  end
+
+  create_table "merch_fulfillments", force: :cascade do |t|
+    t.integer "bandcamp_sale_id", null: false
+    t.integer "production_cost_cents", default: 0, null: false
+    t.string "production_cost_currency", default: "USD", null: false
+    t.date "shipped_on"
+    t.integer "fulfilled_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bandcamp_sale_id"], name: "index_merch_fulfillments_on_bandcamp_sale_id"
+    t.index ["fulfilled_by_id"], name: "index_merch_fulfillments_on_fulfilled_by_id"
+  end
+
+  create_table "merch_items", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "sku", null: false
+    t.string "bandcamp_url", null: false
+    t.string "artist_name"
+    t.integer "list_price_cents", default: 0, null: false
+    t.string "list_price_currency", default: "USD", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bandcamp_url"], name: "index_merch_items_on_bandcamp_url", unique: true
+    t.index ["sku"], name: "index_merch_items_on_sku", unique: true
   end
 
   create_table "payees", force: :cascade do |t|
@@ -165,6 +191,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_31_173542) do
   end
 
   add_foreign_key "artists", "payees"
+  add_foreign_key "merch_fulfillments", "admins", column: "fulfilled_by_id"
+  add_foreign_key "merch_fulfillments", "bandcamp_sales"
   add_foreign_key "payouts", "payees"
   add_foreign_key "rendered_services", "albums"
   add_foreign_key "rendered_services", "payees"

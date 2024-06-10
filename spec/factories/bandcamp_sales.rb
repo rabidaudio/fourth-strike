@@ -9,6 +9,7 @@
 #  net_revenue_amount_cents    :integer          default(0), not null
 #  net_revenue_amount_currency :string           default("USD"), not null
 #  notes                       :text
+#  option                      :string
 #  product_type                :string           not null
 #  purchased_at                :datetime         not null
 #  quantity                    :integer          not null
@@ -24,11 +25,11 @@
 #
 # Indexes
 #
-#  index_bandcamp_sales_on_bandcamp_transaction_id  (bandcamp_transaction_id) UNIQUE
-#  index_bandcamp_sales_on_item_url                 (item_url)
-#  index_bandcamp_sales_on_paypal_transaction_id    (paypal_transaction_id)
-#  index_bandcamp_sales_on_product                  (product_type,product_id)
-#  index_bandcamp_sales_on_upc                      (upc)
+#  index_bandcamp_sales_on_bandcamp_transaction_id_and_item_url  (bandcamp_transaction_id,item_url) UNIQUE
+#  index_bandcamp_sales_on_item_url                              (item_url)
+#  index_bandcamp_sales_on_paypal_transaction_id                 (paypal_transaction_id)
+#  index_bandcamp_sales_on_product                               (product_type,product_id)
+#  index_bandcamp_sales_on_upc                                   (upc)
 #
 FactoryBot.define do
   factory :bandcamp_sale do
@@ -51,6 +52,20 @@ FactoryBot.define do
       product { association(:track) }
 
       subtotal_amount { 1.11 * quantity }
+    end
+
+    trait :merch do
+      product { association(:merch) }
+
+      option { ['small', 'medium', 'large', 'x-large'].sample }
+    end
+
+    trait :fulfilled do
+      merch
+
+      after_create do |sale|
+        create(:merch_fulfillment, bandcamp_sale: sale)
+      end
     end
   end
 end

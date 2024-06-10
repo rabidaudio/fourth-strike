@@ -20,6 +20,17 @@ bandcamp:
     # TODO: confirm these:
     - https://garlicbreadandroses.bandcamp.com/album/take-care-of-yourself
     - https://thegarages.bandcamp.com/album/limiter-released
+  skip_merch:
+    - "https://sigfigscollective.bandcamp.com/merch/significant-figures-classic-tee"
+    - "https://sigfigscollective.bandcamp.com/merch/sig-figs-pentagram-tee"
+    - "https://sigfigscollective.bandcamp.com/merch/stimulant-hoodie"
+    - "https://sigfigscollective.bandcamp.com/merch/somnolent-hoodie"
+    - "https://sigfigscollective.bandcamp.com/merch/sfc-anniversary-tee"
+    - "https://sigfigscollective.bandcamp.com/merch/sfc-sticker-collection-1"
+  # Manually fix Bandcamp sale that wasn't in USD. There's only one, from Sept 2020, when the conversion rate was 1USD = 0.7790GBP
+  currency_corrections:
+    '1685538022': 0.7790
+
   # Tracks/Albums that used to exist at one point and have been replaced with a different version.
   # Treats all the left-hand side ones as equivalent to the right-hand side
   remaps:
