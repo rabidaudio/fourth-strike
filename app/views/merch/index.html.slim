@@ -1,0 +1,24 @@
+h1.is-size-2 Merch
+
+section.section
+  = render_pagination(@merch)
+
+  table.table
+    thead
+      tr
+        th SKU
+        th Name
+        th Price
+    tbody
+      - @merch.each do |merch|
+        tr
+          td
+            code = merch.sku
+          td
+            a href=merch_path(merch) = merch.name
+            - if merch.artist_name
+              br
+              a href=merch_index_path(artist: merch.artist_name) = merch.artist_name
+          td = merch.list_price.format
+
+  = render_pagination(@merch)

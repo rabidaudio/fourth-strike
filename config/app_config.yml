@@ -30,6 +30,22 @@ bandcamp:
   # Manually fix Bandcamp sale that wasn't in USD. There's only one, from Sept 2020, when the conversion rate was 1USD = 0.7790GBP
   currency_corrections:
     '1685538022': 0.7790
+  merch_skus:
+    # SKUs have variant information such as size appended to them, but these merch items represent the product as a whole.
+    # We'll go through each of these regexes, finding the first that match and returning the first partial match group as the true sku
+    strip_variants:
+      # The BTM release, the t-shirt and poster have very similar skus that don't follow the pattern and are hard to differentiate
+      - '\A(BTM-TDOS-1)\z' # poster
+      - '\A(BTM-TDOS-S)(-[1-3])?\z' # t-shirt
+      # Consumed appears as both with C- prefix and without
+      - '(CON-001)\z'
+      # For this one t-shirt, the unisex and fitted are different urls
+      - '\A(T-GVD-(FIT|UNI))-(S|M|L|XL|XXL|XXXL)\z'
+      # for cassettes, include the trailing release number
+      - '\A(C-[A-Z0-9]{3}-[0-9]{3})\z'
+      # For everything else, just grab the first 2 parts
+      - '\A([A-Z]{1,3}-[A-Z0-9\+]{3,4})'
+
 
   # Tracks/Albums that used to exist at one point and have been replaced with a different version.
   # Treats all the left-hand side ones as equivalent to the right-hand side

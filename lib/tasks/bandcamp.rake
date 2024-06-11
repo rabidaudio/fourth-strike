@@ -127,18 +127,32 @@ namespace :bandcamp do
     raise StandardError, 'Report not found' if path.nil?
 
     merch = {}
+    strip_variants = Rails.application.config.app_config[:bandcamp][:merch_skus][:strip_variants].map do |v|
+      Regexp.new(v)
+    end
+
     ActiveRecord::Base.transaction do
       CSV.foreach(path, headers: true, liberal_parsing: true, encoding: 'UTF-16LE') do |row|
         next unless row['item type'] == 'package'
         next if row['item url'].in?(Rails.application.config.app_config[:bandcamp][:skip_merch])
 
+        name = row['item name'].delete_prefix('[PREORDER] ').delete_prefix('[preorder] ').delete_suffix(' [PREORDER]')
+
+        sku = row['sku']
+        strip_variants.each do |reg|
+          match_data = sku.match(reg)
+          next unless match_data
+
+          sku = match_data[1]
+          break
+        end
         merch[row['item url']] = Merch.create_with(
-          name: row['item name'].delete_prefix('[PREORDER] '),
-          sku: row['sku'],
+          name: name,
+          sku: sku,
           bandcamp_url: row['item url'],
           artist_name: row['artist'],
           list_price: row['item price'].to_money(row['currency'])
-        ).find_or_create_by!(bandcamp_url: row['item url'])
+        ).find_or_create_by!(sku: sku, bandcamp_url: row['item url'])
       end
     end
     puts "Loaded #{merch.size} merch items"
@@ -253,6 +267,8 @@ namespace :bandcamp do
                                 item_url: row['item url'],
                                 product_id: merch.id,
                                 product_type: 'Merch',
+                                sku: row['sku'],
+                                option: row['option'],
                                 subtotal_amount_cents: subtotal.cents,
                                 subtotal_amount_currency: subtotal.currency.iso_code,
                                 net_revenue_amount_cents: net.cents,

@@ -1,0 +1,52 @@
+section.section
+  h1.is-size-2
+    code = @merch.sku
+  h2.is-size-3
+    span = @merch.name
+  h3.is-size-4 = @merch.artist_name
+
+  p = "List price: #{@merch.list_price.format}"
+
+  a href=@merch.bandcamp_url
+    = image_tag("bandcamp-button-square-green/bandcamp-button-square-green-64.png")
+
+  / a.button href=edit_merch_path(@merch)
+  /   span Edit
+
+- if admin?
+  section.section
+    h1.is-size-2 Orders
+
+    = render_pagination(@sales)
+
+    table.table
+      thead
+        tr
+          th Purchase Date
+          th Transaction
+          th Option
+          th Subtotal
+          th Shipped
+      tbody
+        - @sales.each do |sale|
+          tr
+            td = localized_date(sale.purchased_at)
+            td
+              code = sale.bandcamp_transaction_id
+            td
+              code = sale.sku
+              - if sale.option
+                br
+                span = sale.option
+            td = sale.subtotal_amount.format
+
+            - if sale.merch_fulfillment
+              td = localized_date(sale.merch_fulfillment)
+            - elsif sale.overdue?
+              td.is-danger = "Pending"
+              / TODO: link to fulfill
+            - else
+              td.is-warning = "Pending"
+              / TODO: link to fulfill
+
+    = render_pagination(@sales)

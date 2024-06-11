@@ -31,7 +31,7 @@ FactoryBot.define do
     name { "#{release.name.upcase} #{full_type}" }
     artist_name { release.artist_name }
     sku { "#{type}-#{release.catalog_number.take(3)}-#{Faker::Number.number(digits: 3)}" }
-    list_price { ['T' => 23.33, 'C' => 23.33, 'P' => 9.99][type].to_money }
+    list_price { ['T' => 23.33, 'C' => 23.33, 'P' => 6.66][type].to_money }
     bandcamp_url do
       [
         "https://#{FactoryUtils.sanitize_for_url(artist_name)}.bandcamp.com",

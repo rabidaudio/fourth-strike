@@ -52,4 +52,11 @@ class BandcampSale < ApplicationRecord
   def payout_amounts
     product.payout_amounts(net_revenue_amount)
   end
+
+  def overdue?
+    return false unless product_type == 'Merch'
+    return false if merch_fulfillment.present?
+
+    purchased_at < 1.week.ago
+  end
 end
