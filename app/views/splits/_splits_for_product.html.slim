@@ -16,6 +16,9 @@
         tbody
           - product.splits.each do |split|
             tr
-              td = "#{split.payee.name} / #{split.payee.fsn}"
+              td
+                span = split.payee.name
+                = ' / '
+                a href=payee_path(split.payee) = split.payee.fsn
               td = "#{split.value}"
               td = "(#{split.to_percentage_string})"

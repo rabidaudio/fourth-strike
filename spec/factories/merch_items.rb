@@ -10,14 +10,15 @@
 #  list_price_cents    :integer          default(0), not null
 #  list_price_currency :string           default("USD"), not null
 #  name                :string           not null
+#  private             :boolean          default(FALSE), not null
 #  sku                 :string           not null
+#  variants            :string           default("[]"), not null
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #
 # Indexes
 #
-#  index_merch_items_on_bandcamp_url  (bandcamp_url) UNIQUE
-#  index_merch_items_on_sku           (sku) UNIQUE
+#  index_merch_items_on_bandcamp_url_and_sku  (bandcamp_url,sku) UNIQUE
 #
 FactoryBot.define do
   factory :merch do

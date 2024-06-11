@@ -119,43 +119,38 @@ namespace :bandcamp do
     end
   end
 
-  desc 'Loads Merch items by looking at items sold from sale report'
+  desc 'Loads merch items from a hand-crafted report'
   task :load_merch_items => :environment do
     require 'csv'
 
-    path = Rails.root.glob('exports/*_bandcamp_raw_data_Fourth-Strike-Records.csv').first
-    raise StandardError, 'Report not found' if path.nil?
+    path = Rails.root.join('exports/Bandcamp Merch Items - data.csv')
 
-    merch = {}
-    strip_variants = Rails.application.config.app_config[:bandcamp][:merch_skus][:strip_variants].map do |v|
-      Regexp.new(v)
-    end
-
+    merch_count = 0
     ActiveRecord::Base.transaction do
-      CSV.foreach(path, headers: true, liberal_parsing: true, encoding: 'UTF-16LE') do |row|
-        next unless row['item type'] == 'package'
-        next if row['item url'].in?(Rails.application.config.app_config[:bandcamp][:skip_merch])
-
-        name = row['item name'].delete_prefix('[PREORDER] ').delete_prefix('[preorder] ').delete_suffix(' [PREORDER]')
+      CSV.foreach(path, headers: true) do |row|
+        # name,url,sku,artist_name,list_price,private,variants
 
         sku = row['sku']
-        strip_variants.each do |reg|
-          match_data = sku.match(reg)
-          next unless match_data
-
-          sku = match_data[1]
-          break
+        if Rails.application.config.app_config[:bandcamp][:merch_sku_remaps].key?(sku)
+          sku = Rails.application.config.app_config[:bandcamp][:merch_sku_remaps][sku]
         end
-        merch[row['item url']] = Merch.create_with(
-          name: name,
-          sku: sku,
-          bandcamp_url: row['item url'],
-          artist_name: row['artist'],
-          list_price: row['item price'].to_money(row['currency'])
-        ).find_or_create_by!(sku: sku, bandcamp_url: row['item url'])
+
+        list_price = row['list_price'].to_money('USD')
+        Merch.upsert({
+                       bandcamp_url: row['url'],
+                       name: row['name'],
+                       artist_name: row['artist_name'],
+                       sku: sku,
+                       variants: JSON.parse(row['variants']),
+                       private: row['private'] == 'TRUE',
+                       list_price_cents: list_price.cents,
+                       list_price_currency: list_price.currency.iso_code
+                     }, unique_by: [:bandcamp_url, :sku])
+
+        merch_count += 1
       end
     end
-    puts "Loaded #{merch.size} merch items"
+    puts("Fetched #{merch_count} merch items")
   end
 
   desc 'Loads Bandcamp sale data from their raw data report'
@@ -250,12 +245,22 @@ namespace :bandcamp do
           # skus don't line up exactly with master doc
           # tax sometimes collected
 
-          merch = Merch.find_by(bandcamp_url: row['item url'])
+          sku = row['sku']
+          if Rails.application.config.app_config[:bandcamp][:merch_sku_remaps].key?(sku)
+            sku = Rails.application.config.app_config[:bandcamp][:merch_sku_remaps][sku]
+          end
+
+          merch = Merch.where(bandcamp_url: row['item url'])
+
+          merch = Merch.where(bandcamp_url: row['item url'], sku: sku) if merch.count > 1
+
+          merch = merch.first
           if merch.nil?
             if row['item url'].in?(Rails.application.config.app_config[:bandcamp][:skip_merch])
               puts("skipping #{row['item url']}")
               next
             end
+
             raise StandardError, "Merch not found: #{row['sku']} - #{row['item name']}"
           end
 

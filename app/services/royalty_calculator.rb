@@ -22,7 +22,7 @@ class RoyaltyCalculator
   # These are taken out before any royalties are paid.
   def upfront_costs
     # TODO: should we really only take upfront costs out of album sales?
-    return 0.to_money if @product.is_a?(Track)
+    return 0.to_money if @product.is_a?(Track) || @product.is_a?(Merch) # TODO
 
     @product.production_expenses(from: @start_at, to: @end_at) if @product.is_a?(Album)
     # TODO: remove product and fulfillment costs for merch

@@ -58,14 +58,16 @@ rake bandcamp:load_releases fetch_credits=true
 rake bandcamp:load_merch_items
 # Attach ISRC/UPC data to albums and tracks, adding any tracks that were removed from Bandcamp as hidden tracks
 rake distrokid:import_isrcs
-# Load contributor splits from master sheet
-rake master_sheet:load_splits
+# Load contributor splits from home sheet
+rake home_sheet:load_splits
 # Load sales data from bandcamp
 rake bandcamp:load_report
 # Load sales data from DistroKid
 rake distrokid:load_report
 # Load rendered services
-rake master_sheet:load_rendered_services
+rake home_sheet:load_rendered_services
+# Load patreon sales
+# Load internal merch orders
 
 
 # Grant appropriate users admin access

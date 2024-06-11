@@ -6,6 +6,30 @@ services_rendered:
 payout_at: 42.00 # USD
 bandcamp:
   url: fourth-strike.bandcamp.com
+  # Some bandcamp skus don't match the home sheet
+  merch_sku_remaps:
+    BTM-BHHS: T-BHH # "BRUSHED HIS HAND" SWEATSHIRT
+    BTM-ISNE: M-INE # IT'S NOT EASY - COLOR-CHANGING MUG
+    BTM-KFTP: T-KFP # KILLER FOR THE PIES TEE
+    BTM-TDOS: T-DST # THE DEATHS OF SEBASTIAN TELEPHONE TEE
+    BTM-TDOS-1: P-DST # The Deaths of Sebastian Telephone [12x12]
+    CON-001: C-CON-001 # CASSETTE, CON-001 [RESTOCK]
+    FSR-DB22-Tee: T-DB22 # COYOTE WALL X THE GARAGES DB 2022 UNISEX TEE
+    P-LPS: P-POSTCS # GARAGES LIVE POSTCARD SET
+    P-UND: P-UNDG # UNDERGROUND POSTER
+    T-GCR: T-GEC # gender chores - rainbow logo tee
+    T-GVD-FIT: T-GVD # THE GARAGES VS DESERT BUS - FITTED TEE
+    T-GVD-UNI: T-GVD # THE GARAGES VS DESERT BUS - UNISEX TEE
+    TG-CWAT: C-WTB-001 # CASSETTE, "WE ARE THE BAND"
+    TG-D8T: T-DEI-80 # DEICIDE - 80s TEE
+    TG-KTG8: T-KTG-80 # KILL THE GODS - 80s TEE
+    TG-LDBF: T-LADB # LIVE @ DESERT BUS FOR HOPE - TEE
+    TG-NF-PCN0: C-NEO-001 # CASSETTE, NEO-001
+    TG-PCBO: C-BOB-001 # CASSETTE, "BLATTLE OF THE BLANDS"
+    TG-SGLT: T-SGL # SEATTLE GARAGES LOGO TEE
+    TG-WATB: T-WTB # WE ARE THE BAND TEE
+
+
   # Albums that we are explicitly ignoring
   skip_releases:
     - https://fourth-strike.bandcamp.com/album/fourth-strike-song-jam-2023
@@ -27,6 +51,9 @@ bandcamp:
     - "https://sigfigscollective.bandcamp.com/merch/somnolent-hoodie"
     - "https://sigfigscollective.bandcamp.com/merch/sfc-anniversary-tee"
     - "https://sigfigscollective.bandcamp.com/merch/sfc-sticker-collection-1"
+    # TODO: deleted?
+    - https://fourth-strike.bandcamp.com/merch/fourth-strike-sticker
+
   # Manually fix Bandcamp sale that wasn't in USD. There's only one, from Sept 2020, when the conversion rate was 1USD = 0.7790GBP
   currency_corrections:
     '1685538022': 0.7790
@@ -65,7 +92,7 @@ distrokid:
   skip:
     artists:
       - Sig Figs Collective
-master_sheet:
+home_sheet:
   payees:
     charities:
       - FS-048 # the 343
@@ -79,7 +106,7 @@ master_sheet:
       "https://thegarages.bandcamp.com/album/the-garages-vs-desert-bus-2021":
         'FS-032': 1
     album_mappings:
-      # When the album names in the master sheet don't match by name
+      # When the album names in the home sheet don't match by name
       'the mike townsend trilogy': https://thegarages.bandcamp.com/album/the-mike-townsend-quintilogy
       'THE GARAGES 101': https://thegarages.bandcamp.com/album/the-garages-101
       'STRIKE TWO!!': https://fourth-strike.bandcamp.com/album/strike-two
@@ -163,3 +190,21 @@ master_sheet:
       - QZNWS2114824
       - QZNWS2114825
       - QZNWS2114826
+    skip_merch:
+      # sig figs
+      - T-SFC
+      - T-SFP
+      - T-STM
+      - T-SOM
+      - S-SFSP1
+      - T-SFCA
+      # L@L
+      - FSR-001
+      - C-TPH-001
+      # TODO: Bandcamp doesn't have this item
+      - V-DSP
+      # Unsure what these are TODO
+      - C-PSK-001
+      - T-RVS
+      - T-PUT
+      - T-UNS

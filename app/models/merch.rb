@@ -10,14 +10,15 @@
 #  list_price_cents    :integer          default(0), not null
 #  list_price_currency :string           default("USD"), not null
 #  name                :string           not null
+#  private             :boolean          default(FALSE), not null
 #  sku                 :string           not null
+#  variants            :string           default("[]"), not null
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #
 # Indexes
 #
-#  index_merch_items_on_bandcamp_url  (bandcamp_url) UNIQUE
-#  index_merch_items_on_sku           (sku) UNIQUE
+#  index_merch_items_on_bandcamp_url_and_sku  (bandcamp_url,sku) UNIQUE
 #
 
 # A merch item is a physical product such as a t-shit or cassette
@@ -31,7 +32,7 @@
 # C: CD or cassette
 # V: vinyl
 # T: T-shirt or hoodie
-# H: hoodie
+# H: patch or hoodie
 # M: mug
 # B: badge
 # S: sticker
@@ -42,12 +43,19 @@
 # Project is an indicator of which, usually connected to an album sku/catalog number.
 # List price is the price on bandcamp, which is not necessarily what the user paid
 # due to discounts, the patreon, additional contributions, etc.
+# Variants is a JSON array of information about the variants available (e.g. size, color, etc).
+# NOTE: for physical versions of albums on Bancamp, such as cassettes, the url for the merch is the
+# album itself.
 class Merch < ApplicationRecord
   include Product
+  include JsonStringColumn
 
   self.table_name = 'merch_items'
 
   monetize :list_price_cents
 
+  json_string_attributes :variants
+
   validates :list_price_currency, inclusion: { in: Money.default_currency.iso_code }
+  validates :artist_name, inclusion: { in: -> { Album.distinct.pluck(:artist_name) }, allow_nil: true }
 end

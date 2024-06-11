@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_10_175332) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_11_153500) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -117,8 +117,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_10_175332) do
     t.string "list_price_currency", default: "USD", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["bandcamp_url"], name: "index_merch_items_on_bandcamp_url", unique: true
-    t.index ["sku"], name: "index_merch_items_on_sku", unique: true
+    t.string "variants", default: "[]", null: false
+    t.boolean "private", default: false, null: false
+    t.index ["bandcamp_url", "sku"], name: "index_merch_items_on_bandcamp_url_and_sku", unique: true
   end
 
   create_table "payees", force: :cascade do |t|
