@@ -15,20 +15,25 @@
 #  variants            :string           default("[]"), not null
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  album_id            :integer
 #
 # Indexes
 #
+#  index_merch_items_on_album_id              (album_id)
 #  index_merch_items_on_bandcamp_url_and_sku  (bandcamp_url,sku) UNIQUE
+#
+# Foreign Keys
+#
+#  album_id  (album_id => albums.id)
 #
 FactoryBot.define do
   factory :merch do
     transient do
       type { ['T', 'C', 'P'].sample }
       full_type { { 'T' => 'T-SHIRT', 'C' => 'CASSETTE', 'P' => 'POSTER' } }
-
-      release { association(:album) }
     end
 
+    album
     name { "#{release.name.upcase} #{full_type}" }
     artist_name { release.artist_name }
     sku { "#{type}-#{release.catalog_number.take(3)}-#{Faker::Number.number(digits: 3)}" }

@@ -135,11 +135,13 @@ namespace :bandcamp do
           sku = Rails.application.config.app_config[:bandcamp][:merch_sku_remaps][sku]
         end
 
+        album = Album.find_by!(name: row['album_name']) if row['album_name'].present?
         list_price = row['list_price'].to_money('USD')
         Merch.upsert({
                        bandcamp_url: row['url'],
                        name: row['name'],
                        artist_name: row['artist_name'],
+                       album_id: album&.id,
                        sku: sku,
                        variants: JSON.parse(row['variants']),
                        private: row['private'] == 'TRUE',

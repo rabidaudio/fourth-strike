@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_11_153500) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_11_194649) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -119,6 +119,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_11_153500) do
     t.datetime "updated_at", null: false
     t.string "variants", default: "[]", null: false
     t.boolean "private", default: false, null: false
+    t.integer "album_id"
+    t.index ["album_id"], name: "index_merch_items_on_album_id"
     t.index ["bandcamp_url", "sku"], name: "index_merch_items_on_bandcamp_url_and_sku", unique: true
   end
 
@@ -194,6 +196,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_11_153500) do
   add_foreign_key "artists", "payees"
   add_foreign_key "merch_fulfillments", "admins", column: "fulfilled_by_id"
   add_foreign_key "merch_fulfillments", "bandcamp_sales"
+  add_foreign_key "merch_items", "albums"
   add_foreign_key "payouts", "payees"
   add_foreign_key "rendered_services", "albums"
   add_foreign_key "rendered_services", "payees"

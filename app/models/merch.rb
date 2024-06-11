@@ -15,16 +15,26 @@
 #  variants            :string           default("[]"), not null
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  album_id            :integer
 #
 # Indexes
 #
+#  index_merch_items_on_album_id              (album_id)
 #  index_merch_items_on_bandcamp_url_and_sku  (bandcamp_url,sku) UNIQUE
+#
+# Foreign Keys
+#
+#  album_id  (album_id => albums.id)
 #
 
 # A merch item is a physical product such as a t-shit or cassette
 # which is sold via Bandcamp. Unlike digital sales, merch sales
 # have to be fullfilled by indicating the cost of the product
 # and shipping.
+#
+# Merch can optionally be associated with an album. This is for tracking purposes only;
+# merch has its own splits, like tracks do (although in this case they will likely match
+# the album splits).
 #
 # Like albums and tracks, merch is identified on Bandcamp using
 # its url. But all merch items also have a SKU. This is typically of the form
@@ -51,6 +61,8 @@ class Merch < ApplicationRecord
   include JsonStringColumn
 
   self.table_name = 'merch_items'
+
+  belongs_to :album
 
   monetize :list_price_cents
 

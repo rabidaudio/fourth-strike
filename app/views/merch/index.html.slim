@@ -24,9 +24,13 @@ section.section
             code = merch.sku
           td
             a href=merch_path(merch) = merch.name
-            - if merch.artist_name
+            - if merch.album
               br
-              a href=merch_index_path(artist: merch.artist_name) = merch.artist_name
+              span.is-size-7
+                a href=album_path(merch.album) = merch.album.name
+                - if merch.artist_name
+                  span = ' by '
+                  a href=merch_index_path(artist: merch.artist_name) = merch.artist_name
           td = merch.list_price.format
 
   = render_pagination(@merch)
