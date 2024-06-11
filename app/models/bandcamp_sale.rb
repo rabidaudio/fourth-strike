@@ -46,6 +46,8 @@ class BandcampSale < ApplicationRecord
 
   has_one :merch_fulfillment, required: false, dependent: :restrict_with_exception
 
+  scope :unfulfilled_merch, -> { where(product_type: 'Merch').where.missing(:merch_fulfillment) }
+
   # Require sales to be in the operating currency
   validates :subtotal_amount_currency, :net_revenue_amount_currency, inclusion: { in: Money.default_currency.iso_code }
 

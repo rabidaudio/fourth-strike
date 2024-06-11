@@ -19,34 +19,6 @@ section.section
 
     = render_pagination(@sales)
 
-    table.table
-      thead
-        tr
-          th Purchase Date
-          th Transaction
-          th Option
-          th Subtotal
-          th Shipped
-      tbody
-        - @sales.each do |sale|
-          tr
-            td = localized_date(sale.purchased_at)
-            td
-              code = sale.bandcamp_transaction_id
-            td
-              code = sale.sku
-              - if sale.option
-                br
-                span = sale.option
-            td = sale.subtotal_amount.format
-
-            - if sale.merch_fulfillment
-              td = localized_date(sale.merch_fulfillment)
-            - elsif sale.overdue?
-              td.is-danger = "Pending"
-              / TODO: link to fulfill
-            - else
-              td.is-warning = "Pending"
-              / TODO: link to fulfill
+    = render 'orders_table', sales: @sales
 
     = render_pagination(@sales)

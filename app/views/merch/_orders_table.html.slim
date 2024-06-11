@@ -1,0 +1,26 @@
+table.table
+  thead
+    tr
+      th Purchase Date
+      th Transaction
+      th Option
+      th Subtotal
+      th Shipped
+  tbody
+    - sales.each do |sale|
+      tr
+        td = localized_date(sale.purchased_at)
+        td
+          code = sale.bandcamp_transaction_id
+        td
+          code = sale.sku
+          - if sale.option
+            br
+            span = sale.option
+        td = sale.subtotal_amount.format
+
+        - if sale.merch_fulfillment
+          td.is-success = localized_date(sale.merch_fulfillment.shipped_on)
+        - else
+          td class=(sale.overdue? ? 'is-danger' : 'is-warning')
+            a href=new_merch_fulfillment_path(sale_id: sale.id) Pending

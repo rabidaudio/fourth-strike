@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
 
   resources :artists, :payees, :albums, :tracks
-  # get '/merch', to: 'merch#index', as: 'merch_index'
+  resources :merch_fulfillments, path: 'merch/fulfillment'
   resources :merch
   resources :rendered_services, path: 'services_rendered'
 

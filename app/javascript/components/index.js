@@ -3,11 +3,13 @@ import { createApp } from 'vue'
 import PayeeSearch from './PayeeSearch.vue'
 import EditSplits from './EditSplits.vue'
 import RenderedServiceForm from './RenderedServiceForm.vue'
+import MoneyField from './MoneyField.vue'
 
 const Components = {
   PayeeSearch,
   EditSplits,
-  RenderedServiceForm
+  RenderedServiceForm,
+  MoneyField
 }
 
 window.addEventListener('turbo:load', () => {
