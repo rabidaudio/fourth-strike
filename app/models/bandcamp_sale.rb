@@ -47,13 +47,12 @@ class BandcampSale < ApplicationRecord
   has_one :merch_fulfillment, required: false, dependent: :restrict_with_exception
 
   scope :unfulfilled_merch, -> { where(product_type: 'Merch').where.missing(:merch_fulfillment) }
+  # If a merch order hasn't been fulfilled, don't include it in money to be paid in royalties, since
+  # we'll need those funds to fulfill the order
+  scope :payable, -> { where.not(id: BandcampSale.unfulfilled_merch) }
 
   # Require sales to be in the operating currency
   validates :subtotal_amount_currency, :net_revenue_amount_currency, inclusion: { in: Money.default_currency.iso_code }
-
-  def payout_amounts
-    product.payout_amounts(net_revenue_amount)
-  end
 
   def overdue?
     return false unless product_type == 'Merch'

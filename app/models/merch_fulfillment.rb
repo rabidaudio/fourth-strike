@@ -32,8 +32,9 @@
 # bandcamp fees, or transaction fees; only the cost of the product.
 # fulfilled_by_id is a pointer to the Admin who marked the product as shipped.
 class MerchFulfillment < ApplicationRecord
-  belongs_to :bandcamp_sale
+  include MonitizedSum
 
+  belongs_to :bandcamp_sale
   belongs_to :fulfilled_by, class_name: 'Admin'
 
   monetize :production_cost_cents

@@ -47,6 +47,7 @@ class Album < ApplicationRecord
   monetize :bandcamp_price_cents
 
   has_many :tracks, dependent: :restrict_with_exception
+  has_many :merch_items, class_name: 'Merch', dependent: :restrict_with_exception
   has_many :rendered_services, dependent: :restrict_with_exception
 
   validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/, allow_nil: true }
@@ -55,7 +56,39 @@ class Album < ApplicationRecord
     where('upcs like ?', "%\"#{upc}\"%").first
   end
 
-  def production_expenses(from: Time.zone.at(0), to: Time.zone.now)
-    rendered_services.where('rendered_at >= ? and rendered_at < ?', from, to).sum_monetized(:compensation)
+  def digital_sale_revenue
+    RoyaltyCalculator.new(self).revenue
+  end
+
+  def streaming_revenue
+    tracks.map { |t| RoyaltyCalculator.new(t).revenue }.sum
+  end
+
+  def merch_revenue
+    merch_items.map { |t| RoyaltyCalculator.new(t).revenue }.sum
+  end
+
+  def total_revenue
+    digital_sale_revenue + streaming_revenue + merch_revenue
+  end
+
+  def expenses
+    RoyaltyCalculator.new(self).upfront_costs
+  end
+
+  def royalties
+    RoyaltyCalculator.new(self).total_royalties_owed +
+      tracks.map { |t| RoyaltyCalculator.new(t).total_royalties_owed }.sum +
+      merch_items.map { |t| RoyaltyCalculator.new(t).total_royalties_owed }.sum
+  end
+
+  def profit
+    RoyaltyCalculator.new(self).organization_income +
+      tracks.map { |t| RoyaltyCalculator.new(t).organization_income }.sum +
+      merch_items.map { |t| RoyaltyCalculator.new(t).organization_income }.sum
+  end
+
+  def negative?
+    expenses > total_revenue
   end
 end

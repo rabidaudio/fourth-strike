@@ -152,6 +152,45 @@ RSpec.describe 'Payout calculations' do
         end
       end
     end
+
+    describe 'merch' do
+      let(:fame_cassette) do
+        create(:merch, :cassette, :with_splits, album: the_fame, list_price: 25.00.to_money, distribution: {
+                 gaga => 1
+               })
+      end
+
+      let!(:merch_orders) do
+        create_list(:bandcamp_sale, 100, :merch, product: fame_cassette, net_revenue_amount: 21.10.to_money)
+      end
+
+      context 'fulfilled' do
+        before do
+          merch_orders.each do |order|
+            create(:merch_fulfillment, bandcamp_sale: order, production_cost: 5.50.to_money)
+          end
+        end
+
+        it 'should compute the royalties owed for the merch, removing the cost of goods' do
+          expect(described_class.new(fame_cassette).cost_of_goods).to eq(550.to_money)
+
+          expect(described_class.new(fame_cassette).bandcamp_revenue).to eq (
+            (100 * 21.10) - # merch sales
+            (100 * 5.50) # cost of goods
+          ).to_money
+
+          expect(described_class.new(fame_cassette).royalties_owed_to(gaga)).to be_within(0.01.to_money).of(
+            (1560.0 * 0.85).to_money
+          )
+        end
+      end
+
+      context 'unfulfilled' do
+        it 'should not pay out any royalties for unfulfulled orders' do
+          expect(described_class.new(fame_cassette).bandcamp_revenue).to eq 0.to_money
+        end
+      end
+    end
   end
 
   describe PayoutCalculator do

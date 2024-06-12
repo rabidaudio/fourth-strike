@@ -10,7 +10,7 @@
 class RoyaltyCalculator
   prepend CalculatorCache
 
-  # cache_calculations :upfront_costs, :bandcamp_revenue, :distrokid_revenue, :payout_amounts
+  cache_calculations :upfront_costs, :cost_of_goods, :bandcamp_revenue, :distrokid_revenue, :payout_amounts
 
   def initialize(product, from: Time.zone.at(0), to: Time.zone.now)
     @product = product
@@ -22,22 +22,32 @@ class RoyaltyCalculator
   # These are taken out before any royalties are paid.
   def upfront_costs
     # TODO: should we really only take upfront costs out of album sales?
-    return 0.to_money if @product.is_a?(Track) || @product.is_a?(Merch) # TODO
+    return 0.to_money if @product.is_a?(Track) || @product.is_a?(Merch)
 
-    @product.production_expenses(from: @start_at, to: @end_at) if @product.is_a?(Album)
-    # TODO: remove product and fulfillment costs for merch
+    production_expenses if @product.is_a?(Album)
+  end
+
+  # How much did it cost to produce the physical item in question
+  def cost_of_goods
+    return 0.to_money unless @product.is_a?(Merch)
+
+    MerchFulfillment.where(bandcamp_sale_id: bandcamp_sales).sum_monetized(:production_cost)
   end
 
   # Revenue from bandcamp digial sales and merch items, excluding Bandcamp and payment processor fees
   def bandcamp_revenue
-    bandcamp_sales.sum_monetized(:net_revenue_amount)
+    bandcamp_sales.sum_monetized(:net_revenue_amount) - cost_of_goods
   end
 
   # Distrokid streaming revenue
   def distrokid_revenue
-    # return 0.to_money if @product.is_a?(Merch)
+    return 0.to_money if @product.is_a?(Merch)
 
     distrokid_sales.sum(:earnings_usd).to_money('USD')
+  end
+
+  def revenue
+    bandcamp_revenue + distrokid_revenue
   end
 
   # The total income to be divided between the organization and payees
@@ -78,8 +88,13 @@ class RoyaltyCalculator
 
   private
 
+  def production_expenses
+    @product.rendered_services.where('rendered_at >= ? and rendered_at < ?', @start_at,
+                                     @end_at).sum_monetized(:compensation)
+  end
+
   def bandcamp_sales
-    @product.bandcamp_sales.where('purchased_at >= ? and purchased_at < ?', @start_at, @end_at)
+    @product.bandcamp_sales.payable.where('purchased_at >= ? and purchased_at < ?', @start_at, @end_at)
   end
 
   def distrokid_sales

@@ -16,7 +16,7 @@
 #
 FactoryBot.define do
   factory :admin do
-    discord_handle { Faker::Internet.username }
+    discord_handle { [Faker::Internet.username, Faker::Number.number(digits: 4)].join('_') }
     granted_at { Time.zone.now }
   end
 end

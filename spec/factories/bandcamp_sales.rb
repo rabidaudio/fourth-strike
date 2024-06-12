@@ -36,6 +36,7 @@ FactoryBot.define do
     quantity { 1 }
     bandcamp_transaction_id { Faker::Number.number(digits: 10).to_s }
     paypal_transaction_id { nil }
+    # simulate bandcamp cut and transaction fee
     net_revenue_amount { (subtotal_amount * 0.85) - 0.15.to_money }
     item_url { product.bandcamp_url }
     purchased_at { Faker::Date.backward(days: 30) }
@@ -62,6 +63,8 @@ FactoryBot.define do
 
     trait :fulfilled do
       merch
+
+      subtotal_amount { merch.list_price }
 
       after_create do |sale|
         create(:merch_fulfillment, bandcamp_sale: sale)

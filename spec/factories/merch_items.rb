@@ -34,9 +34,9 @@ FactoryBot.define do
     end
 
     album
-    name { "#{release.name.upcase} #{full_type}" }
-    artist_name { release.artist_name }
-    sku { "#{type}-#{release.catalog_number.take(3)}-#{Faker::Number.number(digits: 3)}" }
+    name { "#{album.name.upcase} #{full_type}" }
+    artist_name { album.artist_name }
+    sku { "#{type}-#{album.catalog_number[..2]}-#{Faker::Number.number(digits: 3)}" }
     list_price { ['T' => 23.33, 'C' => 23.33, 'P' => 6.66][type].to_money }
     bandcamp_url do
       [
@@ -44,6 +44,32 @@ FactoryBot.define do
         'merch',
         "#{FactoryUtils.sanitize_for_url(name)}-#{Faker::Number.number(digits: 4)}"
       ].join('/')
+    end
+
+    trait :tshirt do
+      type { 'T' }
+    end
+
+    trait :cassette do
+      type { 'C' }
+    end
+
+    trait :poster do
+      type { 'P' }
+    end
+
+    trait :with_splits do
+      transient do
+        distribution do
+          { association(:payee) => 1, association(:payee) => 1 }
+        end
+      end
+
+      splits do
+        distribution.map do |payee, value|
+          association(:split, payee: payee, value: value, product: instance)
+        end
+      end
     end
   end
 end
