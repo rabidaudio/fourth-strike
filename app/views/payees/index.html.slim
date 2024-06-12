@@ -14,4 +14,8 @@ h1.is-size-2 Payees
           i.ri-search-line aria-hidden="true"
 
 section.section id="search_results"
-  = render 'table'
+  = render_pagination(@payees)
+
+  = render 'table', payees: @payees
+
+  = render_pagination(@payees)

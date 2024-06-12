@@ -38,6 +38,8 @@ class Payee < ApplicationRecord
     payee.fsn ||= Payee.next_fsn
   end
 
+  scope :missing_payment_info, -> { where(paypal_account: nil, opted_out_of_royalties: false) }
+
   scope :search, lambda { |keyword|
     search_value = "%#{keyword.strip.downcase}%"
     left_outer_joins(:artists).where(
@@ -49,6 +51,10 @@ class Payee < ApplicationRecord
       *6.times.map { search_value }
     )
   }
+
+  def self.due_for_payout
+    (current_scope || all).find_each.select(&:due_for_payout?)
+  end
 
   def albums
     Album.joins(:splits).where(splits: { payee: self }).distinct
@@ -78,6 +84,10 @@ class Payee < ApplicationRecord
 
   def opted_out_of_royalties?
     opted_out_of_royalties
+  end
+
+  def due_for_payout?
+    balance > Payout.payout_at
   end
 
   def royalties_owed_for(product)

@@ -3,6 +3,22 @@ section.section
 
   = render 'merch/unfulfilled'
 
+  - due_for_payout = Payee.due_for_payout
+  - unless due_for_payout.empty?
+    article.message.is-warning
+      .message-header
+        span = "#{due_for_payout.count} payees are due to be paid out"
+      .message-body
+        = render 'payees/table', payees: due_for_payout
+
+
+  - unless Payee.missing_payment_info.empty?
+    article.message.is-warning
+      .message-header
+        span = "#{Payee.missing_payment_info.count} payees are missing payment info"
+      .message-body
+        = render 'payees/table', payees: Payee.missing_payment_info
+
   - missing_splits = [Album, Track, Merch].map(&:without_splits).map(&:count).sum
   - if missing_splits > 0
     article.message.is-warning

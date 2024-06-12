@@ -44,7 +44,7 @@ section.section
         - balance = @payee.balance
         - if balance.negative?
           td.is-danger = balance.format
-        - elsif balance > Payout.payout_at
+        - elsif @payee.due_for_payout?
           td.is-warning = balance.format
         - else
           td = balance.format

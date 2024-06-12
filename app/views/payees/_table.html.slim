@@ -1,5 +1,3 @@
-= render_pagination(@payees)
-
 table.table
   thead
     tr
@@ -9,7 +7,7 @@ table.table
       th Balance
       th
   tbody
-    - @payees.each do |payee|
+    - payees.each do |payee|
       tr
         td
           a href=payee_path(payee) = payee.fsn
@@ -27,10 +25,9 @@ table.table
             = ' '
             span.tag.is-normal.is-success Supporter
 
-        td = payee.paypal_account
+        td
+          span data-controller="spoiler" = payee.paypal_account
         td
           = payee.balance.format
         td
           a href=edit_payee_path(payee) Edit
-
-= render_pagination(@payees)

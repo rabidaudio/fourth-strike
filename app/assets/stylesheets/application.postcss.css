@@ -51,3 +51,9 @@ a {
   background-image: url("bg.jpg");
   min-height: 100vh;
 }
+
+.spoiler-hidden {
+  color: var(--bulma-text);
+  background: var(--bulma-text);
+  cursor: pointer;
+}
