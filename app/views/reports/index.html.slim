@@ -1,29 +1,40 @@
 section.section
+  
+  .columns
+    .column
+      h3.is-size-4 Streaming Volume
+
+      div vue-component="StreamingChart" props={data: @streaming_data }.to_json
+
+    .column
+      h3.is-size-4 Sales
+
+      div vue-component="SaleChart" props={data: @sale_data }.to_json
+
+section.section
   h2.is-size-3 Needs Attention
 
   = render 'merch/unfulfilled'
 
-  - due_for_payout = Payee.due_for_payout
-  - unless due_for_payout.empty?
+  - unless @due_for_payout.empty?
     article.message.is-warning
       .message-header
-        span = "#{due_for_payout.count} payees are due to be paid out"
+        span = "#{@due_for_payout.count} payees are due to be paid out"
       .message-body
-        = render 'payees/table', payees: due_for_payout
+        = render 'payees/table', payees: @due_for_payout
 
 
-  - unless Payee.missing_payment_info.empty?
+  - unless @missing_payee_info.empty?
     article.message.is-warning
       .message-header
-        span = "#{Payee.missing_payment_info.count} payees are missing payment info"
+        span = "#{@missing_payee_info.count} payees are missing payment info"
       .message-body
-        = render 'payees/table', payees: Payee.missing_payment_info
+        = render 'payees/table', payees: @missing_payee_info
 
-  - missing_splits = [Album, Track, Merch].map(&:without_splits).map(&:count).sum
-  - if missing_splits > 0
+  - if @missing_splits > 0
     article.message.is-warning
       .message-header
-        span = "#{missing_splits} products are missing royalty split assignments"
+        span = "#{@missing_splits} products are missing royalty split assignments"
       .message-body
         .columns
           .column

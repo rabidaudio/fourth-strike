@@ -51,6 +51,16 @@ class BandcampSale < ApplicationRecord
   # we'll need those funds to fulfill the order
   scope :payable, -> { where.not(id: BandcampSale.unfulfilled_merch) }
 
+  scope :sales_by_month, lambda {
+    group(
+      "date(purchased_at, 'start of month')",
+      "CASE WHEN product_type = 'Merch' THEN 'physical' ELSE 'digital' END"
+    ).sum_monetized(:net_revenue_amount)
+      .group_by { |(date, _type), _v| date }
+      .transform_values(&:to_h)
+      .transform_values { |h| h.transform_keys(&:last) }
+  }
+
   # Require sales to be in the operating currency
   validates :subtotal_amount_currency, :net_revenue_amount_currency, inclusion: { in: Money.default_currency.iso_code }
 

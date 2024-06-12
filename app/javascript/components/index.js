@@ -4,12 +4,16 @@ import PayeeSearch from './PayeeSearch.vue'
 import EditSplits from './EditSplits.vue'
 import RenderedServiceForm from './RenderedServiceForm.vue'
 import MoneyField from './MoneyField.vue'
+import StreamingChart from './StreamingChart.vue'
+import SaleChart from './SaleChart.vue'
 
 const Components = {
   PayeeSearch,
   EditSplits,
   RenderedServiceForm,
-  MoneyField
+  MoneyField,
+  StreamingChart,
+  SaleChart
 }
 
 window.addEventListener('turbo:load', () => {

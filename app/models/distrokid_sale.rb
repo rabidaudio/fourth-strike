@@ -62,6 +62,8 @@ class DistrokidSale < ApplicationRecord
                             ])
                     }
 
+  scope :streams_per_month, -> { streaming.group(:sale_period).sum(:quantity) }
+
   validates :product_type,
             inclusion: { in: ['Album', 'Track'], message: '%{value} cannot be sold through Distrokid' }
 end

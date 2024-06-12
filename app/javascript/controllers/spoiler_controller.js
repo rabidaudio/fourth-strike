@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  connect() {
+  connect () {
     this.element.classList.add('spoiler-hidden')
     this.element.addEventListener('click', (e) => {
       e.preventDefault()
