@@ -16,11 +16,13 @@ class HomeSheetReport
   end
 
   def load_all!
-    ActiveRecord::Base.transaction do
-      load_payees!
-      load_album_splits!
-      load_track_splits!
-      load_merch_splits!
+    CalculatorCache::Manager.defer_recompute do
+      ActiveRecord::Base.transaction do
+        load_payees!
+        load_album_splits!
+        load_track_splits!
+        load_merch_splits!
+      end
     end
 
     close

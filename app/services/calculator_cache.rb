@@ -17,7 +17,18 @@ module CalculatorCache
 
     # Should we automatically recompute on write, or simply cache bust and lazy load on the next request
     def eager_recompute?
-      !Rails.env.test?
+      return false if Rails.env.test?
+
+      @eager_recompute = true if @eager_recompute.nil?
+      @eager_recompute
+    end
+
+    def defer_recompute
+      @eager_recompute = false
+      yield
+    ensure
+      recompute_all!
+      @eager_recompute = true
     end
 
     def calculator_cache_key(calc_class, *args, **kwargs)
