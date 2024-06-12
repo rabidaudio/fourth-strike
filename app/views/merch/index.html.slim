@@ -1,12 +1,6 @@
 h1.is-size-2 Merch
 
-- if BandcampSale.unfulfilled_merch.count > 0
-  article.message.is-warning
-    .message-header
-      span = "#{BandcampSale.unfulfilled_merch.count} merch orders are awaiting shipment"
-    .message-body
-      a.button href=merch_fulfillments_path View
-
+= render 'unfulfilled'
 
 section.section
   = render_pagination(@merch)

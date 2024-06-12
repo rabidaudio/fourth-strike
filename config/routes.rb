@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   resources :merch
   resources :rendered_services, path: 'services_rendered'
 
+  get '/reports', to: 'reports#index'
+
   scope path: '/products/:product_type/:product_id/splits' do
     get '/edit', to: 'splits#edit', as: 'edit_splits'
     post '/', to: 'splits#update', as: 'splits'

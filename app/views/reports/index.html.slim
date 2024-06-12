@@ -1,0 +1,55 @@
+section.section
+  h2.is-size-3 Needs Attention
+
+  = render 'merch/unfulfilled'
+
+  - missing_splits = [Album, Track, Merch].map(&:without_splits).map(&:count).sum
+  - if missing_splits > 0
+    article.message.is-warning
+      .message-header
+        span = "#{missing_splits} products are missing royalty split assignments"
+      .message-body
+        .columns
+          .column
+            table.table
+              thead
+                tr
+                  th Albums
+                  th
+              tbody
+                - Album.without_splits.order(release_date: :desc).each do |album|
+                  tr
+                    td
+                      a href=album_path(album) = album.name
+                      br
+                      span = "by #{album.artist_name}"
+                    td
+                      a href=edit_splits_path(product_type: 'Album', product_id: album.id) Edit
+          .column
+            table.table
+              thead
+                tr
+                  th Tracks
+                  th
+              tbody
+                - Track.without_splits.order_by_release_date_desc.each do |track|
+                  tr
+                    td
+                      a href=track_path(track) = track.name
+                      br
+                      span = "from #{track.album.name} by #{track.album.artist_name}"
+                    td
+                      a href=edit_splits_path(product_type: 'Track', product_id: track.id) Edit
+          .column
+            table.table
+              thead
+                tr
+                  th Merch
+                  th
+              tbody
+                - Merch.without_splits.order(id: :desc).each do |merch|
+                  tr
+                    td
+                      a href=merch_path(merch) = merch.name
+                    td
+                      a href=edit_splits_path(product_type: 'Merch', product_id: merch.id) Edit
