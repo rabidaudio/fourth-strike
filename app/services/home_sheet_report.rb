@@ -29,11 +29,12 @@ class HomeSheetReport
   end
 
   def load_payees!
-    # skip header and Fourth Strike / FS-000
-    xlsx.sheet('LOOKUP').column(2)[2..].each do |payee|
-      name, fsn = payee.split(' / ')[-2..]
+    # skip header
+    xlsx.sheet('LOOKUP').column(2)[1..].each do |payee|
+      name, fsn = HomeSheetReport.parse_payee(payee)
       payee = Payee.create_with(name: name).find_or_create_by!(fsn: fsn)
       payee.update!(is_charity: true) if fsn.in?(charities)
+      payee.update!(opted_out_of_royalties: true) if fsn == 'FS-000' # Organization, special case
     end
 
     # Add their paypal info
@@ -42,7 +43,6 @@ class HomeSheetReport
       next unless row[:paypal]
 
       _, fsn = HomeSheetReport.parse_payee(row[:name])
-      next if fsn == 'FS-000' # org TODO
 
       payee = Payee.find_by(fsn: fsn)
       raise StandardError, "Payee not found: #{row[:name]}" unless payee
@@ -128,11 +128,6 @@ class HomeSheetReport
       next if payee_name.blank?
 
       _name, fsn = HomeSheetReport.parse_payee(payee_name)
-      if fsn == 'FS-000' # org TODO
-        puts("Skipping #{product.name}: splits contains org")
-        payees = []
-        break
-      end
 
       payee = Payee.find_by(fsn: fsn)
       if payee.nil?

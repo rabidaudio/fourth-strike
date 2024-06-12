@@ -23,20 +23,33 @@ p
   a href=@album.bandcamp_url
     = image_tag("bandcamp-button-square-green/bandcamp-button-square-green-64.png")
 
-- if @album.tracks
-  h2.is-size-3 Track List
+.columns
+  - if @album.tracks
+    .column
+      h2.is-size-3 Track List
+      
+      table.table
+        tbody
+          - (admin? ? @album.tracks : @album.tracks.visible).in_album_order.each do |track|
+            tr
+              td
+                - if track.hidden?
+                  span.is-italic = "<hidden>"
+                - else 
+                  span = "#{track.track_number}."
+              td
+                a href=track_path(track.id) = track.name
   
-  table.table
-    tbody
-      - (admin? ? @album.tracks : @album.tracks.visible).in_album_order.each do |track|
-        tr
-          td
-            - if track.hidden?
-              span.is-italic = "<hidden>"
-            - else 
-              span = "#{track.track_number}."
-          td
-            a href=track_path(track.id) = track.name
+  - if admin? && @album.merch_items.present?
+    .column
+      h2.is-size-3 Merch
+      
+      table.table
+        tbody
+          - @album.merch_items.each do |merch|
+            tr
+              td
+                a href=merch_path(merch) = merch.name
 
 = render 'splits/splits_for_product', product: @album
 
@@ -67,8 +80,9 @@ p
               span.is-italic.is-size-7 = " *Not all merch orders fulfilled"
           td = @album.total_revenue.format
           td class=(@album.negative? ? 'is-warning' : '') = @album.expenses.format
-          / td = @album.royalties.format
-          td = @album.profit.format
+          - unless @album.splits.empty?
+            td = @album.royalties.format
+            td = @album.profit.format
 
   section.section
     h2.is-size-3 = "Expenses: #{@album.expenses.format}"

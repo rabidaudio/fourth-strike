@@ -1,24 +1,23 @@
 - if admin?
-  section.section
-    - if product.splits.empty?
-      div.notification.is-warning
-        p No splits defined!
+  - if product.splits.empty?
+    div.notification.is-warning
+      p No splits defined!
+  
+      a.button href=edit_splits_path(product_type: product.class.name.downcase, product_id: product.id) Add Splits
+
+  - else
+    h3.is-size-3 Splits
     
-        a.button href=edit_splits_path(product_type: product.class.name.downcase, product_id: product.id) Add Splits
+    .block
+      a.button href=edit_splits_path(product_type: product.class.name.downcase, product_id: product.id) Edit Splits
 
-    - else
-      h3.is-size-3 Splits
-      
-      .block
-        a.button href=edit_splits_path(product_type: product.class.name.downcase, product_id: product.id) Edit Splits
-
-      table.table
-        tbody
-          - product.splits.each do |split|
-            tr
-              td
-                span = split.payee.name
-                = ' / '
-                a href=payee_path(split.payee) = split.payee.fsn
-              td = "#{split.value}"
-              td = "(#{split.to_percentage_string})"
+    table.table
+      tbody
+        - product.splits.each do |split|
+          tr
+            td
+              span = split.payee.name
+              = ' / '
+              a href=payee_path(split.payee) = split.payee.fsn
+            td = "#{split.value}"
+            td = "(#{split.to_percentage_string})"

@@ -65,6 +65,8 @@ class Album < ApplicationRecord
   end
 
   def merch_revenue
+    return 0.to_money if merch_items.empty?
+
     merch_items.map { |t| RoyaltyCalculator.new(t).revenue }.sum
   end
 

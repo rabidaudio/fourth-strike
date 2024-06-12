@@ -79,7 +79,9 @@ class RoyaltyCalculator
   end
 
   def total_royalties_owed
-    payout_amounts[:in].values.sum || 0.to_money
+    return 0.to_money if payout_amounts[:in].empty?
+
+    payout_amounts[:in].values.sum
   end
 
   def royalties_owed_to(payee)

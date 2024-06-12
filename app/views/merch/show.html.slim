@@ -18,7 +18,7 @@ section.section
   = render 'splits/splits_for_product', product: @merch
 
   section.section
-    h1.is-size-2 Orders
+    h1.is-size-2 = "Orders (#{@sales.count})"
 
     = render_pagination(@sales)
 
