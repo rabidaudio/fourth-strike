@@ -6,7 +6,7 @@
 #
 #  id                  :integer          not null, primary key
 #  artist_name         :string
-#  bandcamp_url        :string           not null
+#  bandcamp_url        :string
 #  list_price_cents    :integer          default(0), not null
 #  list_price_currency :string           default("USD"), not null
 #  name                :string           not null

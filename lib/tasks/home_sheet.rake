@@ -6,6 +6,21 @@ namespace :home_sheet do
     HomeSheetReport.new(Rails.root.glob('exports/FOURTH STRIKE HOME SHEET*.xlsx').first).load_all!
   end
 
+  desc 'Load merch items that are not on Bandcamp'
+  task :load_merch_items => :environment do
+    Rails.application.config.app_config[:home_sheet][:merch].each do |merch_data|
+      list_price = merch_data.delete('list_price').to_money
+      album_name = merch_data.delete('album')
+      album = Album.find_by!(name: album_name) if album_name.present?
+
+      Merch.upsert(merch_data.merge({ # rubocop:disable Rails/SkipsModelValidations
+                                      album_id: album&.id,
+                                      list_price_cents: list_price.cents,
+                                      list_price_currency: list_price.currency.iso_code
+                                    }), unique_by: [:bandcamp_url, :sku])
+    end
+  end
+
   task :load_rendered_services => :environment do
     require 'csv'
 

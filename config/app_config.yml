@@ -28,8 +28,6 @@ bandcamp:
     TG-PCBO: C-BOB-001 # CASSETTE, "BLATTLE OF THE BLANDS"
     TG-SGLT: T-SGL # SEATTLE GARAGES LOGO TEE
     TG-WATB: T-WTB # WE ARE THE BAND TEE
-
-
   # Albums that we are explicitly ignoring
   skip_releases:
     - https://fourth-strike.bandcamp.com/album/fourth-strike-song-jam-2023
@@ -51,8 +49,6 @@ bandcamp:
     - "https://sigfigscollective.bandcamp.com/merch/somnolent-hoodie"
     - "https://sigfigscollective.bandcamp.com/merch/sfc-anniversary-tee"
     - "https://sigfigscollective.bandcamp.com/merch/sfc-sticker-collection-1"
-    # TODO: deleted?
-    - https://fourth-strike.bandcamp.com/merch/fourth-strike-sticker
 
   # Manually fix Bandcamp sale that wasn't in USD. There's only one, from Sept 2020, when the conversion rate was 1USD = 0.7790GBP
   currency_corrections:
@@ -201,9 +197,48 @@ home_sheet:
       # L@L
       - FSR-001
       - C-TPH-001
-      # TODO: Bandcamp doesn't have this item
-      - V-DSP
-      # Unsure what these are TODO
+      # Unsure what this is TODO
       - T-RVS
-      - T-PUT
-      - T-UNS
+  merch:
+    # deleted?
+    - name: FOURTH STRIKE STICKER
+      artist_name: Fourth Strike Records
+      bandcamp_url: https://fourth-strike.bandcamp.com/merch/fourth-strike-sticker
+      sku: FSR-FSS
+      list_price: '$1.11'
+      private: true
+      variants: []
+      album: null
+    # Sold via iam8bit
+    - name: DISCIPLINE Vinyl
+      artist_name: the garages
+      bandcamp_url: null
+      sku: V-DSP
+      list_price: '$46.98'
+      private: true
+      variants: []
+      album: DISCIPLINE
+    - name: CASSETTE - LIVE (1993)
+      artist_name: the garages
+      bandcamp_url: null
+      sku: C-L93-001
+      list_price: '$46.98'
+      private: true
+      variants: []
+      album: 'the garages: RIV'
+    - name: UNSTABLE - TEE
+      artist_name: the garages
+      bandcamp_url: null
+      sku: T-UNS
+      list_price: '$23.33'
+      private: true
+      variants: [] # TODO?
+      album: UNSTABLE
+    - name: Putrid Shark - TEE
+      artist_name: Putrid Shark
+      bandcamp_url: null
+      sku: T-PUT
+      list_price: '$23.33'
+      private: true
+      variants: [] # TODO? TRANS / CLASSIC / PUTRID
+      album: '#2'
