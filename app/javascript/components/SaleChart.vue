@@ -9,6 +9,7 @@
 
   const chartOptions = computed(() =>({
     responsive: true,
+    maintainAspectRatio: true,
     scales: {
       x: {
         title: {
@@ -37,12 +38,12 @@
 </script>
 
 <template>
-  <div class="tags has-addons">
-    <span class="tag" :class="{ 'is-primary': !isLog }" @click="isLog = false">Linear</span>
-    <span class="tag" :class="{ 'is-primary': isLog }" @click="isLog = true">Logarithmic</span>
-  </div>
   <Line
     :options="chartOptions"
     :data="chartData"
   />
+  <div class="tags has-addons">
+    <span class="tag" :class="{ 'is-primary': !isLog }" @click="isLog = false">Linear</span>
+    <span class="tag" :class="{ 'is-primary': isLog }" @click="isLog = true">Logarithmic</span>
+  </div>
 </template>

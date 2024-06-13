@@ -30,17 +30,17 @@
 
   const chartData = {
     labels: Object.keys(props.data),
-    datasets: [ { label: 'streams', data: Object.values(props.data) } ]
+    datasets: [ { label: 'Streams', data: Object.values(props.data) } ]
   }
 </script>
 
 <template>
-  <div class="tags has-addons">
-    <span class="tag" :class="{ 'is-primary': !isLog }" @click="isLog = false">Linear</span>
-    <span class="tag" :class="{ 'is-primary': isLog }" @click="isLog = true">Logarithmic</span>
-  </div>
   <Line
     :options="chartOptions"
     :data="chartData"
   />
+  <div class="tags has-addons">
+    <span class="tag" :class="{ 'is-primary': !isLog }" @click="isLog = false">Linear</span>
+    <span class="tag" :class="{ 'is-primary': isLog }" @click="isLog = true">Logarithmic</span>
+  </div>
 </template>

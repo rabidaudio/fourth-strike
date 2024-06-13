@@ -53,7 +53,6 @@ class DistrokidSale < ApplicationRecord
                               'Pandora',
                               'Spotify',
                               'Tidal',
-                              'Facebook',
                               'Deezer',
                               'Resso',
                               'TikTok',
