@@ -64,6 +64,10 @@ class Payee < ApplicationRecord
     Track.joins(:splits).where(splits: { payee: self }).distinct
   end
 
+  def merch
+    Merch.joins(:splits).where(splits: { payee: self }).distinct
+  end
+
   def self.next_fsn
     last_fsn = Payee.maximum(:fsn) || 'FS-000'
     num = last_fsn.delete_prefix('FS-').to_i

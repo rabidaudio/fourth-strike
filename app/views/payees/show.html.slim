@@ -85,7 +85,12 @@ section.section id="royalties"
           tr
             th Merch
             th Royalties
-          / TODO
+        tbody
+          - @payee.merch.order(id: :desc).each do |merch|
+            tr
+              td
+                a href=merch_path(merch) = merch.name
+              td = @payee.royalties_owed_for(merch).format
 
 - unless @payee.charity?
   section.section id="services_rendered"
@@ -95,4 +100,17 @@ section.section id="royalties"
 
 section.section id="payouts"
   h2.is-size-3 Payouts
-  / TODO
+  
+  table.table
+    thead
+      tr
+        th Date
+        th Paid
+        th Paypal Transaction ID
+    tbody
+      - @payee.payouts.order(paid_at: :desc).each do |payout|
+        tr
+          td = localized_date(payout.paid_at)
+          td = payout.amount.format
+          td
+            code = payout.paypal_transaction_id
