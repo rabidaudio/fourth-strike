@@ -4,6 +4,10 @@ organization_cut: 0.15
 services_rendered:
   hourly_rate: 15.00 # USD/hr
 payout_at: 42.00 # USD
+paypal:
+  incoming_addresses:
+    - seattlegarages@gmail.com
+    - info@fourth-strike.com
 bandcamp:
   url: fourth-strike.bandcamp.com
   # Some bandcamp skus don't match the home sheet

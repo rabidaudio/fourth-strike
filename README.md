@@ -69,6 +69,10 @@ rake home_sheet:load_rendered_services
 # Load patreon sales
 # Load internal merch orders
 
+# Load payouts
+rake paypal:correct_paypal_accounts
+rake paypal:load_payouts
+
 
 # Grant appropriate users admin access
 rails console # Admin.create!(discord_handle: ...)

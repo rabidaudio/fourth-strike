@@ -27,7 +27,7 @@ table.table
 
         td
           span data-controller="spoiler" = payee.paypal_account
-        td
+        td class=(payee.due_for_payout? ? 'is-success' : (payee.balance.negative? ? 'is-danger' : ''))
           = payee.balance.format
         td
           a href=edit_payee_path(payee) Edit
