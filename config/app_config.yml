@@ -45,7 +45,6 @@ bandcamp:
     - https://sigfigscollective.bandcamp.com/album/sucrosi-road-king-size
     # TODO: confirm these:
     - https://garlicbreadandroses.bandcamp.com/album/take-care-of-yourself
-    - https://thegarages.bandcamp.com/album/limiter-released
   skip_merch:
     - "https://sigfigscollective.bandcamp.com/merch/significant-figures-classic-tee"
     - "https://sigfigscollective.bandcamp.com/merch/sig-figs-pentagram-tee"
@@ -87,6 +86,95 @@ bandcamp:
     "https://thegarages.bandcamp.com/album/strike-two": https://fourth-strike.bandcamp.com/album/strike-two
     "https://thegarages.bandcamp.com/album/discipline-2": https://thegarages.bandcamp.com/album/discipline
     "https://thegarages.bandcamp.com/track/mike-townsend-is-a-disappointment": https://thegarages.bandcamp.com/track/mike-townsend-is-a-disappointment-5
+
+  missing_albums:
+    - name: 'LIMITER: RELEASED'
+      artist_name: the garages
+      release_date: '2020-09-04'
+      upcs: []
+      bandcamp_id: null # I guess because it's private?
+      private: true
+      bandcamp_url: https://thegarages.bandcamp.com/album/limiter-released
+      album_art_url: https://f4.bcbits.com/img/a1715511433_10.jpg
+      bandcamp_price: '$0.00'
+      tracks:
+        - name: 'LIMITER: RELEASED'
+          track_number: 1
+          bandcamp_id: 465686136
+          bandcamp_url: https://thegarages.bandcamp.com/track/limiter-released
+          credits: track by rain (rainrain.bandcamp.com) with backing vocals by mucusqueen
+          lyrics: >
+            theodore duende here, can you answer my call?
+            i'm waiting in the wings to go, to go, i'm waiting in the wings
+            and i can feel, the blood is pumping through me like
+            the engine oil, and all the neurons won't stop firing
+            all the neurons won't stop firing
+
+            lift the limit
+            now we're in it
+            the reverb got us feeling like a new band
+            like a new band
+            lift the limit
+            now we're in it
+            the reverb got us feeling like a new band
+            like a new band
+            with a limiter released
+
+            theodore duende here, my adrenaline is high
+            and all the fires in my heart are lit from pheonixes that once flied
+            and i can feel magnesium in my veins
+            and i can feel the power I get from everyone who cheers my name
+        - name: 'in the feedback'
+          track_number: 2
+          bandcamp_id: 1814415384
+          bandcamp_url: https://thegarages.bandcamp.com/track/in-the-feedback
+          credits: track by rain (rainrain.bandcamp.com) with additional guitar by zandterbird (@zandterbird)
+          lyrics: >
+            i can see the truth in your eyes
+            as you're telling me lies
+            like you know that you'll hold my hand again
+            cause you don't know you will
+            but i know how you feel
+            and i don't know if i can watch you walk out on the field
+
+            and there's the lightning strike
+            across the pitch-black night
+            and i wanna hold you close, but i can't
+
+            i don't wanna let you go
+            in the feedback
+            cause i don't know i'd get you back
+            yeah, i don't know i'd get you back
+            i don't wanna let you go
+            in the feedback
+            cause i don't know i'd get you back
+            yeah, i don't know i'd get you back
+
+            i can feel you pull away from me
+            i can feel you retreat
+            "duty calls" you say, and then it's
+            all of the eyes on the pitcher throwing
+            and it's all of the eyes on the way it's going
+            and you hit the ball, and then it's out of our hands
+
+            and there's the lightning strike
+            across the pitch-black night
+            and i wanna hold you close, but i can't
+
+            i don't wanna let you go
+            in the feedback
+            cause i don't know i'd get you back
+            yeah, i don't know i'd get you back
+            i don't wanna let you go
+            in the feedback
+            cause i don't know i'd get you back
+            yeah, i don't know i'd get you back
+
+            and there's the lightning strike
+            across the pitch-black night
+            and then the smoke obscures
+            the place where you once stood
+            and when it clears, you're just not there
 
 distrokid:
   skip:

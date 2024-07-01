@@ -12,6 +12,7 @@
 #  bandcamp_url            :string           not null
 #  catalog_number          :string
 #  name                    :string           not null
+#  private                 :boolean          default(FALSE), not null
 #  release_date            :date
 #  upcs                    :string
 #  created_at              :datetime         not null

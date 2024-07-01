@@ -25,7 +25,11 @@ h1.is-size-2 Releases
               figure.image.is-1by1
                 img width="700" style="background-color:#cccccc;padding:1px"
           .card-content style="min-height: 7.5em"
-            p.title.is-4.two-line = album.name
+            p.title.is-4.two-line
+              - if album.private?
+                span.tag.is-warning.is-light Private
+                = ' '
+              span = album.name
             p.subtitle.is-6 = album.artist_name
 
 = render_pagination(@albums)

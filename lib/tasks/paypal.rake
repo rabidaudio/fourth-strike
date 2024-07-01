@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/SkipsModelValidations
 namespace :paypal do
   # The home sheet had some non-email addresses for paypal accounts. This script corrects those to be email addresses
   task :correct_paypal_accounts => :environment do
@@ -30,7 +31,10 @@ namespace :paypal do
 
     strip = ->(v) { v&.strip }
     gbp_conversion_rates = CSV.read(Rails.root.join('exports/GBP_USD_HistoricalPrices.csv'),
-                                    headers: true, liberal_parsing: true, converters: strip, header_converters: strip).each.to_a
+                                    headers: true,
+                                    liberal_parsing: true,
+                                    converters: strip,
+                                    header_converters: strip).each.to_a
 
     path = Rails.root.glob('exports/FS_PaypalTrans_*.csv').first
     payouts_count = 0
@@ -101,3 +105,4 @@ namespace :paypal do
     puts("Loaded #{payouts_count} payouts")
   end
 end
+# rubocop:enable Rails/SkipsModelValidations

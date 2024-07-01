@@ -65,6 +65,7 @@ namespace :bandcamp do
 
         res = Album.upsert({
                              name: album_name,
+                             private: false,
                              artist_name: artist_name,
                              release_date: release_date,
                              album_art_url: album_art_url,
@@ -116,6 +117,25 @@ namespace :bandcamp do
       browser.quit
 
       puts("Fetched #{album_count} albums and #{track_count} tracks")
+    end
+  end
+
+  desc 'Load albums manually defined which are no longer on Bandcamp'
+  task :load_missing_albums => :environment do
+    ActiveRecord::Base.transaction do
+      Rails.application.config.app_config[:bandcamp][:missing_albums].each do |album_data|
+        album = Album.create_with(
+          album_data.slice(
+            :name, :artist_name, :release_date, :upcs, :bandcamp_id, :private, :bandcamp_url, :album_art_url
+          ).merge(bandcamp_price: album_data[:bandcamp_price].to_money)
+        ).find_or_create_by!(bandcamp_url: album_data[:bandcamp_url])
+
+        album_data[:tracks].each do |track_data|
+          Track.create_with(
+            track_data.slice(:name, :track_number, :bandcamp_id, :bandcamp_url, :credits, :lyrics).merge(album: album)
+          ).find_or_create_by!(bandcamp_url: track_data[:bandcamp_url])
+        end
+      end
     end
   end
 

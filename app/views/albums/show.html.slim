@@ -13,7 +13,10 @@ p
       code = upc
 
 
-- if @album.bandcamp_id
+- if @album.private?
+  p
+    span.tag.is-danger Private (Hidden/Removed from Bandcamp)
+- elsif @album.bandcamp_id
   .bandcamp-embed
     iframe { style="border: 0; width: 100%; min-width:256px; height: 120px;"
       src="https://bandcamp.com/EmbeddedPlayer/album=#{@album.bandcamp_id}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless=""}
