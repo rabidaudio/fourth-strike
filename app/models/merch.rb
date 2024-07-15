@@ -62,7 +62,7 @@ class Merch < ApplicationRecord
 
   self.table_name = 'merch_items'
 
-  belongs_to :album
+  belongs_to :album, optional: true
   has_many :merch_fulfillments, through: :bandcamp_sales
 
   monetize :list_price_cents

@@ -19,7 +19,7 @@ namespace :bandcamp do
       page = browser.create_page
       page.go_to("https://#{bandcamp_url}/music")
       # scroll to bottom of page by looking for footer element
-      page.at_css('#pgFt').scroll_into_view
+      page.at_css('page-footer').scroll_into_view
 
       album_links = page.css('li[data-item-id] a').map do |el|
         href = el.attribute('href')
@@ -27,6 +27,8 @@ namespace :bandcamp do
         href = URI(href).tap { |u| u.query = '' }.to_s.delete_suffix('?')
         href
       end
+
+      album_links += Rails.application.config.app_config[:bandcamp][:additional_albums]
 
       album_count = 0
       track_count = 0
@@ -114,6 +116,45 @@ namespace :bandcamp do
         end
       end
 
+      Rails.application.config.app_config[:bandcamp][:single_track_albums].each do |track_url|
+        attempts = 0
+        loop do
+          page.go_to(track_url)
+          puts(track_url)
+
+          break unless page.at_css('body').text.empty?
+
+          puts('page blank. retrying....')
+          attempts += 1
+          sleep([30, (2**attempts)].max.seconds)
+        end
+
+        track_data = JSON.parse(page.at_css('script[type="application/ld+json"]').text)
+
+        res = Album.upsert({
+                             name: track_data['name'],
+                             private: false,
+                             artist_name: track_data['byArtist']['name'],
+                             release_date: Date.parse(track_data['datePublished']),
+                             album_art_url: track_data['image'],
+                             bandcamp_id: nil,
+                             bandcamp_url: track_url
+                           }, unique_by: :bandcamp_url)
+        album_id = res.rows[0][0]
+        Track.upsert({
+                       name: track_data['name'],
+                       album_id: album_id,
+                       track_number: 1,
+                       lyrics: track_data['recordingOf']['lyrics']['text'],
+                       credits: track_data['creditText'] || track_data['description'],
+                       bandcamp_id: track_data['additionalProperty']&.find do |p|
+                                      p['name'] == 'track_id'
+                                    end&.dig('value')&.to_s
+                     }, unique_by: [:album_id, :track_number])
+        album_count += 1
+        track_count += 1
+      end
+
       browser.quit
 
       puts("Fetched #{album_count} albums and #{track_count} tracks")
@@ -143,11 +184,10 @@ namespace :bandcamp do
   task :load_merch_items => :environment do
     require 'csv'
 
-    path = Rails.root.join('exports/Bandcamp Merch Items - data.csv')
-
     merch_count = 0
     ActiveRecord::Base.transaction do
-      CSV.foreach(path, headers: true) do |row|
+      # Load from the hand-created report
+      CSV.foreach(Rails.root.join('exports/Bandcamp Merch Items - data.csv'), headers: true) do |row|
         # name,url,sku,artist_name,list_price,private,variants
 
         sku = row['sku']
@@ -163,13 +203,40 @@ namespace :bandcamp do
                        artist_name: row['artist_name'],
                        album_id: album&.id,
                        sku: sku,
-                       variants: JSON.parse(row['variants']),
+                       variants: JSON.parse(row['variants']).to_json,
                        private: row['private'] == 'TRUE',
                        list_price_cents: list_price.cents,
                        list_price_currency: list_price.currency.iso_code
                      }, unique_by: [:bandcamp_url, :sku])
 
         merch_count += 1
+      end
+
+      # Also load from the Bandcamp sales report
+      path = Rails.root.glob('exports/*_bandcamp_raw_data_Fourth-Strike-Records.csv').first
+      CSV.foreach(path, headers: true, liberal_parsing: true, encoding: 'UTF-16LE') do |row|
+        next unless row['item type'] == 'package'
+        next unless Rails.application.config.app_config[:bandcamp][:load_merch_from_sales].key?(row['item url'])
+
+        data = Rails.application.config.app_config[:bandcamp][:load_merch_from_sales][row['item url']]
+
+        album = Album.find_by!(name: data['album'], artist_name: row['artist']) if data['album'].present?
+        merch = Merch.create_with(
+          bandcamp_url: row['item url'],
+          name: row['item name'],
+          artist_name: row['artist'],
+          album: album,
+          sku: data['sku'],
+          variants: [],
+          private: data['private'],
+          list_price: data['list_price'].to_money
+        ).find_or_create_by!(bandcamp_url: row['item url'], sku: data['sku'])
+
+        variant = { title: row['option'], sku: row['sku'] }
+        unless merch.variants.any? { |v| v['sku'] == variant[:sku] }
+          merch.variants = [*merch.variants, variant]
+          merch.save!
+        end
       end
     end
     puts("Fetched #{merch_count} merch items")

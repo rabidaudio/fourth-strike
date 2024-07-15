@@ -10,6 +10,17 @@ paypal:
     - info@fourth-strike.com
 bandcamp:
   url: fourth-strike.bandcamp.com
+  additional_albums:
+    - https://sigfigscollective.bandcamp.com/album/voxes-stimulant
+    - https://sigfigscollective.bandcamp.com/album/voxes-somnolent
+    - https://sigfigscollective.bandcamp.com/album/significant-figures-20
+    - https://sigfigscollective.bandcamp.com/track/jet-black-shadow
+    - https://sigfigscollective.bandcamp.com/track/seed-guy-war-guy
+    - https://sigfigscollective.bandcamp.com/album/sucrosi-road-king-size
+    - https://leftatlondon.bandcamp.com/album/t-i-a-p-f-y-h
+  single_track_albums:
+    - https://sigfigscollective.bandcamp.com/track/jet-black-shadow
+    - https://sigfigscollective.bandcamp.com/track/seed-guy-war-guy
   # Some bandcamp skus don't match the home sheet
   merch_sku_remaps:
     BTM-BHHS: T-BHH # "BRUSHED HIS HAND" SWEATSHIRT
@@ -32,26 +43,49 @@ bandcamp:
     TG-PCBO: C-BOB-001 # CASSETTE, "BLATTLE OF THE BLANDS"
     TG-SGLT: T-SGL # SEATTLE GARAGES LOGO TEE
     TG-WATB: T-WTB # WE ARE THE BAND TEE
+
+    SFC-SFCT-CS: T-SFC # SIGNIFICANT FIGURES (CLASSIC) - TEE
+    SFC-SFPT-CS: T-SFP # SIG FIGS PENTAGRAM - TEE
+    T-STIM: T-STM # STIMULANT - HOODIE
+    T-SOMN: T-SOM # SOMNOLENT - HOODIE
+    T-SFCA: SFC-SAT # SFC Anniversary Tee
+
   # Albums that we are explicitly ignoring
   skip_releases:
-    - https://fourth-strike.bandcamp.com/album/fourth-strike-song-jam-2023
-    - https://fourth-strike.bandcamp.com/album/fourth-strike-song-jam-2022
-    - https://fourth-strike.bandcamp.com/album/fourth-strike-song-jam-2021
-    - https://sigfigscollective.bandcamp.com/album/voxes-stimulant
-    - https://sigfigscollective.bandcamp.com/album/voxes-somnolent
-    - https://sigfigscollective.bandcamp.com/album/significant-figures-20
-    - https://sigfigscollective.bandcamp.com/track/jet-black-shadow
-    - https://sigfigscollective.bandcamp.com/track/seed-guy-war-guy
-    - https://sigfigscollective.bandcamp.com/album/sucrosi-road-king-size
     # TODO: confirm these:
     - https://garlicbreadandroses.bandcamp.com/album/take-care-of-yourself
-  skip_merch:
-    - "https://sigfigscollective.bandcamp.com/merch/significant-figures-classic-tee"
-    - "https://sigfigscollective.bandcamp.com/merch/sig-figs-pentagram-tee"
-    - "https://sigfigscollective.bandcamp.com/merch/stimulant-hoodie"
-    - "https://sigfigscollective.bandcamp.com/merch/somnolent-hoodie"
-    - "https://sigfigscollective.bandcamp.com/merch/sfc-anniversary-tee"
-    - "https://sigfigscollective.bandcamp.com/merch/sfc-sticker-collection-1"
+  skip_merch: []
+  load_merch_from_sales:
+    "https://sigfigscollective.bandcamp.com/merch/significant-figures-classic-tee":
+      album: null # Significant Figures 2.0 ??
+      sku: T-SFC
+      list_price: '$23.33'
+      private: true
+    "https://sigfigscollective.bandcamp.com/merch/sig-figs-pentagram-tee":
+      album: null # Significant Figures 2.0 ??
+      sku: T-SFP
+      list_price: '$23.33'
+      private: true
+    "https://sigfigscollective.bandcamp.com/merch/stimulant-hoodie":
+      album: 'Voxes: Stimulant'
+      sku: T-STM
+      list_price: '$41.11'
+      private: true
+    "https://sigfigscollective.bandcamp.com/merch/somnolent-hoodie":
+      album: 'Voxes: Somnolent'
+      sku: T-SOM
+      list_price: '$41.11'
+      private: true
+    "https://sigfigscollective.bandcamp.com/merch/sfc-anniversary-tee":
+      album: null
+      sku: T-SFCA
+      list_price: '$23.33'
+      private: true
+    "https://sigfigscollective.bandcamp.com/merch/sfc-sticker-collection-1":
+      album: null
+      sku: S-SFSP1
+      list_price: '$23.33'
+      private: true
 
   # Manually fix Bandcamp sale that wasn't in USD. There's only one, from Sept 2020, when the conversion rate was 1USD = 0.7790GBP
   currency_corrections:
@@ -178,8 +212,7 @@ bandcamp:
 
 distrokid:
   skip:
-    artists:
-      - Sig Figs Collective
+    artists: []
 home_sheet:
   payees:
     charities:
@@ -193,6 +226,8 @@ home_sheet:
       # Hard-code split for child's play
       "https://thegarages.bandcamp.com/album/the-garages-vs-desert-bus-2021":
         'FS-032': 1
+      "https://fourth-strike.bandcamp.com/album/coyote-wall-x-the-garages-desert-bus-2022":
+        'FS-032': 1
     album_mappings:
       # When the album names in the home sheet don't match by name
       'the mike townsend trilogy': https://thegarages.bandcamp.com/album/the-mike-townsend-quintilogy
@@ -201,13 +236,6 @@ home_sheet:
       'Putrid Shark #1': https://putridshark.bandcamp.com/album/2
       'BTM / TDOST': https://blaseballmusical.bandcamp.com/album/the-deaths-of-sebastian-telephone
     skip_albums:
-      - "Voxes: Stimulant"
-      - "Voxes: Somnolent"
-      - Significant Figures 2.0
-      - Jet Black Shadow
-      - Seed Guy War Guy
-      - Fourth Strike Song Jam 2021
-      - fourth strike song jam 2022
       - full digital discography (40 releases)
       - full digital discography (41 releases)
       - full digital discography (42 releases)
@@ -230,65 +258,9 @@ home_sheet:
       - Unnamed Gender Chores Release
       - ashes
       - My Baby Wouldn't Pass a Turing Test
-    skip_tracks:
-      # sig figs
-      - QZDA52171312
-      - QZDA52171313
-      - QZDA52171314
-      - QZDA52171315
-      - QZDA52171316
-      - QZDA52171317
-      - QZDA52171318
-      - QZDA52171319
-      - QZDA52171320
-      - QZDA52171321
-      - QZDA52171322
-      - QZDA52171323
-      - QZHN72142371
-      - QZHN72142372
-      - QZHN72142373
-      - QZHN72142374
-      - QZHN72142375
-      - QZHN72142376
-      - QZHN72142377
-      - QZHN72142378
-      - QZHN72142379
-      - QZHN72142380
-      - QZHN72142381
-      - QZHN72142382
-      - QZHN72142383
-      - QZHN72142384
-      - QZHN72142385
-      - QZHN72142386
-      - QZHN72142387
-      - QZHN72142388
-      - QZNWS2114811
-      - QZNWS2114812
-      - QZNWS2114813
-      - QZNWS2193235
-      - QZNWS2114815
-      - QZNWS2114816
-      - QZNWS2114817
-      - QZNWS2114818
-      - QZNWS2114819
-      - QZNWS2114820
-      - QZNWS2114821
-      - QZNWS2114822
-      - QZNWS2114823
-      - QZNWS2114824
-      - QZNWS2114825
-      - QZNWS2114826
+    skip_tracks: []
     skip_merch:
-      # sig figs
-      - T-SFC
-      - T-SFP
-      - T-STM
-      - T-SOM
-      - S-SFSP1
-      - T-SFCA
-      # L@L
-      - FSR-001
-      - C-TPH-001
+      - FSR-001 # tiapfyh, duplicate of C-TPH-001
       # Unsure what this is TODO
       - T-RVS
   merch:
@@ -314,7 +286,7 @@ home_sheet:
       artist_name: the garages
       bandcamp_url: null
       sku: C-L93-001
-      list_price: '$46.98'
+      list_price: '$23.33'
       private: true
       variants: []
       album: 'the garages: RIV'
@@ -334,3 +306,55 @@ home_sheet:
       private: true
       variants: [] # TODO? TRANS / CLASSIC / PUTRID
       album: '#2'
+    - name: CASSETTE - t.i.a.p.f.y.h.
+      artist_name: Left At London
+      bandcamp_url: https://leftatlondon.bandcamp.com/album/t-i-a-p-f-y-h
+      sku: C-TPH-001
+      list_price: '$23.33'
+      private: true
+      variants: []
+      album: "t.i.a.p.f.y.h."
+
+patreon:
+  tiers:
+    # No benefits! Just if you wanna help out.
+    - 'No Strikes!'
+    # Get access to sporadic works-in-progress, teases, updates from the
+    # Fourth Strike artists, and episodes of idol board a day early!
+    - 'First Strike!'
+    # In addition to demos and teases of what's to come, you'll get a
+    # digital download of every release Fourth Strike puts out while you are a patron.
+    - 'Second Strike!'
+    # In addition to demo access, and digital downloads, get sent a new t-shirt every month!
+    - 'Third Strike! (T-Shirts)'
+    # In addition to demo access, and digital downloads, get sent a new cassette every month!
+    - 'Third Strike! (Cassettes)'
+    # Get demos, WIP teases,a shirt AND a cassette sent to you every month.
+    - 'Fourth Strike!'
+  products:
+    # Assume all albums in that release got a digital sale?
+    '2021-01-01':
+      t-shirt: T-DEI-80 # deicide 80s
+      cassette: C-NEO-001 # neon fakes
+    '2021-02-01':
+      t-shirt: T-S1T # strike one
+      cassette: null # TODO ???
+    '2021-03-01':
+      t-shirt: T-TKO # TAKEOVER
+      cassette: C-LVB-001 # LIVE (1992)
+    '2021-04-01':
+      t-shirt: T-CON # CONSUMED
+      cassette: C-14+-001 # 14/the garages suck tape
+    '2021-05-01':
+      t-shirt: T-UND # undefined
+      cassette: C-CON-001 # CONSUMED
+    '2021-06-01':
+      cassette: C-TPH-001 # tiapfyh
+      tshirt: T-PUT # putrid shark, TRANS / CLASSIC / PUTRID
+    '2021-07-01':
+      t-shirt: T-UNS # UNSTABLE
+      cassette: UNS-001 # UNSTABLE/REVERSED
+    '2021-08-01':
+      t-shirt: T-RIV # RIV
+      cassette: C-PSK-001 # putrid shark 1/2
+    # Sept, Oct, Nov TODO ???
