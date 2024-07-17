@@ -276,15 +276,16 @@ home_sheet:
     # Sold via iam8bit
     - name: DISCIPLINE Vinyl
       artist_name: the garages
-      bandcamp_url: null
+      bandcamp_url: ''
       sku: V-DSP
       list_price: '$46.98'
       private: true
       variants: []
       album: DISCIPLINE
+      external_distributor: 'iam8bit'
     - name: CASSETTE - LIVE (1993)
       artist_name: the garages
-      bandcamp_url: null
+      bandcamp_url: ''
       sku: C-L93-001
       list_price: '$23.33'
       private: true
@@ -292,7 +293,7 @@ home_sheet:
       album: 'the garages: RIV'
     - name: UNSTABLE - TEE
       artist_name: the garages
-      bandcamp_url: null
+      bandcamp_url: ''
       sku: T-UNS
       list_price: '$23.33'
       private: true
@@ -300,7 +301,7 @@ home_sheet:
       album: UNSTABLE
     - name: Putrid Shark - TEE
       artist_name: Putrid Shark
-      bandcamp_url: null
+      bandcamp_url: ''
       sku: T-PUT
       list_price: '$23.33'
       private: true

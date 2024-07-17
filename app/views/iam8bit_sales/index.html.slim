@@ -1,0 +1,39 @@
+h1.is-size-2 iam8bit Quarterly Sales
+
+.block
+  .field
+    a.button.is-primary href=new_iam8bit_sale_path
+      span Add
+
+section.section
+  = render_pagination(@iam8bit_sales)
+
+  table.table
+    thead
+      tr
+        th Period
+        th Product
+        th Quantity
+        th Gross
+        th Net
+        td Edit
+    tbody
+      - @iam8bit_sales.each do |sale|
+        tr
+          td = sale.quarter
+          td
+            a href=merch_path(sale.product) = sale.product.name
+            - if sale.product.album
+              br
+              span.is-size-7
+                a href=album_path(sale.product.album) = sale.product.album.name
+                - if sale.product.artist_name
+                  span = ' by '
+                  a href=merch_index_path(artist: sale.product.artist_name) = sale.product.artist_name
+          td = sale.quantity
+          td = sale.gross_revenue_amount.format
+          td = sale.net_revenue_amount.format
+          td
+            a href=edit_iam8bit_sale_path(sale) Edit
+
+  = render_pagination(@iam8bit_sales)

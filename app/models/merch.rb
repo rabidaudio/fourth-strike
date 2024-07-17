@@ -4,18 +4,19 @@
 #
 # Table name: merch_items
 #
-#  id                  :integer          not null, primary key
-#  artist_name         :string
-#  bandcamp_url        :string
-#  list_price_cents    :integer          default(0), not null
-#  list_price_currency :string           default("USD"), not null
-#  name                :string           not null
-#  private             :boolean          default(FALSE), not null
-#  sku                 :string           not null
-#  variants            :string           default("[]"), not null
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  album_id            :integer
+#  id                   :integer          not null, primary key
+#  artist_name          :string
+#  bandcamp_url         :string
+#  external_distributor :integer          default("none"), not null
+#  list_price_cents     :integer          default(0), not null
+#  list_price_currency  :string           default("USD"), not null
+#  name                 :string           not null
+#  private              :boolean          default(FALSE), not null
+#  sku                  :string           not null
+#  variants             :string           default("[]"), not null
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  album_id             :integer
 #
 # Indexes
 #
@@ -68,6 +69,9 @@ class Merch < ApplicationRecord
   monetize :list_price_cents
 
   json_string_attributes :variants
+
+  enum :external_distributor,
+       iam8bit: 1
 
   validates :list_price_currency, inclusion: { in: Money.default_currency.iso_code }
   validates :artist_name, inclusion: { in: -> { Album.distinct.pluck(:artist_name) }, allow_nil: true }

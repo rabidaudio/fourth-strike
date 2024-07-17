@@ -17,11 +17,17 @@ section.section
 
   = render 'splits/splits_for_product', product: @merch
 
-  section.section
-    h1.is-size-2 = "Orders (#{@sales.count})"
+  - if @merch.iam8bit?
+    p
+      span This product is distributed by iam8bit.
+      = ' '
+      a href=iam8bit_sales_path View Sales.
+  - else
+    section.section
+      h1.is-size-2 = "Orders (#{@sales.count})"
 
-    = render_pagination(@sales)
+      = render_pagination(@sales)
 
-    = render 'orders_table', sales: @sales
+      = render 'orders_table', sales: @sales
 
-    = render_pagination(@sales)
+      = render_pagination(@sales)

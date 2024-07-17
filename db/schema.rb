@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_01_185800) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_17_182643) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -97,6 +97,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_01_185800) do
     t.index ["upc"], name: "index_distrokid_sales_on_upc"
   end
 
+  create_table "iam8bit_sales", force: :cascade do |t|
+    t.date "period", null: false
+    t.string "name", null: false
+    t.integer "quantity", null: false
+    t.string "product_type", null: false
+    t.integer "product_id", null: false
+    t.integer "gross_revenue_amount_cents", default: 0, null: false
+    t.string "gross_revenue_amount_currency", default: "USD", null: false
+    t.integer "net_revenue_amount_cents", default: 0, null: false
+    t.string "net_revenue_amount_currency", default: "USD", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["period", "name"], name: "index_iam8bit_sales_on_period_and_name", unique: true
+    t.index ["product_type", "product_id"], name: "index_iam8bit_sales_on_product"
+  end
+
   create_table "merch_fulfillments", force: :cascade do |t|
     t.integer "bandcamp_sale_id", null: false
     t.integer "production_cost_cents", default: 0, null: false
@@ -121,6 +137,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_01_185800) do
     t.string "variants", default: "[]", null: false
     t.boolean "private", default: false, null: false
     t.integer "album_id"
+    t.integer "external_distributor", default: 0, null: false
     t.index ["album_id"], name: "index_merch_items_on_album_id"
     t.index ["bandcamp_url", "sku"], name: "index_merch_items_on_bandcamp_url_and_sku", unique: true
   end

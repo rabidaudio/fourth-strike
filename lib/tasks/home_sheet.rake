@@ -11,10 +11,12 @@ namespace :home_sheet do
     Rails.application.config.app_config[:home_sheet][:merch].each do |merch_data|
       list_price = merch_data.delete('list_price').to_money
       album_name = merch_data.delete('album')
+      variants = merch_data.delete('variants').to_json
       album = Album.find_by!(name: album_name) if album_name.present?
 
       Merch.upsert(merch_data.merge({ # rubocop:disable Rails/SkipsModelValidations
                                       album_id: album&.id,
+                                      variants: variants,
                                       list_price_cents: list_price.cents,
                                       list_price_currency: list_price.currency.iso_code
                                     }), unique_by: [:bandcamp_url, :sku])

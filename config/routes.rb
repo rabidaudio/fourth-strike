@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   resources :artists, :payees, :albums, :tracks
   resources :merch_fulfillments, path: 'merch/fulfillment'
+  resources :iam8bit_sales, path: 'merch/iam8bit'
   resources :merch
   resources :rendered_services, path: 'services_rendered'
 
