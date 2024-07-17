@@ -58,20 +58,20 @@ class Album < ApplicationRecord
   end
 
   def digital_sale_revenue
-    RoyaltyCalculator.new(self).revenue
+    RoyaltyCalculator.new(self).digital_revenue
   end
 
   def streaming_revenue
-    tracks.map { |t| RoyaltyCalculator.new(t).revenue }.sum
+    tracks.map { |t| RoyaltyCalculator.new(t).digital_revenue }.sum
   end
 
   def merch_revenue
     return 0.to_money if merch_items.empty?
 
-    merch_items.map { |t| RoyaltyCalculator.new(t).revenue }.sum
+    merch_items.map { |t| RoyaltyCalculator.new(t).gross_revenue }.sum
   end
 
-  def total_revenue
+  def total_associated_revenue
     digital_sale_revenue + streaming_revenue + merch_revenue
   end
 
@@ -92,7 +92,7 @@ class Album < ApplicationRecord
   end
 
   def negative?
-    expenses > total_revenue
+    expenses > total_associated_revenue
   end
 
   def private?

@@ -81,7 +81,7 @@ p
             - if has_unfulfilled
               br
               span.is-italic.is-size-7 = " *Not all merch orders fulfilled"
-          td = @album.total_revenue.format
+          td = @album.total_associated_revenue.format
           td class=(@album.negative? ? 'is-warning' : '') = @album.expenses.format
           - unless @album.splits.empty?
             td = @album.royalties.format

@@ -36,6 +36,7 @@ class RoyaltyCalculator
 
   # Revenue from bandcamp digial sales and merch items, excluding Bandcamp and payment processor fees
   def bandcamp_revenue
+    # TODO: where should cost of goods be removed??
     bandcamp_sales.sum_monetized(:net_revenue_amount) - cost_of_goods
   end
 
@@ -50,6 +51,10 @@ class RoyaltyCalculator
     return 0.to_money unless @product.is_a?(Merch)
 
     iam8bit_sales.sum_monetized(:net_revenue_amount)
+  end
+
+  def digital_revenue
+    bandcamp_revenue + distrokid_revenue
   end
 
   def gross_revenue
