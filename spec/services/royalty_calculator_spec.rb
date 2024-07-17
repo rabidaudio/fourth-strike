@@ -190,6 +190,28 @@ RSpec.describe 'Payout calculations' do
           expect(described_class.new(fame_cassette).bandcamp_revenue).to eq 0.to_money
         end
       end
+
+      context 'external distributors' do
+        context 'iam8bit' do
+          let(:vinyl) do
+            create(:merch, :vinyl, :with_splits, album: the_fame, list_price: 29.99.to_money,
+                                                 external_distributor: 'iam8bit')
+          end
+
+          let!(:vinyl_sales) do
+            [
+              create(:iam8bit_sale, product: vinyl, period: '2024-01-01', quantity: 100),
+              create(:iam8bit_sale, product: vinyl, period: '2024-04-01', quantity: 50)
+            ]
+          end
+
+          it 'should include external distributor sales in royalty calculations' do
+            expect(described_class.new(vinyl).royalties_owed_to(gaga)).to be_within(0.01.to_money).of(
+              (150 * 29.99 * 0.97 * 0.25 * 0.85).to_money
+            )
+          end
+        end
+      end
     end
   end
 

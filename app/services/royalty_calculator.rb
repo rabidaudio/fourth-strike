@@ -46,13 +46,19 @@ class RoyaltyCalculator
     distrokid_sales.sum(:earnings_usd).to_money('USD')
   end
 
-  def revenue
-    bandcamp_revenue + distrokid_revenue
+  def destributor_revenue
+    return 0.to_money unless @product.is_a?(Merch)
+
+    iam8bit_sales.sum_monetized(:net_revenue_amount)
+  end
+
+  def gross_revenue
+    bandcamp_revenue + distrokid_revenue + destributor_revenue
   end
 
   # The total income to be divided between the organization and payees
   def net_income
-    (bandcamp_revenue + distrokid_revenue) - upfront_costs
+    gross_revenue - upfront_costs
   end
 
   # The distribution to the organization, before any contributor donations
@@ -101,6 +107,10 @@ class RoyaltyCalculator
 
   def distrokid_sales
     @product.distrokid_sales.where('reported_at >= ? and reported_at < ?', @start_at, @end_at)
+  end
+
+  def iam8bit_sales
+    @product.iam8bit_sales.where('period >= ? and period < ?', @start_at, @end_at)
   end
 
   def payout_amounts

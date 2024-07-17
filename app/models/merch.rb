@@ -7,7 +7,7 @@
 #  id                   :integer          not null, primary key
 #  artist_name          :string
 #  bandcamp_url         :string
-#  external_distributor :integer          default("none"), not null
+#  external_distributor :integer          default("undefined"), not null
 #  list_price_cents     :integer          default(0), not null
 #  list_price_currency  :string           default("USD"), not null
 #  name                 :string           not null
@@ -71,6 +71,7 @@ class Merch < ApplicationRecord
   json_string_attributes :variants
 
   enum :external_distributor,
+       undefined: 0,
        iam8bit: 1
 
   validates :list_price_currency, inclusion: { in: Money.default_currency.iso_code }

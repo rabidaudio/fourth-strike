@@ -7,7 +7,7 @@
 #  id                   :integer          not null, primary key
 #  artist_name          :string
 #  bandcamp_url         :string
-#  external_distributor :integer          default("none"), not null
+#  external_distributor :integer          default("undefined"), not null
 #  list_price_cents     :integer          default(0), not null
 #  list_price_currency  :string           default("USD"), not null
 #  name                 :string           not null
@@ -30,7 +30,7 @@
 FactoryBot.define do
   factory :merch do
     transient do
-      type { ['T', 'C', 'P'].sample }
+      type { ['T', 'C', 'P', 'V'].sample }
       full_type { { 'T' => 'T-SHIRT', 'C' => 'CASSETTE', 'P' => 'POSTER' } }
     end
 
@@ -38,7 +38,8 @@ FactoryBot.define do
     name { "#{album.name.upcase} #{full_type}" }
     artist_name { album.artist_name }
     sku { "#{type}-#{album.catalog_number[..2]}-#{Faker::Number.number(digits: 3)}" }
-    list_price { ['T' => 23.33, 'C' => 23.33, 'P' => 6.66, 'V' => 39.99][type].to_money }
+    list_price { { 'T' => 23.33, 'C' => 23.33, 'P' => 6.66, 'V' => 39.99 }[type].to_money }
+    external_distributor { 'undefined' }
     bandcamp_url do
       [
         "https://#{FactoryUtils.sanitize_for_url(artist_name)}.bandcamp.com",
@@ -66,7 +67,11 @@ FactoryBot.define do
     trait :with_splits do
       transient do
         distribution do
-          { association(:payee) => 1, association(:payee) => 1 }
+          if album&.splits
+            album.splits.to_h { |s| s.slice(:payee, :value).values }
+          else
+            { association(:payee) => 1, association(:payee) => 1 }
+          end
         end
       end
 
