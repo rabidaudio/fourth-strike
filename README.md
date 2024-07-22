@@ -75,6 +75,7 @@ rake home_sheet:load_internal_merch_orders
 rake paypal:correct_paypal_accounts
 rake paypal:load_payouts
 
+# Album.where(artist_name: 'Sig Figs Collective').update_all(private: true)
 
 # Grant appropriate users admin access
 rails console # Admin.create!(discord_handle: ...)

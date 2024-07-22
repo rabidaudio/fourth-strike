@@ -10,7 +10,9 @@
 class RoyaltyCalculator
   prepend CalculatorCache
 
-  cache_calculations :upfront_costs, :cost_of_goods, :bandcamp_revenue, :distrokid_revenue, :payout_amounts
+  cache_calculations :upfront_costs, :cost_of_goods,
+    :bandcamp_revenue, :distrokid_revenue, :destributor_revenue,
+    :payout_amounts
 
   def initialize(product, from: Time.zone.at(0), to: Time.zone.now)
     @product = product
@@ -36,8 +38,7 @@ class RoyaltyCalculator
 
   # Revenue from bandcamp digial sales and merch items, excluding Bandcamp and payment processor fees
   def bandcamp_revenue
-    # TODO: where should cost of goods be removed??
-    bandcamp_sales.sum_monetized(:net_revenue_amount) - cost_of_goods
+    bandcamp_sales.sum_monetized(:net_revenue_amount)
   end
 
   # Distrokid streaming revenue
@@ -54,11 +55,19 @@ class RoyaltyCalculator
   end
 
   def digital_revenue
+    return 0.to_money if @product.is_a?(Merch)
+
     bandcamp_revenue + distrokid_revenue
   end
 
+  def physical_revenue
+    return 0.to_money unless @product.is_a?(Merch)
+
+    bandcamp_revenue - cost_of_goods
+  end
+
   def gross_revenue
-    bandcamp_revenue + distrokid_revenue + destributor_revenue
+    digital_revenue + physical_revenue
   end
 
   # The total income to be divided between the organization and payees
@@ -66,11 +75,26 @@ class RoyaltyCalculator
     gross_revenue - upfront_costs
   end
 
+  # The distribution to the organization for digital sales, before any contributor donations
+  def organization_cut_digital
+    return 0.to_money if digital_revenue.zero? || gross_revenue.zero? # avoid divide-by-zero
+
+    organization_distribution_digital * net_income * (digital_revenue / gross_revenue)
+  end
+
+  # The distribution to the organization for digital sales, before any contributor donations
+  def organization_cut_physical
+    return 0.to_money if physical_revenue.zero? || gross_revenue.zero? # avoid divide-by-zero
+
+    organization_distribution_merch * net_income * (physical_revenue / gross_revenue)
+  end
+
   # The distribution to the organization, before any contributor donations
   def organization_cut
+    # TODO: should the org eat losses?
     return net_income if net_income.negative?
 
-    organization_distribution * net_income
+    organization_cut_digital + organization_cut_physical
   end
 
   # Some contributors may opt to donate their cut to the organization instead
@@ -129,7 +153,11 @@ class RoyaltyCalculator
     end
   end
 
-  def organization_distribution
-    Rails.application.config.app_config[:organization_cut]
+  def organization_distribution_digital
+    Rails.application.config.app_config[:organization_cut][:digital]
+  end
+
+  def organization_distribution_merch
+    Rails.application.config.app_config[:organization_cut][:merch]
   end
 end
