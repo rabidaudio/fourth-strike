@@ -65,6 +65,10 @@ class Merch < ApplicationRecord
 
   belongs_to :album, optional: true
   has_many :merch_fulfillments, through: :bandcamp_sales
+  has_many :internal_merch_orders,
+           inverse_of: :merch_item,
+           foreign_key: :merch_item_id,
+           dependent: :restrict_with_exception
 
   monetize :list_price_cents
 

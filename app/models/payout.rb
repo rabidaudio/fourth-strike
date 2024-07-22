@@ -29,6 +29,8 @@ class Payout < ApplicationRecord
 
   belongs_to :payee
 
+  has_one :internal_merch_order, required: false, dependent: :destroy
+
   monetize :amount_cents
 
   # Require all payouts to be in system currency

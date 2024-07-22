@@ -106,6 +106,7 @@ section.section id="payouts"
       tr
         th Date
         th Paid
+        th
         th Paypal Transaction ID
     tbody
       - @payee.payouts.order(paid_at: :desc).each do |payout|
@@ -113,4 +114,10 @@ section.section id="payouts"
           td = localized_date(payout.paid_at)
           td = payout.amount.format
           td
-            code = payout.paypal_transaction_id
+            - if payout.internal_merch_order.present?
+              span Internal merch order
+              br
+              a href=merch_path(payout.internal_merch_order.merch_item) = payout.internal_merch_order.merch_item.name
+          td
+            - if payout.paypal_transaction_id
+              code = payout.paypal_transaction_id

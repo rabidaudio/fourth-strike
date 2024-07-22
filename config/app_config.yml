@@ -315,6 +315,9 @@ home_sheet:
       private: true
       variants: []
       album: "t.i.a.p.f.y.h."
+  internal_merch:
+    sku_remap:
+      T-UNDG: T-UND
 
 patreon:
   tiers:

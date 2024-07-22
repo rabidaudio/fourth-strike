@@ -10,7 +10,7 @@
 #  shipped_on               :date
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
-#  bandcamp_sale_id         :integer          not null
+#  bandcamp_sale_id         :integer
 #  fulfilled_by_id          :integer
 #
 # Indexes

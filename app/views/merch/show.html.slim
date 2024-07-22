@@ -24,10 +24,32 @@ section.section
       a href=iam8bit_sales_path View Sales.
   - else
     section.section
-      h1.is-size-2 = "Orders (#{@sales.count})"
+      .columns
+        .column
+          h1.is-size-2 = "Orders (#{@sales.count})"
 
-      = render_pagination(@sales)
+          = render_pagination(@sales)
 
-      = render 'orders_table', sales: @sales
+          = render 'orders_table', sales: @sales
 
-      = render_pagination(@sales)
+          = render_pagination(@sales)
+
+        .column
+          h1.is-size-2 = "Internal Orders (#{@merch.internal_merch_orders.count})"
+
+          table.table
+            thead
+              tr
+                th Payee
+                th Value
+            tbody
+              - @merch.internal_merch_orders.each do |order|
+                tr
+                  td
+                    - if order.payee.artist
+                      a href=artist_path(order.payee.artist) = order.payee.name
+                    - else
+                      span = order.payee.name
+                    span = " / "
+                    a href=payee_path(order.payee) = order.payee.fsn
+                  td = order.payout.amount.format

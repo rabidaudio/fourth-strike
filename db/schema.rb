@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_17_182643) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_22_161903) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -113,8 +113,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_17_182643) do
     t.index ["product_type", "product_id"], name: "index_iam8bit_sales_on_product"
   end
 
+  create_table "internal_merch_orders", force: :cascade do |t|
+    t.integer "payout_id", null: false
+    t.integer "merch_item_id", null: false
+    t.integer "merch_fulfillment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["merch_fulfillment_id"], name: "index_internal_merch_orders_on_merch_fulfillment_id"
+    t.index ["merch_item_id"], name: "index_internal_merch_orders_on_merch_item_id"
+    t.index ["payout_id"], name: "index_internal_merch_orders_on_payout_id"
+  end
+
   create_table "merch_fulfillments", force: :cascade do |t|
-    t.integer "bandcamp_sale_id", null: false
+    t.integer "bandcamp_sale_id"
     t.integer "production_cost_cents", default: 0, null: false
     t.string "production_cost_currency", default: "USD", null: false
     t.date "shipped_on"
@@ -212,6 +223,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_17_182643) do
   end
 
   add_foreign_key "artists", "payees"
+  add_foreign_key "internal_merch_orders", "merch_fulfillments"
+  add_foreign_key "internal_merch_orders", "merch_items"
+  add_foreign_key "internal_merch_orders", "payouts"
   add_foreign_key "merch_fulfillments", "admins", column: "fulfilled_by_id"
   add_foreign_key "merch_fulfillments", "bandcamp_sales"
   add_foreign_key "merch_items", "albums"

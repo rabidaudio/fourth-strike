@@ -78,4 +78,52 @@ namespace :home_sheet do
       end
     end
   end
+
+  task :load_internal_merch_orders => :environment do
+    require 'roo'
+
+    path = Rails.root.glob('exports/FOURTH STRIKE HOME SHEET*.xlsx').first
+    xlsx = Roo::Spreadsheet.open(path.to_s)
+
+    CalculatorCache::Manager.defer_recompute do
+      ActiveRecord::Base.transaction do
+        # Wipe any existing orders and re-create from scratch
+        InternalMerchOrder.find_each do |order|
+          order.destroy!
+          order.payout.destroy!
+          order.merch_fulfillment.destroy!
+        end
+
+        xlsx.sheet('INT MERCH ORDERS').parse(name: 'NAME', sku: 'MERCH SKU', out: 'OUT', in: 'IN',
+                                             net: 'NET').each do |row|
+          next if row[:name].blank?
+
+          _, fsn = HomeSheetReport.parse_payee(row[:name])
+          date = Time.zone.now # TODO: it would be awesome if we had an actual date for these
+          cost = row[:in].to_money
+          payee = Payee.find_by!(fsn: fsn)
+          sku = row[:sku]
+          if Rails.application.config.app_config[:home_sheet][:internal_merch][:sku_remap].key?(sku)
+            sku = Rails.application.config.app_config[:home_sheet][:internal_merch][:sku_remap][sku]
+          end
+          merch = Merch.find_by!(sku: sku)
+
+          InternalMerchOrder.create!(
+            merch_item: merch,
+            payout: Payout.new(
+              payee: payee,
+              amount: cost,
+              paid_at: date,
+              paypal_transaction_id: nil
+            ),
+            merch_fulfillment: MerchFulfillment.new(
+              shipped_on: date,
+              production_cost: cost,
+              bandcamp_sale_id: nil
+            )
+          )
+        end
+      end
+    end
+  end
 end

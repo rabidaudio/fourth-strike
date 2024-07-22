@@ -10,7 +10,7 @@
 #  shipped_on               :date
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
-#  bandcamp_sale_id         :integer          not null
+#  bandcamp_sale_id         :integer
 #  fulfilled_by_id          :integer
 #
 # Indexes
@@ -34,8 +34,9 @@
 class MerchFulfillment < ApplicationRecord
   include MonitizedSum
 
-  belongs_to :bandcamp_sale
-  belongs_to :fulfilled_by, class_name: 'Admin'
+  belongs_to :bandcamp_sale, optional: true
+  # fulfilled by will be nil for internal merch orders
+  belongs_to :fulfilled_by, class_name: 'Admin', optional: true
 
   monetize :production_cost_cents
 
