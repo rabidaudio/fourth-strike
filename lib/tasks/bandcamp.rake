@@ -247,7 +247,7 @@ namespace :bandcamp do
   task :load_report => :environment do
     require 'csv'
 
-    path = Rails.root.glob('exports/Fourth-Strike-Records_sales_*').sort.last
+    path = Rails.root.glob('exports/Fourth-Strike-Records_sales_*').max
     raise StandardError, 'Report not found' if path.nil?
 
     ActiveRecord::Base.transaction do

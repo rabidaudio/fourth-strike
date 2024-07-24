@@ -11,8 +11,8 @@ class RoyaltyCalculator
   prepend CalculatorCache
 
   cache_calculations :upfront_costs, :cost_of_goods,
-    :bandcamp_revenue, :distrokid_revenue, :destributor_revenue,
-    :payout_amounts
+                     :bandcamp_revenue, :distrokid_revenue, :destributor_revenue,
+                     :payout_amounts
 
   def initialize(product, from: Time.zone.at(0), to: Time.zone.now)
     @product = product

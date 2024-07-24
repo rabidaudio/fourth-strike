@@ -67,7 +67,7 @@ rake distrokid:load_report
 # Load rendered services
 rake home_sheet:load_rendered_services
 # Load patreon sales
-
+rake home_sheet:load_patreon
 # Load internal merch orders
 rake home_sheet:load_internal_merch_orders
 

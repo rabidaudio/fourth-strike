@@ -324,43 +324,115 @@ home_sheet:
 patreon:
   tiers:
     # No benefits! Just if you wanna help out.
-    - 'No Strikes!'
+    'No Strikes!':
+      digital_distribution: 0.0 # all money goes to FS
+      merch: []
     # Get access to sporadic works-in-progress, teases, updates from the
     # Fourth Strike artists, and episodes of idol board a day early!
-    - 'First Strike!'
+    'First Strike!':
+      digital_distribution: 0.0 # all money goes to FS
+      merch: []
     # In addition to demos and teases of what's to come, you'll get a
     # digital download of every release Fourth Strike puts out while you are a patron.
-    - 'Second Strike!'
+    'Second Strike!':
+      # all money treated as digital sales, divided evenly amongst albums
+      digital_distribution: 1.0
+      merch: []
     # In addition to demo access, and digital downloads, get sent a new t-shirt every month!
-    - 'Third Strike! (T-Shirts)'
+    'Third Strike! (T-Shirts)':
+      # 12.5% of proceeds are treated as digital sales and divided amongst albums.
+      # The rest is treated as a t-shirt merch sale
+      digital_distribution: 0.125
+      merch: [t-shirt]
     # In addition to demo access, and digital downloads, get sent a new cassette every month!
-    - 'Third Strike! (Cassettes)'
+    'Third Strike! (Cassettes)':
+      # 12.5% of proceeds are treated as digital sales and divided amongst albums.
+      # The rest is treated as a casette merch sale
+      digital_distribution: 0.125
+      merch: [cassette]
     # Get demos, WIP teases,a shirt AND a cassette sent to you every month.
-    - 'Fourth Strike!'
+    'Fourth Strike!':
+      # 7.5% of proceeds are treated as digital sales and divided amongst albums.
+      # The rest is treated as a casette merch sale and t-shirt merch sale
+      digital_distribution: 0.075
+      merch: [cassette, t-shirt]
   products:
-    # Assume all albums in that release got a digital sale?
     '2021-01-01':
+      digital:
+        - ROSTER
+        - neon fakes
       t-shirt: T-DEI-80 # deicide 80s
       cassette: C-NEO-001 # neon fakes
     '2021-02-01':
+      digital:
+        - STRIKE ONE!
+        - "the garages present: be my vlalentine"
+        - "Voxes: Stimulant"
       t-shirt: T-S1T # strike one
-      cassette: null # TODO ???
+      # cassette: # TODO ???
     '2021-03-01':
+      digital:
+        - "#14"
+        - the garages suck
+        - the garages TAKEOVER
       t-shirt: T-TKO # TAKEOVER
       cassette: C-LVB-001 # LIVE (1992)
     '2021-04-01':
+      digital:
+        - "World Tour: Part 1"
+        - "World Tour: Part 2"
+        - "UNDEFINED"
+        - "THE GARAGES CAN'T PLAY LIVE"
+        - "CONSUMED"
       t-shirt: T-CON # CONSUMED
       cassette: C-14+-001 # 14/the garages suck tape
     '2021-05-01':
+      digital:
+        - storm's here
+        - "STRIKE TWO​!​!"
+        - Immaterial Shores
+        - "Voxes: Somnolent"
+        - "where we droppin, boys?"
+        - "Tribute Act 2: Headliners"
       t-shirt: T-UND # undefined
       cassette: C-CON-001 # CONSUMED
     '2021-06-01':
+      digital:
+        - REVERSED
+        - "#1"
+        - we are the garages (vol 3)
+        - spark to a flame
       cassette: C-TPH-001 # tiapfyh
-      tshirt: T-PUT # putrid shark, TRANS / CLASSIC / PUTRID
+      t-shirt: T-PUT # putrid shark, TRANS / CLASSIC / PUTRID
     '2021-07-01':
+      digital:
+        - seattle
+        - from the shadows
+        - UNSTABLE
       t-shirt: T-UNS # UNSTABLE
-      cassette: UNS-001 # UNSTABLE/REVERSED
+      cassette: C-UNS-001 # UNSTABLE/REVERSED
     '2021-08-01':
+      digital:
+        - "#2"
+        - "the garages: RIV"
+        - "LIVE @ KORPSCON"
       t-shirt: T-RIV # RIV
-      cassette: C-PSK-001 # putrid shark 1/2
-    # Sept, Oct, Nov TODO ???
+      cassette: C-PSK-001 # putrid shark 1+2
+    '2021-09-01':
+      digital:
+        - we are the garages (vol 4)
+      # t-shirt: T-CPL # Can't play live (TODO)
+      cassette: C-L93-001
+    '2021-10-01':
+      digital:
+        - DISCIPLINE
+        - Significant Figures 2.0
+        - I Love Birds
+      # t-shirt: T-ILB # I Love Birds (TODO)
+      cassette: C-ILB-001
+    '2021-11-01':
+      digital:
+        - THE GARAGES VS DESERT BUS 2021
+        - short circuit 01
+      t-shirt: T-GEC
+      cassette: C-GEC-001

@@ -18,6 +18,7 @@ module Product
     base.has_many :bandcamp_sales, as: :product, dependent: :nullify
     base.has_many :distrokid_sales, as: :product, dependent: :nullify
     base.has_many :iam8bit_sales, as: :product, dependent: :nullify
+    base.has_many :patreon_sales, as: :product, dependent: :nullify
 
     base.scope :without_splits, -> { where.missing(:splits) }
   end
