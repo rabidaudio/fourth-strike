@@ -147,6 +147,7 @@ namespace :bandcamp do
                        track_number: 1,
                        lyrics: track_data['recordingOf']['lyrics']['text'],
                        credits: track_data['creditText'] || track_data['description'],
+                       bandcamp_url: track_url,
                        bandcamp_id: track_data['additionalProperty']&.find do |p|
                                       p['name'] == 'track_id'
                                     end&.dig('value')&.to_s
@@ -213,7 +214,7 @@ namespace :bandcamp do
       end
 
       # Also load from the Bandcamp sales report
-      path = Rails.root.glob('exports/*_bandcamp_raw_data_Fourth-Strike-Records.csv').first
+      path = Rails.root.glob('exports/Fourth-Strike-Records_sales_*').first
       CSV.foreach(path, headers: true, liberal_parsing: true, encoding: 'UTF-16LE') do |row|
         next unless row['item type'] == 'package'
         next unless Rails.application.config.app_config[:bandcamp][:load_merch_from_sales].key?(row['item url'])
@@ -246,7 +247,7 @@ namespace :bandcamp do
   task :load_report => :environment do
     require 'csv'
 
-    path = Rails.root.glob('exports/*_bandcamp_raw_data_Fourth-Strike-Records.csv').first
+    path = Rails.root.glob('exports/Fourth-Strike-Records_sales_*').sort.last
     raise StandardError, 'Report not found' if path.nil?
 
     ActiveRecord::Base.transaction do
