@@ -48,7 +48,8 @@ class Album < ApplicationRecord
   monetize :bandcamp_price_cents
 
   has_many :tracks, dependent: :restrict_with_exception
-  has_many :merch_items, class_name: 'Merch', dependent: :restrict_with_exception
+  has_many :album_merch_items, class_name: 'AlbumMerch', dependent: :destroy
+  has_many :merch_items, class_name: 'Merch', through: :album_merch_items
   has_many :rendered_services, dependent: :restrict_with_exception
 
   validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/, allow_nil: true }
@@ -68,7 +69,7 @@ class Album < ApplicationRecord
   def merch_revenue
     return 0.to_money if merch_items.empty?
 
-    merch_items.map { |t| RoyaltyCalculator.new(t).gross_revenue }.sum
+    merch_items.map { |m| RoyaltyCalculator.new(m).gross_revenue / m.albums.count }.sum
   end
 
   def total_associated_revenue

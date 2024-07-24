@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_24_161106) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_24_204431) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -36,6 +36,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_24_161106) do
     t.index ["bandcamp_id"], name: "index_albums_on_bandcamp_id", unique: true
     t.index ["bandcamp_url"], name: "index_albums_on_bandcamp_url", unique: true
     t.index ["catalog_number"], name: "index_albums_on_catalog_number", unique: true
+  end
+
+  create_table "albums_merch_items", force: :cascade do |t|
+    t.integer "album_id", null: false
+    t.integer "merch_item_id", null: false
+    t.index ["album_id", "merch_item_id"], name: "index_albums_merch_items_on_album_id_and_merch_item_id", unique: true
+    t.index ["album_id"], name: "index_albums_merch_items_on_album_id"
+    t.index ["merch_item_id"], name: "index_albums_merch_items_on_merch_item_id"
   end
 
   create_table "artists", force: :cascade do |t|
@@ -147,9 +155,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_24_161106) do
     t.datetime "updated_at", null: false
     t.string "variants", default: "[]", null: false
     t.boolean "private", default: false, null: false
-    t.integer "album_id"
     t.integer "external_distributor", default: 0, null: false
-    t.index ["album_id"], name: "index_merch_items_on_album_id"
     t.index ["bandcamp_url", "sku"], name: "index_merch_items_on_bandcamp_url_and_sku", unique: true
   end
 
@@ -236,13 +242,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_24_161106) do
     t.index ["isrc"], name: "index_tracks_on_isrc", unique: true
   end
 
+  add_foreign_key "albums_merch_items", "albums"
+  add_foreign_key "albums_merch_items", "merch_items"
   add_foreign_key "artists", "payees"
   add_foreign_key "internal_merch_orders", "merch_fulfillments"
   add_foreign_key "internal_merch_orders", "merch_items"
   add_foreign_key "internal_merch_orders", "payouts"
   add_foreign_key "merch_fulfillments", "admins", column: "fulfilled_by_id"
   add_foreign_key "merch_fulfillments", "bandcamp_sales"
-  add_foreign_key "merch_items", "albums"
   add_foreign_key "payouts", "payees"
   add_foreign_key "rendered_services", "albums"
   add_foreign_key "rendered_services", "payees"

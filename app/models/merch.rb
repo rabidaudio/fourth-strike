@@ -16,16 +16,10 @@
 #  variants             :string           default("[]"), not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
-#  album_id             :integer
 #
 # Indexes
 #
-#  index_merch_items_on_album_id              (album_id)
 #  index_merch_items_on_bandcamp_url_and_sku  (bandcamp_url,sku) UNIQUE
-#
-# Foreign Keys
-#
-#  album_id  (album_id => albums.id)
 #
 
 # A merch item is a physical product such as a t-shit or cassette
@@ -63,7 +57,12 @@ class Merch < ApplicationRecord
 
   self.table_name = 'merch_items'
 
-  belongs_to :album, optional: true
+  has_many :album_merch_items,
+           class_name: 'AlbumMerch',
+           foreign_key: :merch_item_id,
+           inverse_of: :merch_item,
+           dependent: :destroy
+  has_many :albums, through: :album_merch_items
   has_many :merch_fulfillments, through: :bandcamp_sales
   has_many :internal_merch_orders,
            inverse_of: :merch_item,

@@ -196,19 +196,25 @@ namespace :bandcamp do
           sku = Rails.application.config.app_config[:bandcamp][:merch_sku_remaps][sku]
         end
 
-        album = Album.find_by!(name: row['album_name']) if row['album_name'].present?
+        albums = row['album_names'].split('|').map { |n| Album.find_by!(name: n) } if row['album_names'].present?
         list_price = row['list_price'].to_money('USD')
-        Merch.upsert({
-                       bandcamp_url: row['url'],
-                       name: row['name'],
-                       artist_name: row['artist_name'],
-                       album_id: album&.id,
-                       sku: sku,
-                       variants: JSON.parse(row['variants']).to_json,
-                       private: row['private'] == 'TRUE',
-                       list_price_cents: list_price.cents,
-                       list_price_currency: list_price.currency.iso_code
-                     }, unique_by: [:bandcamp_url, :sku])
+
+        # wipe any existing relations
+        AlbumMerch.joins(:merch_item).where(merch_items: { bandcamp_url: row['url'], sku: sku }).delete_all
+
+        res = Merch.upsert({
+                             bandcamp_url: row['url'],
+                             name: row['name'],
+                             artist_name: row['artist_name'],
+                             sku: sku,
+                             variants: JSON.parse(row['variants']).to_json,
+                             private: row['private'] == 'TRUE',
+                             list_price_cents: list_price.cents,
+                             list_price_currency: list_price.currency.iso_code
+                           }, unique_by: [:bandcamp_url, :sku])
+
+        merch_id = res.rows[0][0]
+        AlbumMerch.create!(albums.map { |a| { album_id: a.id, merch_item_id: merch_id } }) if albums.present?
 
         merch_count += 1
       end
