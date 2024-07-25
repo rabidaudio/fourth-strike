@@ -86,7 +86,12 @@
         </span>
         
         <div v-for="payee in searchResults" v-bind:key="payee.fsn">
-          <a href="#" class="panel-block is-active" @click.prevent="select(payee)">{{ payee.name }} / {{ payee.fsn }}</a>
+          <a href="#" class="panel-block is-active" @click.prevent="select(payee)">
+            <span>{{ payee.name }} / {{ payee.fsn }}</span>
+            <span class="m-3 has-text-grey is-italic is-clipped" v-if="payee.aliases">
+              {{ payee.aliases.join(", ") }}
+            </span>
+          </a>
         </div>
       </p>
       <input type="hidden" :name="fieldName" :value="selectedFsn"/>

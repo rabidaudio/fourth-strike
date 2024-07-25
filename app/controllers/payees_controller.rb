@@ -11,7 +11,7 @@ class PayeesController < ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: @payees.map { |p| p.slice(:name, :fsn) }
+        render json: @payees.includes(:artists).map { |p| p.slice(:name, :fsn).merge(aliases: p.artist&.aliases) }
       end
       format.html do
         render :index
