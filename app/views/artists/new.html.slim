@@ -1,0 +1,26 @@
+h1.is-size-2 = "Create Artist Profile for #{@payee.name}"
+
+section.section
+
+  .columns
+    .column
+      = form_for(@artist) do |f|
+        = bulma_field(f, :text_field, @artist, :name, label: 'Primary Artist Name', placeholder: "Mike Townsend")
+        = f.hidden_field :payee_id
+
+        = render 'artist_fields', f: f
+
+        .field
+          .control
+            = f.submit "Create", class: "button is-link"
+
+    .column
+      h1.is-size-2 = "Credits"
+
+      - @payee.tracks.includes(:album).order_by_release_date_desc.limit(50).each do |track|
+        h4.is-size-5
+          = track.name
+          br
+          span.is-size-6 = "from #{track.album.name} by #{track.album.artist_name}"
+
+        pre style="white-space: pre-wrap;" = track.credits

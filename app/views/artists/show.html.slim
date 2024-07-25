@@ -1,18 +1,33 @@
-h1.is-size-2 = @artist.name
-
-- if admin? || current_user&.artist == @artist
-  a.button href=edit_artist_path(@artist)
-    span Edit
-
 section.section
+  h1.is-size-2 = @artist.name
+
   - if @artist.bio.present?
     == render_markdown @artist.bio
   - else
-    p = @artist.credit
+    pre style="white-space: pre-wrap;" = @artist.credit
 
-  / h1 Contributions
-  / TODO
+  - if admin? || current_user&.artist == @artist
+    a.button.m-3 href=edit_artist_path(@artist)
+      span Edit
+
+  h2.is-size-3  = "Contributions (#{@artist.payee.tracks.count})"
+
+  table.table
+    thead
+      tr
+        th Track
+        th Album
+        th Artist
+    tbody
+      - @artist.payee.tracks.includes(:album).order_by_release_date_desc.limit(200).each do |track|
+        tr
+          td
+            a href=track_path(track) = track.name
+          td
+            a href=album_path(track.album) = track.album.name
+          td
+            a href=merch_index_path(artist: track.album.artist_name) = track.album.artist_name
 
 - if admin? || current_user&.artist == @artist
   - @payee = @artist.payee
-  = render 'payees/show'
+  = render 'payees/info'

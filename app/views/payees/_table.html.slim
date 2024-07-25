@@ -3,6 +3,7 @@ table.table
     tr
       th FSN
       th Name
+      th
       th Paypal Acount
       th Balance
       th
@@ -16,7 +17,11 @@ table.table
             a href=artist_path(payee.artist) = payee.name
           - else
             span = payee.name
+            - unless payee.charity?
+              br
+              a href=new_artist_path(payee_id: payee.id) Create Artist Profile
 
+        td
           - if payee.charity?
             = ' '
             span.tag.is-normal.is-primary Charity
