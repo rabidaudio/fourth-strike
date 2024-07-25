@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Helper class for parsing content from the home sheet excel doc
-# rubocop:disable Rails/Output,Metrics/ClassLength
+# rubocop:disable Rails/Output
 class HomeSheetReport
   attr_reader :xlsx
 
@@ -187,4 +187,4 @@ class HomeSheetReport
     config[:payees][:charities]
   end
 end
-# rubocop:enable Rails/Output,Metrics/ClassLength
+# rubocop:enable Rails/Output

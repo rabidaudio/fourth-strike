@@ -26,5 +26,5 @@ class AlbumMerch < ApplicationRecord
   self.table_name = 'albums_merch_items'
 
   belongs_to :album
-  belongs_to :merch_item, class_name: 'Merch'
+  belongs_to :merch_item, class_name: 'Merch', counter_cache: 'albums_count'
 end

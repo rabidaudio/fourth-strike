@@ -58,34 +58,7 @@ p
 
 - if admin?
 
-  section.section
-    h1.is-size-2 Accounting
-
-    table.table
-      thead
-        tr
-          th Digital Album Sale Revenue
-          th Streaming Revenue
-          th Associated Merch Revenue
-          th Total Revenue
-          th Upfront Production Costs
-          th Royalties
-          th Organization Profit
-      tbody
-        tr
-          td = @album.digital_sale_revenue.format
-          td = @album.streaming_revenue.format
-          - has_unfulfilled = !BandcampSale.unfulfilled_merch.where(product_id: @album.merch_items).empty?
-          td class=(has_unfulfilled ? 'is-warning' : '')
-            = @album.merch_revenue.format
-            - if has_unfulfilled
-              br
-              span.is-italic.is-size-7 = " *Not all merch orders fulfilled"
-          td = @album.total_associated_revenue.format
-          td class=(@album.negative? ? 'is-warning' : '') = @album.expenses.format
-          - unless @album.splits.empty?
-            td = @album.royalties.format
-            td = @album.profit.format
+  = render partial: 'albums/accounting', locals: { albums: [@album] }
 
   section.section
     h2.is-size-3 = "Expenses: #{@album.expenses.format}"

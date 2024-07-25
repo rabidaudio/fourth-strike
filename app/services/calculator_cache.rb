@@ -41,6 +41,7 @@ module CalculatorCache
       Rails.cache.delete_matched('calc/*')
       # Then trigger a computation of everything
       PayoutCalculator.total_owed_for_everyone
+      Album.find_each { |a| ProjectCalculator.new(a).totals }
     end
 
     # This should be called when a sale (BandcampSale or DistrokidSale) is created/updated/destroyed
@@ -81,6 +82,11 @@ module CalculatorCache
       now_or_once_per_transaction(RoyaltyCalculator, product) do
         clear_cache(RoyaltyCalculator, product)
         RoyaltyCalculator.new(product).total_royalties_owed if eager_recompute?
+        case product
+        when Album then recompute_project!(product)
+        when Track then recompute_project!(product.album)
+        when Merch then product.albums.each { |a| recompute_project!(a) }
+        end
         product.payees.find_each do |payee|
           recompute_payouts!(payee)
         end
@@ -91,6 +97,13 @@ module CalculatorCache
       now_or_once_per_transaction(PayoutCalculator, payee) do
         clear_cache(PayoutCalculator, payee)
         PayoutCalculator.new(payee).for_services_rendered if eager_recompute?
+      end
+    end
+
+    def recompute_project!(album)
+      now_or_once_per_transaction(ProjectCalculator, album) do
+        clear_cache(ProjectCalculator, album)
+        ProjectCalculator.new(album).totals if eager_recompute?
       end
     end
 

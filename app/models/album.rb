@@ -54,49 +54,26 @@ class Album < ApplicationRecord
 
   validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/, allow_nil: true }
 
+  delegate :bandcamp_downloads, :total_streams, :digital_sale_revenue, :streaming_revenue,
+           :merch_revenue, :total_associated_revenue, :expenses,
+           :total_royalties, :profit, :negative?,
+           to: :project_calculator
+
   def self.find_by_upc(upc)
     where('upcs like ?', "%\"#{upc}\"%").first
   end
 
-  def digital_sale_revenue
-    RoyaltyCalculator.new(self).digital_revenue
-  end
-
-  def streaming_revenue
-    tracks.map { |t| RoyaltyCalculator.new(t).digital_revenue }.sum
-  end
-
-  def merch_revenue
-    return 0.to_money if merch_items.empty?
-
-    merch_items.map { |m| RoyaltyCalculator.new(m).gross_revenue / m.albums.count }.sum
-  end
-
-  def total_associated_revenue
-    digital_sale_revenue + streaming_revenue + merch_revenue
-  end
-
-  def expenses
-    RoyaltyCalculator.new(self).upfront_costs
-  end
-
-  def royalties
-    RoyaltyCalculator.new(self).total_royalties_owed +
-      tracks.map { |t| RoyaltyCalculator.new(t).total_royalties_owed }.sum +
-      merch_items.map { |t| RoyaltyCalculator.new(t).total_royalties_owed }.sum
-  end
-
-  def profit
-    RoyaltyCalculator.new(self).organization_income +
-      tracks.map { |t| RoyaltyCalculator.new(t).organization_income }.sum +
-      merch_items.map { |t| RoyaltyCalculator.new(t).organization_income }.sum
-  end
-
-  def negative?
-    expenses > total_associated_revenue
+  def unfulfilled_merch_items
+    BandcampSale.unfulfilled_merch.where(product_type: 'Merch', product_id: merch_items)
   end
 
   def private?
     attributes['private']
+  end
+
+  private
+
+  def project_calculator
+    @project_calculator || ProjectCalculator.new(self)
   end
 end

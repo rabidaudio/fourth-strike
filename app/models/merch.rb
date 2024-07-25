@@ -5,6 +5,7 @@
 # Table name: merch_items
 #
 #  id                   :integer          not null, primary key
+#  albums_count         :integer          default(0), not null
 #  artist_name          :string
 #  bandcamp_url         :string
 #  external_distributor :integer          default("undefined"), not null

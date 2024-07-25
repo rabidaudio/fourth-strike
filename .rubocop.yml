@@ -111,6 +111,9 @@ Metrics/PerceivedComplexity:
 Metrics/ParameterLists:
   Max: 7
 
+Metrics/ClassLength:
+  Max: 200
+
 Layout/LineLength:
   Max: 120
   AllowedPatterns:

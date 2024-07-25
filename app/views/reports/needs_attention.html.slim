@@ -1,0 +1,69 @@
+section.section
+  h2.is-size-3 Needs Attention
+
+  = render 'merch/unfulfilled'
+
+  - unless @due_for_payout.empty?
+    article.message.is-warning
+      .message-header
+        span = "#{@due_for_payout.count} payees are due to be paid out"
+      .message-body
+        = render 'payees/table', payees: @due_for_payout
+
+
+  - unless @missing_payee_info.empty?
+    article.message.is-warning
+      .message-header
+        span = "#{@missing_payee_info.count} payees are missing payment info"
+      .message-body
+        = render 'payees/table', payees: @missing_payee_info
+
+  - if @missing_splits > 0
+    article.message.is-warning
+      .message-header
+        span = "#{@missing_splits} products are missing royalty split assignments"
+      .message-body
+        .columns
+          .column
+            table.table
+              thead
+                tr
+                  th Albums
+                  th
+              tbody
+                - Album.without_splits.order(release_date: :desc).each do |album|
+                  tr
+                    td
+                      a href=album_path(album) = album.name
+                      br
+                      span = "by #{album.artist_name}"
+                    td
+                      a href=edit_splits_path(product_type: 'Album', product_id: album.id) Edit
+          .column
+            table.table
+              thead
+                tr
+                  th Tracks
+                  th
+              tbody
+                - Track.without_splits.order_by_release_date_desc.each do |track|
+                  tr
+                    td
+                      a href=track_path(track) = track.name
+                      br
+                      span = "from #{track.album.name} by #{track.album.artist_name}"
+                    td
+                      a href=edit_splits_path(product_type: 'Track', product_id: track.id) Edit
+          .column
+            table.table
+              thead
+                tr
+                  th Merch
+                  th
+              tbody
+                - Merch.without_splits.order(id: :desc).each do |merch|
+                  tr
+                    td
+                      a href=merch_path(merch) = merch.name
+                    td
+                      a href=edit_splits_path(product_type: 'Merch', product_id: merch.id) Edit

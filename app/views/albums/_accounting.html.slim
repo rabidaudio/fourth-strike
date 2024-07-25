@@ -1,0 +1,48 @@
+section.section
+  h1.is-size-2 Accounting
+
+  p These are the metrics for the project as a whole, including digital album sales, track streams, and any associated merch sales.
+
+  table.table
+    thead
+      tr
+        - if albums.count > 1
+          th Project
+        th Digital Album Sale Revenue
+        th Streaming Revenue
+        th Associated Merch Revenue
+        th Total Revenue
+        th Upfront Production Costs
+        th Royalties
+        th Organization Profit
+    tbody
+      - albums.each do |album|
+        tr
+          - if albums.count > 1
+            td
+              a href=album_path(album) = album.name
+                - if album.artist_name
+                  span = ' by '
+                  a href=merch_index_path(artist: album.artist_name) = album.artist_name
+          td
+            = album.digital_sale_revenue.format
+            br
+            span.is-italic.is-size-7 = "#{number_with_delimiter(album.bandcamp_downloads)} Bandcamp downloads"
+          td
+            = album.streaming_revenue.format
+            br
+            span.is-italic.is-size-7 = "#{number_with_delimiter(album.total_streams)} Lifetime streams"
+          - has_unfulfilled = album.unfulfilled_merch_items.present?
+          td class=(has_unfulfilled ? 'is-warning' : '')
+            = album.merch_revenue.format
+            - if has_unfulfilled
+              br
+              span.is-italic.is-size-7 = " *Not all merch orders fulfilled: #{album.unfulfilled_merch_items.sum_monetized(:net_revenue_amount).format} of unfulfilled orders"
+          td = album.total_associated_revenue.format
+          td class=(album.negative? ? 'is-danger' : '') = album.expenses.format
+          - if album.splits.empty?
+            td.is-warning colspan="2"
+              span.is-italic.is-size-7 No splits assigned
+          - else
+            td = album.total_royalties.format
+            td = album.profit.format

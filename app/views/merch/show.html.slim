@@ -10,6 +10,15 @@ section.section
   a href=@merch.bandcamp_url
     = image_tag("bandcamp-button-square-green/bandcamp-button-square-green-64.png")
 
+  - if @merch.albums.present?
+    ul
+      - @merch.albums.each do |album|
+        li
+          a href=album_path(album) = album.name
+          - if album.artist_name
+            span = ' by '
+            a href=merch_index_path(artist: album.artist_name) = album.artist_name
+
   / a.button href=edit_merch_path(@merch)
   /   span Edit
 
@@ -34,6 +43,7 @@ section.section
 
           = render_pagination(@sales)
 
+      .columns
         .column
           h1.is-size-2 = "Internal Orders (#{@merch.internal_merch_orders.count})"
 
@@ -53,3 +63,19 @@ section.section
                     span = " / "
                     a href=payee_path(order.payee) = order.payee.fsn
                   td = order.payout.amount.format
+
+        .column
+          h1.is-size-2 = "Patreon Orders (#{@merch.patreon_sales.count})"
+
+          table.table
+            thead
+              tr
+                th Period
+                th Tier
+                th Net Revenue
+            tbody
+              - @merch.patreon_sales.each do |patreon_sale|
+                tr
+                  td = patreon_sale.period.strftime('%b %Y')
+                  td = patreon_sale.tier
+                  td = patreon_sale.net_revenue_amount.format
