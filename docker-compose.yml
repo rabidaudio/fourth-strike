@@ -1,0 +1,24 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    restart: always
+    volumes:
+      - storage:/rails/storage
+      - exports:/rails/exports
+    environment:
+      - RAILS_ENV=production
+      - RAILS_SERVE_STATIC_FILES='true'
+      - RAILS_LOG_LEVEL=info
+      - RAILS_LOG_TO_STDOUT='true'
+      - HOSTNAME=app.fourth-strike.net
+      - DISCORD_CLIENT_ID
+      - DISCORD_CLIENT_SECRET
+      - RAILS_MASTER_KEY
+      # CDN_HOST
+# TODO: static site server instance
+# Redis for sidekiq, etc
+volumes:
+  storage:
+  exports:

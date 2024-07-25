@@ -18,7 +18,6 @@ gem 'redcarpet', '~> 3.6'
 gem 'slim-rails', '~> 3.6'
 gem 'sprockets-rails'
 gem 'stimulus-rails'
-gem 'tailwindcss-rails'
 gem 'turbo-rails'
 
 # Inline styles in a way supported by email clients
