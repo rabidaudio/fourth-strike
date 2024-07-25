@@ -38,15 +38,17 @@ nav.navbar role="navigation" aria-label="main navigation" data-controller="is_ac
 
       - if admin?
         a.navbar-item href=merch_index_path Merch
+        a.navbar-item href=iam8bit_sales_path iam8bit
         a.navbar-item href=payees_path Payees
         a.navbar-item href=rendered_services_path Services Rendered
         a.navbar-item href=reports_path Reporting
         a.navbar-item href=issues_path Needs Attention
 
     .navbar-end
-      a.navbar-item href="https://fourth-strike.bandcamp.com/" Bandcamp
-      a.navbar-item href="https://twitter.com/StrikeFourth" Twitter
-      a.navbar-item href="mailto:info@fourth-strike.com" Contact Us
+      - unless admin?
+        a.navbar-item href="https://fourth-strike.bandcamp.com/" Bandcamp
+        a.navbar-item href="https://twitter.com/StrikeFourth" Twitter
+        a.navbar-item href="mailto:info@fourth-strike.com" Contact Us
       .navbar-item
         .buttons
           = render 'sessions/user_button'

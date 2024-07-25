@@ -23,13 +23,13 @@ section.section
           td = sale.quarter
           td
             a href=merch_path(sale.product) = sale.product.name
-            - if sale.product.album
+            - sale.product.albums.each do |album|
               br
               span.is-size-7
-                a href=album_path(sale.product.album) = sale.product.album.name
-                - if sale.product.artist_name
+                a href=album_path(album) = album.name
+                - if album.artist_name
                   span = ' by '
-                  a href=merch_index_path(artist: sale.product.artist_name) = sale.product.artist_name
+                  a href=merch_index_path(artist: album.artist_name) = album.artist_name
           td = sale.quantity
           td = sale.gross_revenue_amount.format
           td = sale.net_revenue_amount.format

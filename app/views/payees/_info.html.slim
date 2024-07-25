@@ -21,7 +21,7 @@ section.section
   
   p
     a.button.m-1 href=edit_payee_path(@payee)
-      span Edit
+      span Edit Payment Info
 
     - unless @payee.artist || @payee.charity?
       a.button.m-1 href=new_artist_path(payee_id: @payee.id)

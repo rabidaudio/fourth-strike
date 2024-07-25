@@ -8,7 +8,7 @@ section.section
 
   - if admin? || current_user&.artist == @artist
     a.button.m-3 href=edit_artist_path(@artist)
-      span Edit
+      span Edit Artist Info
 
   h2.is-size-3  = "Contributions (#{@artist.payee.tracks.count})"
 

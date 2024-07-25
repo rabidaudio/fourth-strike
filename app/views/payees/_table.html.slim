@@ -30,7 +30,7 @@ table.table
             = ' '
             span.tag.is-normal.is-success Supporter
 
-        td
+        td class=(payee.paypal_account.blank? ? 'is-warning' : '')
           span data-controller="spoiler" = payee.paypal_account
         td class=(payee.due_for_payout? ? 'is-success' : (payee.balance.negative? ? 'is-danger' : ''))
           = payee.balance.format

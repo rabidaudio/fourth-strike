@@ -75,11 +75,13 @@ rake home_sheet:load_internal_merch_orders
 rake paypal:correct_paypal_accounts
 rake paypal:load_payouts
 
-# Album.where(artist_name: 'Sig Figs Collective').update_all(private: true)
+rails console
+# Basic cleanup
+# Album.where(artist_name: ['Sig Figs Collective', 'Left At London']).update_all(private: true)
 # Merch.find_each { |m| Merch.reset_counters(m.id, :albums_count) }
 
 # Grant appropriate users admin access
-rails console # Admin.create!(discord_handle: ...)
+# Admin.create!(discord_handle: ...)
 ```
 
 This should not have to be redone, as the `.sqlite` file is saved to the drive. This is only for
