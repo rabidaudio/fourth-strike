@@ -11,7 +11,9 @@ class RoyaltyCalculator
   prepend CalculatorCache
 
   cache_calculations :upfront_costs, :cost_of_goods,
-                     :bandcamp_revenue, :distrokid_revenue, :destributor_revenue,
+                     :bandcamp_revenue, :distrokid_revenue,
+                     :patreon_digital_revenue, :patreon_physical_revenue,
+                     :destributor_revenue,
                      :payout_amounts
 
   def initialize(product, from: Time.zone.at(0), to: Time.zone.now)
@@ -48,6 +50,18 @@ class RoyaltyCalculator
     distrokid_sales.sum(:earnings_usd).to_money('USD')
   end
 
+  def patreon_digital_revenue
+    return 0.to_money unless @product.is_a?(Album)
+
+    patreon_sales.sum_monetized(:net_revenue_amount)
+  end
+
+  def patreon_physical_revenue
+    return 0.to_money unless @product.is_a?(Merch)
+
+    patreon_sales.sum_monetized(:net_revenue_amount)
+  end
+
   def destributor_revenue
     return 0.to_money unless @product.is_a?(Merch)
 
@@ -57,13 +71,13 @@ class RoyaltyCalculator
   def digital_revenue
     return 0.to_money if @product.is_a?(Merch)
 
-    bandcamp_revenue + distrokid_revenue
+    bandcamp_revenue + distrokid_revenue + patreon_digital_revenue
   end
 
   def physical_revenue
     return 0.to_money unless @product.is_a?(Merch)
 
-    bandcamp_revenue - cost_of_goods
+    (bandcamp_revenue - cost_of_goods) + destributor_revenue + patreon_physical_revenue
   end
 
   def gross_revenue
@@ -72,6 +86,7 @@ class RoyaltyCalculator
 
   # The total income to be divided between the organization and payees
   def net_income
+    # TODO: how to properly account for upfront costs???
     gross_revenue - upfront_costs
   end
 
@@ -140,6 +155,10 @@ class RoyaltyCalculator
 
   def iam8bit_sales
     @product.iam8bit_sales.where('period >= ? and period < ?', @start_at, @end_at)
+  end
+
+  def patreon_sales
+    @product.patreon_sales.where('period >= ? and period < ?', @start_at, @end_at)
   end
 
   def payout_amounts

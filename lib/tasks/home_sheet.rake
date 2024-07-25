@@ -15,12 +15,14 @@ namespace :home_sheet do
       variants = merch_data.delete('variants').to_json
       album = Album.find_by!(name: album_name) if album_name.present?
 
-      Merch.upsert(merch_data.merge({ # rubocop:disable Rails/SkipsModelValidations
-                                      album_id: album&.id,
-                                      variants: variants,
-                                      list_price_cents: list_price.cents,
-                                      list_price_currency: list_price.currency.iso_code
-                                    }), unique_by: [:bandcamp_url, :sku])
+      res = Merch.upsert(merch_data.merge({ # rubocop:disable Rails/SkipsModelValidations
+                                            variants: variants,
+                                            list_price_cents: list_price.cents,
+                                            list_price_currency: list_price.currency.iso_code
+                                          }), unique_by: [:bandcamp_url, :sku])
+
+      merch_id = res.rows[0][0]
+      AlbumMerch.find_or_create_by!(album_id: album.id, merch_item_id: merch_id) if album.present?
     end
   end
 
@@ -137,16 +139,16 @@ namespace :home_sheet do
       ActiveRecord::Base.transaction do
         sheets = {
           'janCALC' => '2021-01-01',
-          # 'febCALC' => '2021-02-01', # STOPSHIP
+          'febCALC' => '2021-02-01',
           'marCALC' => '2021-03-01',
           'aprCALC' => '2021-04-01',
           'mayCALC' => '2021-05-01',
           'junCALC' => '2021-06-01',
           'jul21CALC' => '2021-07-01',
-          'aug21CALC' => '2021-08-01'
-          # 'sep21CALC' => '2021-09-01',
-          # 'oct21CALC' => '2021-10-01',
-          # 'nov21CALC' => '2021-11-01',
+          'aug21CALC' => '2021-08-01',
+          'sep21CALC' => '2021-09-01',
+          'oct21CALC' => '2021-10-01',
+          'nov21CALC' => '2021-11-01'
         }
 
         settings = Rails.application.config.app_config[:patreon]
