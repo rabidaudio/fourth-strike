@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_25_024837) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_25_035923) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -58,6 +58,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_024837) do
     t.integer "payee_id"
     t.index ["discord_handle"], name: "index_artists_on_discord_handle", unique: true
     t.index ["payee_id"], name: "index_artists_on_payee_id"
+  end
+
+  create_table "bandcamp_pledges", force: :cascade do |t|
+    t.string "bandcamp_pledge_id", null: false
+    t.string "level"
+    t.integer "pledge_amount_cents", default: 0, null: false
+    t.string "pledge_amount_currency", default: "USD", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bandcamp_pledge_id"], name: "index_bandcamp_pledges_on_bandcamp_pledge_id", unique: true
   end
 
   create_table "bandcamp_sales", force: :cascade do |t|
