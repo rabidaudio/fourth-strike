@@ -5,7 +5,7 @@ namespace :distrokid do
   task :load_report => :environment do
     require 'csv'
 
-    path = Rails.root.glob('exports/DistroKid_*.tsv').first
+    path = Rails.root.glob('storage/exports/DistroKid_*.tsv').first
     raise StandardError, 'Report not found' if path.nil?
 
     DistrokidReport.upsert_all!(path)
@@ -41,7 +41,7 @@ namespace :distrokid do
 
     page.go_to('https://distrokid.com/mymusic/')
 
-    CSV.open(Rails.root.join('exports/isrcs.csv'), 'w', force_quotes: true) do |csv|
+    CSV.open(Rails.root.join('storage/exports/isrcs.csv'), 'w', force_quotes: true) do |csv|
       # headers
       csv << [
         'album_name',
@@ -93,7 +93,7 @@ namespace :distrokid do
   task :import_isrcs => :environment do
     require 'csv'
 
-    csv = CSV.read(Rails.root.join('exports/ISRCs to Bandcamp URLs.csv'), headers: true)
+    csv = CSV.read(Rails.root.join('storage/exports/ISRCs to Bandcamp URLs.csv'), headers: true)
     rows = csv.each.to_a
 
     ActiveRecord::Base.transaction do

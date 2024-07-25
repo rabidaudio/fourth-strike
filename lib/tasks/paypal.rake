@@ -15,7 +15,7 @@ namespace :paypal do
       end
 
       # set corrected addresses
-      settings = YAML.load_file(Rails.root.join('exports/corrected_paypal_accounts.yml'))
+      settings = YAML.load_file(Rails.root.join('storage/exports/corrected_paypal_accounts.yml'))
 
       settings['corrected_paypal_accounts'].each do |fsn, address|
         Payee.find_by!(fsn: fsn).update!(paypal_account: address)
@@ -27,16 +27,16 @@ namespace :paypal do
   task :load_payouts => :environment do
     require 'csv'
 
-    settings = YAML.load_file(Rails.root.join('exports/corrected_paypal_accounts.yml'))
+    settings = YAML.load_file(Rails.root.join('storage/exports/corrected_paypal_accounts.yml'))
 
     strip = ->(v) { v&.strip }
-    gbp_conversion_rates = CSV.read(Rails.root.join('exports/GBP_USD_HistoricalPrices.csv'),
+    gbp_conversion_rates = CSV.read(Rails.root.join('storage/exports/GBP_USD_HistoricalPrices.csv'),
                                     headers: true,
                                     liberal_parsing: true,
                                     converters: strip,
                                     header_converters: strip).each.to_a
 
-    path = Rails.root.glob('exports/FS_PaypalTrans_*.csv').first
+    path = Rails.root.glob('storage/exports/FS_PaypalTrans_*.csv').first
     payouts_count = 0
     ActiveRecord::Base.transaction do
       # because we need to scan other rows for currency conversions, we load the entire sheet into memory first

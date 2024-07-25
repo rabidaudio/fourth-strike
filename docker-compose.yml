@@ -6,7 +6,6 @@ services:
     restart: always
     volumes:
       - storage:/rails/storage
-      - exports:/rails/exports
     environment:
       - RAILS_ENV=production
       - RAILS_SERVE_STATIC_FILES='true'
@@ -21,4 +20,3 @@ services:
 # Redis for sidekiq, etc
 volumes:
   storage:
-  exports:

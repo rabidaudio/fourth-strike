@@ -48,7 +48,7 @@ yarn run lint # lint and auto-fix everything
 ## Populating data from scratch
 
 To load data up to the point of the switchover, the following was done.
-To recreate requires several reports from the Drive to be placed in the `/exports` directory.
+To recreate requires several reports from the Drive to be placed in the `/storage/exports` directory.
 
 ```bash
 rake db:drop db:create db:migrate

@@ -188,7 +188,7 @@ namespace :bandcamp do
     merch_count = 0
     ActiveRecord::Base.transaction do
       # Load from the hand-created report
-      CSV.foreach(Rails.root.join('exports/Bandcamp Merch Items - data.csv'), headers: true) do |row|
+      CSV.foreach(Rails.root.join('storage/exports/Bandcamp Merch Items - data.csv'), headers: true) do |row|
         # name,url,sku,artist_name,list_price,private,variants
 
         sku = row['sku']
@@ -220,7 +220,7 @@ namespace :bandcamp do
       end
 
       # Also load from the Bandcamp sales report
-      path = Rails.root.glob('exports/Fourth-Strike-Records_sales_*').first
+      path = Rails.root.glob('storage/exports/Fourth-Strike-Records_sales_*').first
       CSV.foreach(path, headers: true, liberal_parsing: true, encoding: 'UTF-16LE') do |row|
         next unless row['item type'] == 'package'
         next unless Rails.application.config.app_config[:bandcamp][:load_merch_from_sales].key?(row['item url'])
@@ -253,7 +253,7 @@ namespace :bandcamp do
   task :load_report => :environment do
     require 'csv'
 
-    path = Rails.root.glob('exports/Fourth-Strike-Records_sales_*').max
+    path = Rails.root.glob('storage/exports/Fourth-Strike-Records_sales_*').max
     raise StandardError, 'Report not found' if path.nil?
 
     ActiveRecord::Base.transaction do

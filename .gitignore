@@ -41,8 +41,6 @@
 
 .DS_Store
 
-/exports
-
 
 # Ignore automatically generated js-routes files.
 /app/javascript/routes.js

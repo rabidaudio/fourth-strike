@@ -4,7 +4,7 @@
 namespace :home_sheet do
   desc 'Populate payees and splits from home spreadsheet'
   task :load_splits => :environment do
-    HomeSheetReport.new(Rails.root.glob('exports/FOURTH STRIKE HOME SHEET*.xlsx').first).load_all!
+    HomeSheetReport.new(Rails.root.glob('storage/exports/FOURTH STRIKE HOME SHEET*.xlsx').first).load_all!
   end
 
   desc 'Load merch items that are not on Bandcamp'
@@ -35,7 +35,7 @@ namespace :home_sheet do
       artist_names = Album.distinct.pluck(:artist_name)
       strip = ->(v) { v&.strip }
 
-      path = Rails.root.join('exports/FS SERVICES RENDERED - WORK LIST.csv')
+      path = Rails.root.join('storage/exports/FS SERVICES RENDERED - WORK LIST.csv')
       CSV.foreach(path, headers: true, converters: strip, header_converters: strip) do |row|
         next if row['NAME'].blank?
 
@@ -85,7 +85,7 @@ namespace :home_sheet do
   task :load_internal_merch_orders => :environment do
     require 'roo'
 
-    path = Rails.root.glob('exports/FOURTH STRIKE HOME SHEET*.xlsx').first
+    path = Rails.root.glob('storage/exports/FOURTH STRIKE HOME SHEET*.xlsx').first
     xlsx = Roo::Spreadsheet.open(path.to_s)
 
     CalculatorCache::Manager.defer_recompute do
@@ -132,7 +132,7 @@ namespace :home_sheet do
 
   task :load_patreon => :environment do
     require 'roo'
-    path = Rails.root.join('exports/PATREON CALC.xlsx')
+    path = Rails.root.join('storage/exports/PATREON CALC.xlsx')
     xlsx = Roo::Spreadsheet.open(path.to_s)
 
     CalculatorCache::Manager.defer_recompute do
