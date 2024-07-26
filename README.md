@@ -56,6 +56,8 @@ rake db:drop db:create db:migrate
 rake bandcamp:load_releases fetch_credits=true
 # Load all merch items from Bandcamp sale report
 rake bandcamp:load_merch_items
+# Load additional merch items that aren't on bandcamp
+rake home_sheet:load_merch_items
 # Attach ISRC/UPC data to albums and tracks, adding any tracks that were removed from Bandcamp as hidden tracks
 rake distrokid:import_isrcs
 # Load contributor splits from home sheet
