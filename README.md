@@ -87,6 +87,44 @@ rails console
 This should not have to be redone, as the `.sqlite` file is saved to the drive. This is only for
 record keeping purposes.
 
+Normally it's good to use a "real" database in production rather than sqlite, but here we're trying
+to keep costs low, and the size, performance, and concurrency requirements are very low. It also
+keeps backups/record keeping incredibly simple.
+
 ## Deployment
 
-TODO
+App is hosted on a DigitalOcean Droplet, inside of docker compose, accessed via SSH.
+A volume is mounted for persistent storage for portability and backup purposes. An
+nginx container acts as SSL termination and certificates are provided by Let'sEncrypt. 
+
+## Initial Deployment
+
+```bash
+# Mount the external volume
+mkdir -p /mnt/volume_nyc3_01
+mount -o discard,defaults,noatime /dev/disk/by-id/scsi-0DO_Volume_volume-nyc3-01 /mnt/volume_nyc3_01
+mkdir -p /mnt/volume_nyc3_01/storage
+# Make it auto-mount
+echo '/dev/disk/by-id/scsi-0DO_Volume_volume-nyc3-01 /mnt/volume_nyc3_01 ext4 defaults,nofail,discard 0 0' | sudo tee -a /etc/fstab
+# Create a persistent docker volume for it
+docker volume create --opt type=none --opt o=bind --opt device=/mnt/volume_nyc3_01/storage storage
+# Load code
+git clone https://github.com/rabidaudio/fourth-strike
+cd fourth-strike
+docker compose run app DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rake db:schema:load
+docker compose start
+```
+
+## Updates
+
+```bash
+cd fourth-strike
+# pull latest code
+git pull
+# Build latest docker images
+docker compose build
+# Restart containers
+docker compose restart
+# Run any pending migrations
+docker compose run app rake db:migrate
+```

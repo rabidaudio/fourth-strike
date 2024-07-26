@@ -141,24 +141,23 @@ class RoyaltyCalculator
   private
 
   def production_expenses
-    @product.rendered_services.where('rendered_at >= ? and rendered_at < ?', @start_at,
-                                     @end_at).sum_monetized(:compensation)
+    @product.rendered_services.where(rendered_at: @start_at...@end_at).sum_monetized(:compensation)
   end
 
   def bandcamp_sales
-    @product.bandcamp_sales.payable.where('purchased_at >= ? and purchased_at < ?', @start_at, @end_at)
+    @product.bandcamp_sales.payable.where(purchased_at: @start_at...@end_at)
   end
 
   def distrokid_sales
-    @product.distrokid_sales.where('reported_at >= ? and reported_at < ?', @start_at, @end_at)
+    @product.distrokid_sales.where(reported_at: @start_at...@end_at)
   end
 
   def iam8bit_sales
-    @product.iam8bit_sales.where('period >= ? and period < ?', @start_at, @end_at)
+    @product.iam8bit_sales.where(period: @start_at...@end_at)
   end
 
   def patreon_sales
-    @product.patreon_sales.where('period >= ? and period < ?', @start_at, @end_at)
+    @product.patreon_sales.where(period: @start_at...@end_at)
   end
 
   def payout_amounts

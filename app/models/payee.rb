@@ -111,7 +111,7 @@ class Payee < ApplicationRecord
   end
 
   def paid_out(from: Time.zone.at(0), to: Time.zone.now)
-    payouts.where('paid_at >= ?', from).where('paid_at < ?', to).sum_monetized(:amount)
+    payouts.where(paid_at: from..).where(paid_at: ...to).sum_monetized(:amount)
   end
 
   def balance(**)

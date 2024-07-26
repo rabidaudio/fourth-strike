@@ -20,7 +20,7 @@ Rails.application.configure do
 
   # Ensures that a master key has been made available in ENV["RAILS_MASTER_KEY"], config/master.key, or an environment
   # key such as config/credentials/production.key. This key is used to decrypt credentials (and other encrypted files).
-  config.require_master_key = ENV["SECRET_KEY_BASE_DUMMY"].nil?
+  config.require_master_key = ENV['SECRET_KEY_BASE_DUMMY'].nil?
 
   # Disable serving static files from `public/`, relying on NGINX/Apache to do so instead.
   # config.public_file_server.enabled = false
@@ -45,7 +45,6 @@ Rails.application.configure do
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
-
 
   config.active_record.sqlite3_production_warning = false
 
@@ -99,7 +98,7 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = Rails.application.credentials[:smtp] unless ENV["SECRET_KEY_BASE_DUMMY"].present?
+  config.action_mailer.smtp_settings = Rails.application.credentials[:smtp] if ENV['SECRET_KEY_BASE_DUMMY'].blank?
   config.action_mailer.perform_caching = false
   config.action_mailer.default_url_options = {
     host: ENV.fetch('HOSTNAME', nil)

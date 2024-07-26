@@ -386,7 +386,7 @@ namespace :bandcamp do
           # For discography purchases, what we do is take the entire discography released up to that point,
           # divide the money proportionally based on the sale value of the albums, then create a sale for
           # each album for that weighted amount
-          albums = Album.where('bandcamp_url like ?', "#{row['item url']}%").where('release_date <= ?', purchased_at)
+          albums = Album.where('bandcamp_url like ?', "#{row['item url']}%").where(release_date: ..purchased_at)
           total_value = albums.sum_monetized(:bandcamp_price)
           weighted_values = albums.index_with { |a| a.bandcamp_price / total_value }
 

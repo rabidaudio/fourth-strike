@@ -70,6 +70,6 @@ class PayoutCalculator
   end
 
   def services_rendered
-    @payee.rendered_services.where('rendered_at >= ? and rendered_at < ?', @start_at, @end_at)
+    @payee.rendered_services.where(rendered_at: @start_at...@end_at)
   end
 end

@@ -23,14 +23,14 @@ services:
     environment:
       - TERM=xterm
     restart: "no"
-  chrome:
-    image: zenika/alpine-chrome
-    command: --no-sandbox --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 https://www.chromestatus.com/
-    ports:
-      - 9222:9222
-    networks:
-      - app
-    restart: unless-stopped
+  # chrome:
+  #   image: zenika/alpine-chrome
+  #   command: --no-sandbox --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 https://www.chromestatus.com/
+  #   ports:
+  #     - 9222:9222
+  #   networks:
+  #     - app
+  #   restart: unless-stopped
   app:
     build: .
     ports:
@@ -43,7 +43,7 @@ services:
       - RAILS_LOG_LEVEL=info
       - RAILS_LOG_TO_STDOUT=true
       - HOSTNAME=app.fourth-strike.net
-      - CHROME_URL=http://chrome:9222
+      # - CHROME_URL=http://chrome:9222
       - DISCORD_CLIENT_ID
       - DISCORD_CLIENT_SECRET
       - RAILS_MASTER_KEY

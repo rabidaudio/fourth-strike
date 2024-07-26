@@ -27,9 +27,11 @@ FactoryBot.define do
     transient do
       type { ['T', 'C', 'P', 'V'].sample }
       full_type { { 'T' => 'T-SHIRT', 'C' => 'CASSETTE', 'P' => 'POSTER' } }
+
+      album { association(:album) }
     end
 
-    album
+    albums { [album] }
     name { "#{album.name.upcase} #{full_type}" }
     artist_name { album.artist_name }
     sku { "#{type}-#{album.catalog_number[..2]}-#{Faker::Number.number(digits: 3)}" }
