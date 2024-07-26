@@ -1,9 +1,31 @@
+version: "3.3"
+
 services:
+  nginx:
+    build:
+      context: proxy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - letsencrypt:/etc/letsencrypt:ro
+      - acme_challenge:/tmp/acme_challenge
+    networks:
+      - app
+    restart: always
+  letsencrypt:
+    image: certbot/certbot
+    command: sh -c "certbot certonly --expand --webroot -w /tmp/acme_challenge -d app.fourth-strike.com --text --agree-tos --email info@fourth-strike.com --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges=http"
+    entrypoint: ""
+    volumes:
+      - letsencrypt:/etc/letsencrypt:ro
+      - acme_challenge:/tmp/acme_challenge
+    environment:
+      - TERM=xterm
   web:
     build: .
     ports:
       - "3000:3000"
-    restart: always
     volumes:
       - storage:/rails/storage
     environment:
@@ -15,8 +37,18 @@ services:
       - DISCORD_CLIENT_ID
       - DISCORD_CLIENT_SECRET
       - RAILS_MASTER_KEY
-      # CDN_HOST
-# TODO: static site server instance
-# Redis for sidekiq, etc
+    networks:
+      - app
+    restart: always
+
 volumes:
   storage:
+    external: true
+  letsencrypt:
+    external: false
+  acme_challenge:
+    external: false
+
+networks:
+  app:
+    driver: bridge
