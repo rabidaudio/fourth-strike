@@ -83,7 +83,7 @@ Rails.application.configure do
   # Use a different cache store in production.
 
   # NOTE: don't want to put production cache on remote drive
-  config.cache_store = :file_store, Rails.root.join('cache')
+  config.cache_store = :file_store, Rails.root.join('tmp/cache')
 
   # config.cache_store = :redis_cache_store, config.redis_config
 
