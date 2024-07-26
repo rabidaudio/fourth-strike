@@ -23,7 +23,7 @@ services:
     environment:
       - TERM=xterm
     restart: "no"
-  web:
+  app:
     build: .
     ports:
       - 3000:3000
