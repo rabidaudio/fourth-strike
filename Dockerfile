@@ -65,13 +65,8 @@ RUN export PATH="$PATH:/rails/bin"
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install -y curl libsqlite3-0 libvips libpq-dev \
-        libgtk-3-0 libsecret-1-0 python3 perl libgbm1 libgl1 libglx-mesa0 libxss1 libxshmfence1 && \
+    apt-get install -y curl libsqlite3-0 libvips libpq-dev && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Install Chromium for Ferrum gem
-ADD http://packages.linuxmint.com/pool/upstream/c/chromium/chromium_126.0.6478.126~linuxmint1%2Bfaye_amd64.deb chromium.deb
-# RUN dpkg -i chromium.deb && rm chromium.deb
 
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
