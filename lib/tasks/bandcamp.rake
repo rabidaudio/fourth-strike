@@ -11,7 +11,7 @@ namespace :bandcamp do
   task :load_releases => :environment do
     require 'ferrum'
 
-    browser = Ferrum::Browser.new
+    browser = Ferrum::Browser.new(browser_options: { 'no-sandbox': nil }
     bandcamp_url = Rails.application.config.app_config[:bandcamp][:url]
     fetch_credits = ENV.fetch('fetch_credits', 'false').to_b
 

@@ -41,7 +41,8 @@ RUN bundle install && \
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
-# Copy application code
+# Copy only application code for compiling assets
+# COPY --exclude proxy --exclude docker-compose.yml --exclude Dockerfile --exclude README.md . .
 COPY . .
 
 # Precompile bootsnap code for faster boot times
@@ -52,6 +53,9 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 RUN yarn run build && yarn run build:css
 
+# # Copy remaining application code
+# COPY . .
+
 
 # Final stage for app image
 FROM base
@@ -61,22 +65,22 @@ RUN export PATH="$PATH:/rails/bin"
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libsqlite3-0 libvips libpq-dev libgtk-3-0 libsecret-1-0 && \
+    apt-get install -y curl libsqlite3-0 libvips libpq-dev \
+        libgtk-3-0 libsecret-1-0 python3 perl libgbm1 libgl1 libglx-mesa0 libxss1 libxshmfence1 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install Chromium for Ferrum gem
-RUN wget http://packages.linuxmint.com/pool/upstream/c/chromium/chromium_126.0.6478.126~linuxmint1%2Bfaye_amd64.deb && \
-    dpkg -i chromium_*.deb && \
-    rm chromium_*.deb
+ADD http://packages.linuxmint.com/pool/upstream/c/chromium/chromium_126.0.6478.126~linuxmint1%2Bfaye_amd64.deb chromium.deb
+# RUN dpkg -i chromium.deb && rm chromium.deb
 
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
 # Run and own only the runtime files as a non-root user for security
-RUN useradd rails --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER rails:rails
+# RUN useradd rails --create-home --shell /bin/bash && \
+#     chown -R rails:rails db log storage tmp
+# USER rails:rails
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]

@@ -17,7 +17,7 @@ namespace :distrokid do
     require 'csv'
     require 'tty-prompt'
 
-    browser = Ferrum::Browser.new
+    browser = Ferrum::Browser.new(browser_options: { 'no-sandbox': nil }
     prompt = TTY::Prompt.new
 
     page = browser.create_page
