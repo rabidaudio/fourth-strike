@@ -4,13 +4,15 @@
 # rubocop:disable Rails/Output
 class DistrokidReport
   def self.upsert_all!(path)
-    ActiveRecord::Base.transaction do
-      # There isn't a good uniqueness for rows (it would be a combination of several), so instead
-      # we just assume we're loading all data, and wipe and reload the whole table.
-      DistrokidSale.delete_all
+    CalculatorCache::Manager.defer_recompute do
+      ActiveRecord::Base.transaction do
+        # There isn't a good uniqueness for rows (it would be a combination of several), so instead
+        # we just assume we're loading all data, and wipe and reload the whole table.
+        DistrokidSale.delete_all
 
-      CSV.foreach(path, headers: true, col_sep: "\t", liberal_parsing: true, encoding: 'iso-8859-1') do |row|
-        DistrokidReport::Row.new(row).record_sale!
+        CSV.foreach(path, headers: true, col_sep: "\t", liberal_parsing: true, encoding: 'iso-8859-1') do |row|
+          DistrokidReport::Row.new(row).record_sale!
+        end
       end
     end
   end

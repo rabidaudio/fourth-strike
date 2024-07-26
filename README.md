@@ -95,7 +95,10 @@ keeps backups/record keeping incredibly simple.
 
 App is hosted on a DigitalOcean Droplet, inside of docker compose, accessed via SSH.
 A volume is mounted for persistent storage for portability and backup purposes. An
-nginx container acts as SSL termination and certificates are provided by Let'sEncrypt. 
+nginx container acts as SSL termination and certificates are provided by Let'sEncrypt.
+
+If loading a lot of data into production, it can help to scale up to a larger instance for a bit
+and then scale back down when finished.
 
 ## Initial Deployment
 

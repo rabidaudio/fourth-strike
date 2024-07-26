@@ -121,6 +121,7 @@ namespace :distrokid do
       # 3. Create hidden tracks for any missing from Bandcamp
       rows.each do |row| # rubocop:disable Style/CombinableLoops
         next if row['bandcamp_track_url'].present?
+        next if row['bandcamp_album_url'].blank?
 
         puts("Creating hidden track #{row['track_name']} from #{row['album_name']}: #{row['track_isrc']}")
         Track.create_with(
