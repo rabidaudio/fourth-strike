@@ -31,9 +31,9 @@ services:
       - storage:/rails/storage
     environment:
       - RAILS_ENV=production
-      - RAILS_SERVE_STATIC_FILES='true'
+      - RAILS_SERVE_STATIC_FILES=true
       - RAILS_LOG_LEVEL=info
-      - RAILS_LOG_TO_STDOUT='true'
+      - RAILS_LOG_TO_STDOUT=true
       - HOSTNAME=app.fourth-strike.net
       - DISCORD_CLIENT_ID
       - DISCORD_CLIENT_SECRET

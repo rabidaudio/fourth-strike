@@ -56,6 +56,9 @@ RUN yarn run build && yarn run build:css
 # Final stage for app image
 FROM base
 
+# Put the rails bin directory in the path
+RUN export PATH="$PATH:/rails/bin"
+
 # Install packages needed for deployment
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libsqlite3-0 libvips libpq-dev && \
