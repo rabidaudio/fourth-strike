@@ -9,19 +9,20 @@ services:
       - 443:443
     volumes:
       - letsencrypt:/etc/letsencrypt:ro
-      - acme_challenge:/tmp/acme_challenge
+      - acme_challenge:/var/www/_letsencrypt
     networks:
       - app
     restart: always
   letsencrypt:
     image: certbot/certbot
-    command: sh -c "certbot certonly --expand --webroot -w /tmp/acme_challenge -d app.fourth-strike.com --text --agree-tos --email info@fourth-strike.com --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges=http"
+    command: sh -c "certbot certonly --expand --webroot -w /tmp/acme_challenge -d app.fourth-strike.com --text --agree-tos --email info@fourth-strike.com --rsa-key-size 4096 --verbose --non-interactive --keep-until-expiring --preferred-challenges=http"
     entrypoint: ""
     volumes:
-      - letsencrypt:/etc/letsencrypt:ro
+      - letsencrypt:/etc/letsencrypt
       - acme_challenge:/tmp/acme_challenge
     environment:
       - TERM=xterm
+    restart: "no"
   web:
     build: .
     ports:
