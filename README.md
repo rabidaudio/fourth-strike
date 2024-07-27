@@ -1,6 +1,6 @@
 # Fourth Strike
 
-This is a web-app for tracking projects released by [Fourth Strike](https://fourth-strike.com/). It allows browsing the complete catalog and handles accounting and payouts to artists.
+[This is a web-app](https://app.fourth-strike.com) for tracking projects released by [Fourth Strike](https://fourth-strike.com/). It allows browsing the complete catalog and handles accounting and payouts to artists.
 
 ## Setup
 
@@ -13,8 +13,6 @@ rbenv install $(cat .ruby-version)
 # Install system dependencies
 sudo apt install sqlite3
 #   brew install sqlite3
-# Start postgres
-# brew services start postgresql@14
 # Install Ruby dependencies
 gem install bundler -v '~> 2.5'
 bundle install
@@ -79,7 +77,6 @@ rake paypal:load_payouts
 
 rails console
 # Basic cleanup
-# Album.where(artist_name: ['Sig Figs Collective', 'Left At London']).update_all(private: true)
 # Merch.find_each { |m| Merch.reset_counters(m.id, :albums_count) }
 
 # Grant appropriate users admin access
@@ -95,7 +92,7 @@ keeps backups/record keeping incredibly simple.
 
 ## Deployment
 
-App is hosted on a DigitalOcean Droplet, inside of docker compose, accessed via SSH.
+App is hosted on a DigitalOcean droplet, inside of docker compose, accessed via SSH.
 A volume is mounted for persistent storage for portability and backup purposes. An
 nginx container acts as SSL termination and certificates are provided by Let'sEncrypt.
 
