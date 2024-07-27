@@ -43,6 +43,7 @@ services:
       - RAILS_LOG_LEVEL=info
       - RAILS_LOG_TO_STDOUT=true
       - HOSTNAME=app.fourth-strike.net
+      - RAILS_MIN_THREADS=1
       # - CHROME_URL=http://chrome:9222
       - DISCORD_CLIENT_ID
       - DISCORD_CLIENT_SECRET
