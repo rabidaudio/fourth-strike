@@ -5,7 +5,7 @@ namespace :distrokid do
   task :load_report => :environment do
     require 'csv'
 
-    path = Rails.root.glob('storage/exports/DistroKid_*.tsv').first
+    path = Rails.root.glob('storage/exports/DistroKid_*.tsv').max
     raise StandardError, 'Report not found' if path.nil?
 
     DistrokidReport.upsert_all!(path)

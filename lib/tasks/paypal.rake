@@ -36,68 +36,73 @@ namespace :paypal do
                                     converters: strip,
                                     header_converters: strip).each.to_a
 
-    path = Rails.root.glob('storage/exports/FS_PaypalTrans_*.csv').first
     payouts_count = 0
     ActiveRecord::Base.transaction do
-      # because we need to scan other rows for currency conversions, we load the entire sheet into memory first
-      rows = CSV.read(path, headers: true, liberal_parsing: true).each.to_a
+      # To get the proper reports for this script, use "Activity Download" with Transaction Type "All Transactions".
+      # Report should come in as an email. If try and generate using Statements instead, the columns will be wrong!
+      Rails.root.glob('storage/exports/FS_PaypalTrans_*.csv').each do |path|
+        # because we need to scan other rows for currency conversions, we load the entire sheet into memory first
+        rows = CSV.read(path, headers: true, liberal_parsing: true).each.to_a
 
-      rows.each do |row|
-        email = row['To Email Address'].downcase
-        txid = row['Transaction ID']
+        rows.each do |row|
+          email = row['To Email Address'].downcase
+          txid = row['Transaction ID']
 
-        next unless row['Type'] == 'General Payment'
-        next unless row['Status'] == 'Completed'
+          next unless row['Type'] == 'General Payment'
+          next unless row['Status'] == 'Completed'
 
-        next if email.in?(Rails.application.config.app_config[:paypal][:incoming_addresses])
+          next if email.in?(Rails.application.config.app_config[:paypal][:incoming_addresses])
 
-        gross = row['Gross'].to_money(row['Currency'])
+          gross = row['Gross'].to_money(row['Currency'])
 
-        raise StandardError, "Non-negative payout: #{txid}" unless gross.negative?
+          raise StandardError, "Non-negative payout: #{txid}" unless gross.negative?
 
-        date = row[0] # row['\"Date\"']
-        paid_at = DateTime.parse("#{date} #{row['Time']} #{row['Time zone']}")
+          date = row[0] # row['\"Date\"']
+          paid_at = DateTime.parse("#{date} #{row['Time']} #{row['Time zone']}")
 
-        payee = Payee.find_by(paypal_account: email)
-        payee = Payee.find_by!(fsn: settings['remapped_addresses'][email]) if settings['remapped_addresses'].key?(email)
-
-        if payee.blank?
-          puts("Skipping [#{txid}] #{paid_at} #{gross.format} payout to #{row['Name']} (#{email}): payee not found")
-          next
-        end
-
-        # convert payouts to USD by finding the transaction that does currency conversion
-        if gross.currency.iso_code != 'USD'
-          # we can't just use the USD row value because it includes fees
-          in_conversion_row = rows.find { |r| r['Reference Txn ID'] == txid && r['Currency'] == 'USD' }
-          out_conversion_row = rows.find { |r| r['Reference Txn ID'] == txid && r['Currency'] == row['Currency'] }
-
-          if in_conversion_row.present? && out_conversion_row.present?
-            conversion_rate = in_conversion_row['Gross'].to_f.abs / out_conversion_row['Gross'].to_f.abs
-
-            gross = (gross.amount * conversion_rate).to_money('USD')
-          elsif row['Currency'] == 'GBP'
-            conversion_rate = gbp_conversion_rates.find do |r|
-                                Date.strptime(r['Date'], '%m/%d/%y') <= paid_at
-                              end['Close'].to_f
-
-            gross = (gross.amount * conversion_rate).to_money('USD')
-          else
-            raise StandardError, "No conversion row found: #{txid}"
+          payee = Payee.find_by(paypal_account: email)
+          if settings['remapped_addresses'].key?(email)
+            payee = Payee.find_by!(fsn: settings['remapped_addresses'][email])
           end
+
+          if payee.blank?
+            puts("Skipping [#{txid}] #{paid_at} #{gross.format} payout to #{row['Name']} (#{email}): payee not found")
+            next
+          end
+
+          # convert payouts to USD by finding the transaction that does currency conversion
+          if gross.currency.iso_code != 'USD'
+            # we can't just use the USD row value because it includes fees
+            in_conversion_row = rows.find { |r| r['Reference Txn ID'] == txid && r['Currency'] == 'USD' }
+            out_conversion_row = rows.find { |r| r['Reference Txn ID'] == txid && r['Currency'] == row['Currency'] }
+
+            if in_conversion_row.present? && out_conversion_row.present?
+              conversion_rate = in_conversion_row['Gross'].to_f.abs / out_conversion_row['Gross'].to_f.abs
+
+              gross = (gross.amount * conversion_rate).to_money('USD')
+            elsif row['Currency'] == 'GBP'
+              conversion_rate = gbp_conversion_rates.find do |r|
+                                  Date.strptime(r['Date'], '%m/%d/%y') <= paid_at
+                                end['Close'].to_f
+
+              gross = (gross.amount * conversion_rate).to_money('USD')
+            else
+              raise StandardError, "No conversion row found: #{txid}"
+            end
+          end
+
+          paid = -1 * gross
+
+          Payout.upsert({
+                          amount_cents: paid.cents,
+                          amount_currency: paid.currency.iso_code,
+                          paid_at: paid_at,
+                          payee_id: payee.id,
+                          paypal_transaction_id: txid
+                        }, unique_by: [:paypal_transaction_id])
+
+          payouts_count += 1
         end
-
-        paid = -1 * gross
-
-        Payout.upsert({
-                        amount_cents: paid.cents,
-                        amount_currency: paid.currency.iso_code,
-                        paid_at: paid_at,
-                        payee_id: payee.id,
-                        paypal_transaction_id: txid
-                      }, unique_by: [:paypal_transaction_id])
-
-        payouts_count += 1
       end
     end
 
