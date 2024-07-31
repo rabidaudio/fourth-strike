@@ -27,4 +27,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: fourth-strike/app:${{ github.sha }},fourth-strike/app:latest
+          tags: registry.digitalocean.com/fourth-strike/app:${{ github.sha }},registry.digitalocean.com/fourth-strike/app:latest

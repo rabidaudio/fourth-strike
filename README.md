@@ -125,8 +125,6 @@ docker compose start
 cd fourth-strike
 # pull latest code
 git pull
-# Build latest docker images
-docker compose build
 # Restart containers
 docker compose restart
 # Run any pending migrations
