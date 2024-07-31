@@ -1,0 +1,21 @@
+== render_markdown(File.read(Rails.root.join('app/views/static_pages/_privacy_policy.html.md')))
+
+hr
+
+markdown:
+  # Acknowledgements
+
+  This site is an open source [Ruby on Rails](https://rubyonrails.org/) application, available under
+  the [MIT License](https://github.com/rabidaudio/fourth-strike/blob/main/LICENSE). The source code
+  is available on [GitHub](https://github.com/rabidaudio/fourth-strike) and hosted by DigitalOcean.
+
+  We use [RemixIcon iconic fonts](https://remixicon.com/), and
+  [Jost](https://fontsource.org/fonts/jost) and
+  [JetBrains Mono](https://fontsource.org/fonts/jetbrains-mono) fonts from
+  [fontsource](https://fontsource.org/). We use UI libraries [Bulma](https://bulma.io/),
+  [Vue.js](https://vuejs.org/), and [Chart.js](https://www.chartjs.org/).
+
+  ## Dependencies
+
+pre
+  == File.read(Rails.root.join('vendor/dependencies.txt'))

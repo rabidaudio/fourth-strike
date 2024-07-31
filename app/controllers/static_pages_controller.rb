@@ -5,4 +5,6 @@ class StaticPagesController < ApplicationController
   layout 'hero_card'
 
   def home; end
+
+  def privacy; end
 end

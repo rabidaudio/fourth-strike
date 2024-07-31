@@ -91,6 +91,9 @@ group :development, :test do
   gem 'debug', platforms: %i[mri windows]
   gem 'dotenv'
 
+  # CLI for determining dependency licenses
+  gem 'license_finder', require: false
+
   # SAST
   gem 'brakeman'
   # Detect and warn against N+1 queries

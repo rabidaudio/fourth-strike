@@ -132,3 +132,9 @@ docker compose restart
 # Run any pending migrations
 docker compose run app rake db:migrate
 ```
+
+## Dependency Report
+
+```bash
+bundle exec license_finder report --skip-debug --format text --save vendor/dependencies.txt
+```

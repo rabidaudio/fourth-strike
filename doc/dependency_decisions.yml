@@ -1,0 +1,109 @@
+---
+- - :permit
+  - MIT
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:35:08.279454000 Z
+- - :permit
+  - ISC
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:35:17.220070000 Z
+- - :permit
+  - Simplified BSD
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:35:20.018200000 Z
+- - :permit
+  - Apache 2.0
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:35:28.132646000 Z
+- - :permit
+  - BSD Zero Clause License
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:35:37.115319000 Z
+- - :permit
+  - Mozilla Public License 2.0
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:36:37.170493000 Z
+- - :permit
+  - New BSD
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:36:48.836561000 Z
+- - :permit
+  - ruby
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:36:51.706363000 Z
+- - :ignore_group
+  - development
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:38:42.377085000 Z
+- - :ignore_group
+  - test
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:38:46.373228000 Z
+- - :permit
+  - MIT-0
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:39:48.581178000 Z
+- - :permit
+  - SIL OPEN FONT LICENSE Version 1.1
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:39:51.030805000 Z
+- - :permit
+  - The Unlicense
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:40:03.640998000 Z
+- - :ignore
+  - caniuse-lite
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:40:20.307289000 Z
+- - :permit
+  - BSD
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:40:49.900537000 Z
+- - :ignore
+  - spdx-exceptions
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:41:32.843870000 Z
+- - :ignore
+  - spdx-license-ids
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:41:37.793151000 Z
+- - :permit
+  - Python-2.0
+  - :who:
+    :why:
+    :versions: []
+    :when: 2024-07-31 17:44:01.488553000 Z

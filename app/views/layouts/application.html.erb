@@ -13,5 +13,14 @@
 
   <body>
     <%= content_for?(:content) ? yield(:content) : yield %>
+
+    <footer class="has-text-centered">
+      <span class="mx-3">
+        <a href="https://github.com/rabidaudio/fourth-strike">Source Code</a>
+      </span>
+      <span class="mx-3">
+        <a href="<%= privacy_path %>">Privacy & Acknowledgements</a>
+      </span>
+    </footer>
   </body>
 </html>
