@@ -32,7 +32,8 @@ services:
   #     - app
   #   restart: unless-stopped
   app:
-    build: .
+    # build: .
+    image: registry.digitalocean.com/fourth-strike/app:latest
     ports:
       - 3000:3000
     volumes:
