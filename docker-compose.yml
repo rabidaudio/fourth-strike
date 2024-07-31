@@ -38,6 +38,10 @@ services:
       - 3000:3000
     volumes:
       - storage:/rails/storage
+      - type: tmpfs
+        target: /rails/tmp
+        tmpfs:
+          size: "52428800" # 50MB
     environment:
       - RAILS_ENV=production
       - RAILS_SERVE_STATIC_FILES=true
