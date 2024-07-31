@@ -2,9 +2,24 @@ h1.is-size-2 = "#{@product.class.name} Splits"
 h2.is-size-3 = @product.name
 
 section.section
-  = form_for(@product, url: splits_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post) do |f|
-    div vue-component="EditSplits" props=@props.to_json
+  .columns
+    .column
+      = form_for(@product, url: splits_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post) do |f|
+        div vue-component="EditSplits" props=@props.to_json
 
-    .field
-      .control
-        = f.submit "Update Splits", class: "button is-link"
+        .field
+          .control
+            = f.submit "Update Splits", class: "button is-link"
+
+
+    .column
+      h1.is-size-2 = "Credits"
+
+      - tracks = case @product when Track then Track.where(id: @product) when Album then @product.tracks.order(track_number: :asc) when Merch then Track.where(album: @product.albums).order_by_release_date_desc end
+      - tracks.each do |track|
+        h4.is-size-5
+          = track.name
+          br
+          span.is-size-6 = "from #{track.album.name} by #{track.album.artist_name}"
+
+        pre style="white-space: pre-wrap;" = track.credits

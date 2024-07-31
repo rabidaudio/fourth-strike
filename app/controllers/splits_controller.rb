@@ -41,8 +41,8 @@ class SplitsController < ApplicationController
   def product_type
     {
       'album' => Album,
-      'track' => Track
-      # merch
+      'track' => Track,
+      'merch' => Merch
     }[params[:product_type]]
   end
 end
