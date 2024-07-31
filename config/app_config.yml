@@ -51,6 +51,16 @@ bandcamp:
     T-STIM: T-STM # STIMULANT - HOODIE
     T-SOMN: T-SOM # SOMNOLENT - HOODIE
     T-SFCA: SFC-SAT # SFC Anniversary Tee
+  campaigns:
+    # https://thegarages.bandcamp.com/campaign/unstable
+    unstable:
+      # Bandcamp reports pledge amounts but not cost of goods
+      # However we found a payment from bandcamp that seems likely
+      # to be the profit from the campaign after their costs to produce
+      # the album
+      net_revenue: $3,499.91
+      funded_at: '2021-10-03T03:00:00.00-0400'
+      product: FSR-002
 
   # Albums that we are explicitly ignoring
   skip_releases:

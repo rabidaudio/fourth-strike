@@ -70,6 +70,8 @@ rake home_sheet:load_rendered_services
 rake home_sheet:load_patreon
 # Load internal merch orders
 rake home_sheet:load_internal_merch_orders
+# Load bandcamp vinyl campaign
+rake bandcamp:load_pledges
 
 # Load payouts
 rake paypal:correct_paypal_accounts

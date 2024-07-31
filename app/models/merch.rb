@@ -76,7 +76,8 @@ class Merch < ApplicationRecord
 
   enum :external_distributor,
        undefined: 0,
-       iam8bit: 1
+       iam8bit: 1,
+       bandcamp_campaign: 2
 
   validates :list_price_currency, inclusion: { in: Money.default_currency.iso_code }
   validates :artist_name, inclusion: { in: -> { Album.distinct.pluck(:artist_name) }, allow_nil: true }

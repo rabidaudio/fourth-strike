@@ -31,6 +31,27 @@ section.section
       span This product is distributed by iam8bit.
       = ' '
       a href=iam8bit_sales_path View Sales.
+  - elsif @merch.bandcamp_campaign?
+    section.section
+      h1.is-size-2 = "Bandcamp Pledges (#{@merch.bandcamp_pledges.count})"
+
+      table.table
+        thead
+          tr
+            th Funded At
+            th ID
+            th Level
+            th Pledge Amount
+            th Net Revenue
+        tbody
+          - @merch.bandcamp_pledges.order(id: :asc).each do |pledge|
+            tr
+              td = localized_date(pledge.funded_at)
+              td = pledge.bandcamp_pledge_id
+              td = pledge.level
+              td = pledge.pledge_amount.format
+              td = pledge.net_revenue_amount.format
+
   - else
     section.section
       .columns

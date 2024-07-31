@@ -86,7 +86,6 @@ Rails.application.configure do
   # config.cache_store = :file_store, Rails.root.join('tmp/cache')
   config.cache_store = :memory_store, { size: 128.megabytes }
 
-
   # config.cache_store = :redis_cache_store, config.redis_config
 
   # Use a real queuing backend for Active Job (and separate queues per environment).

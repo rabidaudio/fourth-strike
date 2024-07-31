@@ -40,7 +40,7 @@ class RoyaltyCalculator
 
   # Revenue from bandcamp digial sales and merch items, excluding Bandcamp and payment processor fees
   def bandcamp_revenue
-    bandcamp_sales.sum_monetized(:net_revenue_amount)
+    bandcamp_sales.sum_monetized(:net_revenue_amount) + bandcamp_pledges.sum_monetized(:net_revenue_amount)
   end
 
   # Distrokid streaming revenue
@@ -146,6 +146,10 @@ class RoyaltyCalculator
 
   def bandcamp_sales
     @product.bandcamp_sales.payable.where(purchased_at: @start_at...@end_at)
+  end
+
+  def bandcamp_pledges
+    @product.bandcamp_pledges.where(funded_at: @start_at...@end_at)
   end
 
   def distrokid_sales

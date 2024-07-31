@@ -423,5 +423,41 @@ namespace :bandcamp do
       end
     end
   end
+
+  task :load_pledges => :environment do
+    require 'csv'
+
+    path = Rails.root.join('storage/exports/thegarages_pledgers.csv')
+
+    ActiveRecord::Base.transaction do
+      # liberal_parsing: true
+      rows = CSV.read(path, headers: true).each.to_a
+
+      # we need to evenly weight the true net revenue across all the pledges
+      campaign_revenue = Rails.application.config.app_config[:bandcamp][:campaigns][:unstable][:net_revenue].to_money
+      total_pledge_amount = rows.pluck('pledge ($)').map(&:to_money).sum
+      funded_at = Time.zone.parse(Rails.application.config.app_config[:bandcamp][:campaigns][:unstable][:funded_at])
+      product = Merch.find_by!(sku: Rails.application.config.app_config[:bandcamp][:campaigns][:unstable][:product])
+
+      product.update!(external_distributor: :bandcamp_campaign)
+
+      rows.each do |row|
+        pledge_amount = row['pledge ($)'].to_money
+        net_revenue = pledge_amount * (campaign_revenue / total_pledge_amount)
+        BandcampPledge.upsert({
+                                level: row['level'],
+                                funded_at: funded_at,
+                                product_type: 'Merch',
+                                product_id: product.id,
+                                bandcamp_pledge_id: row['id'],
+                                pledge_amount_cents: pledge_amount.cents,
+                                pledge_amount_currency: pledge_amount.currency.iso_code,
+                                net_revenue_amount_cents: net_revenue.cents,
+                                net_revenue_amount_currency: net_revenue.currency.iso_code
+                              }, unique_by: [:bandcamp_pledge_id])
+      end
+    end
+    CalculatorCache::Manager.recompute_all!
+  end
 end
 # rubocop:enable Rails/SkipsModelValidations

@@ -63,4 +63,4 @@ p
   section.section
     h2.is-size-3 = "Expenses: #{@album.expenses.format}"
 
-    = render partial: 'rendered_services/table', locals: { rendered_services: @album.rendered_services }
+    = render partial: 'rendered_services/table', locals: { rendered_services: @album.rendered_services.order(rendered_at: :desc) }

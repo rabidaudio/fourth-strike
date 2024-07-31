@@ -16,6 +16,7 @@ module Product
     base.validates :splits, length: { maximum: 50 }
 
     base.has_many :bandcamp_sales, as: :product, dependent: :nullify
+    base.has_many :bandcamp_pledges, as: :product, dependent: :nullify
     base.has_many :distrokid_sales, as: :product, dependent: :nullify
     base.has_many :iam8bit_sales, as: :product, dependent: :nullify
     base.has_many :patreon_sales, as: :product, dependent: :nullify
