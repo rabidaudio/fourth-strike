@@ -4,6 +4,13 @@ h2.is-size-3 = @product.name
 section.section
   .columns
     .column
+      - if @product.is_a?(Album)
+        a.button.m-1 href=edit_splits_path(product_type: @product.class.name.downcase, product_id: @product.id, copy_from_tracks: true)
+          span Copy Splits from Tracks
+      - elsif @product.is_a?(Merch)
+        a.button.m-1 href=edit_splits_path(product_type: @product.class.name.downcase, product_id: @product.id, copy_from_album: true)
+          span Copy Splits from Album
+
       = form_for(@product, url: splits_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post) do |f|
         div vue-component="EditSplits" props=@props.to_json
 
