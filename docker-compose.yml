@@ -38,10 +38,13 @@ services:
       - 3000:3000
     volumes:
       - storage:/rails/storage
+      # This works around a well-known quirk:
+      # https://ieftimov.com/posts/docker-compose-stray-pids-rails-beyond/
       - type: tmpfs
-        target: /rails/tmp
+        target: /rails/tmp/pids
         tmpfs:
-          size: "52428800" # 50MB
+          size: "524288" # 512kb
+          mode: 01777 # make sure it's rw by the rails user
     environment:
       - RAILS_ENV=production
       - RAILS_SERVE_STATIC_FILES=true
