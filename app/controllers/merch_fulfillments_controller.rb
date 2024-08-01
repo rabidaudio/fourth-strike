@@ -4,9 +4,11 @@ class MerchFulfillmentsController < ApplicationController
   before_action :raise_unless_admin!
 
   def index
-    @unfulfilled_merch = BandcampSale.unfulfilled_merch.order(purchased_at: :asc)
-    @unfulfilled_merch = @unfulfilled_merch.where(product_id: params[:merch_id]) if params[:merch_id]
-    @unfulfilled_merch = @unfulfilled_merch.paginate(page: params[:page] || 1, per_page: 200)
+    @merch = BandcampSale.where(product_type: 'Merch')
+    @merch = @merch.unfulfilled_merch if params['unfulfilled'].to_b
+    @merch = @merch.order(purchased_at: :desc)
+    @merch = @merch.where(product_id: params[:merch_id]) if params[:merch_id]
+    @merch = @merch.paginate(page: params[:page] || 1, per_page: 200)
   end
 
   def new

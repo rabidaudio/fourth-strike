@@ -1,11 +1,15 @@
-h1.is-size-2 Unfulfilled Merch Orders
+h1.is-size-2
+  - if params['unfulfilled'].to_b
+    span Unfulfilled Merch Orders
+  - else
+    span Merch Orders
 
-- if @unfulfilled_merch.empty?
+- if params['unfulfilled'].to_b && @merch.empty?
   p No orders require shipping at this time.
 
 section.section
-  = render_pagination(@unfulfilled_merch)
+  = render_pagination(@merch)
 
-  = render 'merch/orders_table', sales: @unfulfilled_merch
+  = render 'merch/orders_table', sales: @merch
 
-  = render_pagination(@unfulfilled_merch)
+  = render_pagination(@merch)
