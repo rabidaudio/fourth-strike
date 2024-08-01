@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_30_141241) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_01_155222) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -156,6 +156,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_30_141241) do
     t.integer "fulfilled_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "printify_order_number"
+    t.text "notes"
     t.index ["bandcamp_sale_id"], name: "index_merch_fulfillments_on_bandcamp_sale_id"
     t.index ["fulfilled_by_id"], name: "index_merch_fulfillments_on_fulfilled_by_id"
   end

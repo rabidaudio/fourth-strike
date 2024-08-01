@@ -5,6 +5,8 @@
 # Table name: merch_fulfillments
 #
 #  id                       :integer          not null, primary key
+#  notes                    :text
+#  printify_order_number    :string
 #  production_cost_cents    :integer          default(0), not null
 #  production_cost_currency :string           default("USD"), not null
 #  shipped_on               :date
@@ -41,4 +43,6 @@ class MerchFulfillment < ApplicationRecord
   monetize :production_cost_cents
 
   validates :production_cost_currency, inclusion: { in: Money.default_currency.iso_code }
+
+  strip_attributes
 end

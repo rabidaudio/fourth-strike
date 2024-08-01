@@ -20,6 +20,10 @@ section.section
               | This should be the cost to produce the item. It should not include shipping costs, 
               | bandcamp fees, or transaction fees; only the cost of the product.
 
+        = bulma_field(f, :text_field, @merch_fulfillment, :printify_order_number, label: 'Printify Order number', placeholder: '1932959.123')
+
+        = bulma_field(f, :text_area, @merch_fulfillment, :notes, label: 'Notes')
+
         .field
           .control
             = f.submit "Mark Shipped", class: "button is-link"

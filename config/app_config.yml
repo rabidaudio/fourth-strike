@@ -6,6 +6,7 @@ organization_cut:
 services_rendered:
   hourly_rate: 15.00 # USD/hr
 payout_at: 42.00 # USD
+tax_year_start: 08-01
 paypal:
   incoming_addresses:
     - seattlegarages@gmail.com
