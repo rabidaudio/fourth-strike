@@ -6,7 +6,6 @@ class HomeSheetReport
   attr_reader :xlsx
 
   def initialize(path)
-    require 'roo'
     @xlsx = Roo::Spreadsheet.open(path.to_s)
   end
 

@@ -1,5 +1,4 @@
-section.section
-  
+section.section  
   .columns
     .column
       h3.is-size-4 Streaming Volume
@@ -10,5 +9,30 @@ section.section
       h3.is-size-4 Sales
 
       div vue-component="SaleChart" props={data: @sale_data }.to_json
+
+section.section
+  h1.is-size-2 Download Reports
+
+  = form_tag(reports_combined_path, method: :get, class: "form", 'data-turbo' => "false") do
+    .field
+      label.label = "From (inclusive)"
+      .control
+        = date_field_tag :from, Time.zone.local(2020, 8, 1).to_date, class: 'input'
+    .field
+      label.label = "To (exclusive)"
+      .control
+        = date_field_tag :to, Time.zone.now.to_date, class: 'input'
+    .field
+      label.label = "Summary Interval"
+      .control
+        = select_tag(:interval, options_for_select([1.week, 1.month, 3.months, 1.year].to_h { |v| [v.inspect, v.iso8601] }, 1.month.iso8601), class: 'input')
+    .field.is-grouped
+      .control
+        = submit_tag "Download Custom Report", class: "button is-primary"
+      .control
+        - tax_year_end = Time.zone.strptime(Rails.application.config.app_config[:tax_year_start], "%m-%d")
+        - tax_year_start = tax_year_end - 1.year
+        a.button href=reports_combined_path(from: tax_year_start.to_date.iso8601, to: tax_year_end.to_date.iso8601, interval: 'P1M') Download Previous Tax Year Report
+        
 
 = render partial: 'albums/accounting', locals: { albums: @albums }

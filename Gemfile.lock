@@ -153,6 +153,8 @@ GEM
       logger
     faraday-net_http (3.1.1)
       net-http
+    fast_excel (0.5.0)
+      ffi (> 1.9, < 2)
     ferrum (0.15)
       addressable (~> 2.5)
       concurrent-ruby (~> 1.1)
@@ -508,12 +510,14 @@ DEPENDENCIES
   bundler-audit
   capybara
   cssbundling-rails
+  csv
   data_migrate (~> 9.3)
   debug
   dotenv
   execjs
   factory_bot_rails (~> 6.4)
   faker (~> 3.3)
+  fast_excel (~> 0.5.0)
   ferrum
   fixd_utils!
   http

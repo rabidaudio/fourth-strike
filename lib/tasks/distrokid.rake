@@ -3,7 +3,6 @@
 namespace :distrokid do
   desc 'Loads Distrokid sale data from their raw data report'
   task :load_report => :environment do
-    require 'csv'
 
     path = Rails.root.glob('storage/exports/DistroKid_*.tsv').max
     raise StandardError, 'Report not found' if path.nil?
@@ -14,7 +13,6 @@ namespace :distrokid do
   desc 'Crawl distrokid website and export a report of all UPC/ISRCs. This likely only needs to be done once.'
   task :export_isrcs => :environment do
     require 'ferrum'
-    require 'csv'
     require 'tty-prompt'
 
     browser = Ferrum::Browser.new(Rails.application.config.ferrum_browser)
@@ -91,7 +89,6 @@ namespace :distrokid do
 
   desc 'Load the report mapping ISRCs to bandcamp urls and update album/track information'
   task :import_isrcs => :environment do
-    require 'csv'
 
     csv = CSV.read(Rails.root.join('storage/exports/ISRCs to Bandcamp URLs.csv'), headers: true)
     rows = csv.each.to_a

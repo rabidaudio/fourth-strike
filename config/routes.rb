@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   resources :rendered_services, path: 'services_rendered'
 
   get '/reports', to: 'reports#index'
+  get '/reports/combined', to: 'reports#combined_excel_report'
   get '/issues', to: 'reports#needs_attention'
 
   scope path: '/products/:product_type/:product_id/splits' do

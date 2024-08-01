@@ -27,7 +27,6 @@ namespace :home_sheet do
   end
 
   task :load_rendered_services => :environment do
-    require 'csv'
 
     CalculatorCache::Manager.defer_recompute do
       ActiveRecord::Base.transaction do
@@ -85,7 +84,6 @@ namespace :home_sheet do
   end
 
   task :load_internal_merch_orders => :environment do
-    require 'roo'
 
     path = Rails.root.glob('storage/exports/FOURTH STRIKE HOME SHEET*.xlsx').first
     xlsx = Roo::Spreadsheet.open(path.to_s)
@@ -133,7 +131,6 @@ namespace :home_sheet do
   end
 
   task :load_patreon => :environment do
-    require 'roo'
     path = Rails.root.join('storage/exports/PATREON CALC.xlsx')
     xlsx = Roo::Spreadsheet.open(path.to_s)
 

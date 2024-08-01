@@ -69,8 +69,12 @@ gem 'fixd_utils', github: 'fixdauto/ruby-fixd-utils', tag: 'v1.2.4'
 gem 'ferrum', require: false
 # Allow paging through active record results
 gem 'will_paginate', '~> 4.0'
-# Parse excel files
-gem 'roo', '~> 2.10', require: false
+# Read excel files
+gem 'roo', '~> 2.10'
+# Write excel files
+gem 'fast_excel', '~> 0.5.0'
+# Read CSV files
+gem 'csv'
 # Access rails route helpers from JS
 gem 'js-routes'
 # Ask for information from the console

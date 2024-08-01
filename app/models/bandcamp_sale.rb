@@ -51,6 +51,9 @@ class BandcampSale < ApplicationRecord
   # we'll need those funds to fulfill the order
   scope :payable, -> { where.not(id: BandcampSale.unfulfilled_merch) }
 
+  scope :digital, -> { where.not(product_type: 'Merch') }
+  scope :merch, -> { where(product_type: 'Merch') }
+
   scope :sales_by_month, lambda {
     group(
       "date(purchased_at, 'start of month')",
