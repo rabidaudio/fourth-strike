@@ -17,6 +17,8 @@ class ProjectCalculator
 
   attr_accessor :album
 
+  delegate :name, to: :@album
+
   def initialize(album)
     @album = album
   end
@@ -93,7 +95,9 @@ class ProjectCalculator
     end
   end
 
-  delegate :production_expenses, to: :album_calculator
+  def production_expenses # rubocop:disable Rails/Delegate
+    album_calculator.production_expenses
+  end
 
   def organization_profit
     organization_royalties - production_expenses

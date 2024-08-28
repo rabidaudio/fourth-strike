@@ -6,7 +6,18 @@ class ReportsController < ApplicationController
   def index
     @streaming_data = DistrokidSale.streams_per_month
     @sale_data = BandcampSale.sales_by_month.transform_values { |h| h.transform_values(&:amount) }
+  end
+
+  def projects
     @albums = Album.includes(:tracks, :merch_items, :splits).order(release_date: :desc)
+    @project_profit_data = @albums.map(&:project).reverse.map do |project|
+      {
+        name: project.name,
+        organization_profit: project.organization_profit.round.to_f,
+        # bandcamp_downloads
+        streams: project.total_streams
+      }
+    end
   end
 
   def combined_excel_report

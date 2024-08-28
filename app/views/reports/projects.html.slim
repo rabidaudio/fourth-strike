@@ -1,0 +1,4 @@
+section.section
+  div vue-component="ProjectChart" props={ data: @project_profit_data }.to_json
+
+= render partial: 'albums/accounting', locals: { albums: @albums }
