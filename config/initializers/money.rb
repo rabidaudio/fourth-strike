@@ -114,6 +114,8 @@ MoneyRails.configure do |config|
   # config.raise_error_on_money_parsing = false
 end
 
+Money.default_infinite_precision = true
+
 # This exists to standardize JSON serialization of Money instances
 # with SimpleSchemaSerializer's format.
 # class Money

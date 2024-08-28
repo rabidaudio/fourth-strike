@@ -2,19 +2,121 @@
 
 # This class computes the amount owed to contributors for a single product (optionally over a time period).
 # All methods return Money inless otherwise indicated.
-# NOTE: Time period includes both sales and costs from that time range. That means that royalties can actually
-# decrease over time, since product expenses can come *after* sales occur.
-# TODO: this does a lot of computing in ruby. Doing in the database would be better for performance,
-# but we've got small enough data that I'm banking that the performance shouldn't be too bad.
-# If it does get really bad, we could create a caching system to recompute
 class RoyaltyCalculator
   prepend CalculatorCache
 
-  cache_calculations :upfront_costs, :cost_of_goods,
-                     :bandcamp_revenue, :distrokid_revenue,
-                     :patreon_digital_revenue, :patreon_physical_revenue,
-                     :destributor_revenue,
-                     :payout_amounts
+  # An extension of a money class that has splits associated
+  # with it. Able to calculate royalty disribution of an
+  # arbitrary amount
+  class RoyaltyMoney < Money
+    attr_accessor :product
+
+    def initialize(money, product)
+      super(money.cents, money.currency)
+      @product = product
+    end
+
+    # The amount of the money that the org receives before calculating splits
+    def organization_distribution
+      organization_distribution_percentage * to_money
+    end
+
+    # How much in royalties is owed to each split payee
+    # Returns Hash[Payee => Money]
+    def royalties
+      @royalties ||= @product.payout_amounts(to_money - organization_distribution)
+    end
+
+    def royalties_owed_to(payee)
+      royalties[payee] || 0.to_money(currency)
+    end
+
+    # Total amount of royalties to artists who have chosen to donate
+    # their royalties to the org
+    def donated_royalties
+      royalties.sum do |payee, value|
+        payee.opted_out_of_royalties? ? value : 0.to_money(currency)
+      end || 0.to_money(currency)
+    end
+
+    # Total value of royalties to charities
+    def charity_royalties
+      royalties.sum do |payee, value|
+        payee.charity? ? value : 0.to_money(currency)
+      end || 0.to_money(currency)
+    end
+
+    # Royalties owed to artists expecting payouts
+    # Returns Hash[Payee => Money]
+    def artist_royalties
+      royalties.reject do |payee, _value|
+        payee.charity? || payee.opted_out_of_royalties?
+      end.to_h
+    end
+
+    # Total value of royalties to be paid to artists
+    def total_artist_royalties
+      artist_royalties.values.sum || 0.to_money(currency)
+    end
+
+    # Value of royalties where the org receives a split
+    def org_royalties
+      royalties_owed_to(Payee.find_by!(fsn: 'FS-000'))
+    end
+
+    def total_org_income
+      organization_distribution + org_royalties + donated_royalties
+    end
+
+    def to_money
+      Money.new(cents, currency)
+    end
+
+    def dup_with(options = {})
+      RoyaltyMoney.new(Money.new(cents, currency, options), product)
+    end
+
+    def +(other)
+      other_value = other
+      other_value = other.to_money if other.is_a?(RoyaltyMoney)
+      value = to_money + other_value
+
+      if other.is_a?(RoyaltyMoney)
+        if other.product == product
+          RoyaltyMoney.new(value, product)
+        else
+          value
+        end
+      else
+        RoyaltyMoney.new(value, product)
+      end
+    end
+
+    private
+
+    def organization_distribution_percentage
+      return organization_distribution_merch if product.is_a?(Merch)
+
+      organization_distribution_digital
+    end
+
+    def organization_distribution_digital
+      Rails.application.config.app_config[:organization_cut][:digital]
+    end
+
+    def organization_distribution_merch
+      Rails.application.config.app_config[:organization_cut][:merch]
+    end
+  end
+
+  cache_calculations :production_expenses, :cost_of_goods,
+                     :bandcamp_digital_gross_revenue, :bandcamp_digital_net_revenue,
+                     :bandcamp_physical_gross_revenue, :bandcamp_physical_net_revenue,
+                     :bandcamp_physical_net_revenue_payable,
+                     :distrokid_streaming_revenue,
+                     :patreon_gross_revenue, :patreon_net_revenue,
+                     :iam8bit_gross_revenue, :iam8bit_net_revenue,
+                     :bandcamp_pledge_gross_revenue, :bandcamp_pledge_net_revenue
 
   def initialize(product, from: Time.zone.at(0), to: Time.zone.now)
     @product = product
@@ -23,129 +125,114 @@ class RoyaltyCalculator
   end
 
   # One time expenses for a project. For example: album art, mastering, etc.
-  # These are taken out before any royalties are paid.
-  def upfront_costs
-    # TODO: should we really only take upfront costs out of album sales?
-    return 0.to_money if @product.is_a?(Track) || @product.is_a?(Merch)
+  def production_expenses
+    return 0.to_money unless @product.is_a?(Album)
 
-    production_expenses if @product.is_a?(Album)
+    @product.rendered_services.where(rendered_at: @start_at...@end_at).sum_monetized(:compensation)
   end
 
   # How much did it cost to produce the physical item in question
   def cost_of_goods
     return 0.to_money unless @product.is_a?(Merch)
 
-    MerchFulfillment.where(bandcamp_sale_id: bandcamp_sales).sum_monetized(:production_cost)
+    MerchFulfillment.where(bandcamp_sale_id: bandcamp_physical_sales_payable).sum_monetized(:production_cost)
   end
 
-  # Revenue from bandcamp digial sales and merch items, excluding Bandcamp and payment processor fees
-  def bandcamp_revenue
-    bandcamp_sales.sum_monetized(:net_revenue_amount) + bandcamp_pledges.sum_monetized(:net_revenue_amount)
+  def bandcamp_digital_gross_revenue
+    bandcamp_digital_sales.sum_monetized(:subtotal_amount)
   end
 
-  # Distrokid streaming revenue
-  def distrokid_revenue
-    return 0.to_money if @product.is_a?(Merch)
-
-    distrokid_sales.sum(:earnings_usd).to_money('USD')
+  def bandcamp_digital_net_revenue
+    royalty_money(bandcamp_digital_sales.sum_monetized(:net_revenue_amount))
   end
 
-  def patreon_digital_revenue
-    return 0.to_money unless @product.is_a?(Album)
-
-    patreon_sales.sum_monetized(:net_revenue_amount)
+  def bandcamp_physical_gross_revenue
+    bandcamp_physical_sales_all.sum_monetized(:subtotal_amount)
   end
 
-  def patreon_physical_revenue
-    return 0.to_money unless @product.is_a?(Merch)
-
-    patreon_sales.sum_monetized(:net_revenue_amount)
+  def bandcamp_physical_net_revenue
+    bandcamp_physical_sales_all.sum_monetized(:net_revenue_amount)
   end
 
-  def destributor_revenue
-    return 0.to_money unless @product.is_a?(Merch)
-
-    iam8bit_sales.sum_monetized(:net_revenue_amount)
+  # We don't know how much to pay out in royalties for Bandcamp merch until
+  # after the merch has been fulfilled, since we don't know the cost of production and shipping.
+  # This includes only revenue from fulfilled orders
+  def bandcamp_physical_net_revenue_payable
+    royalty_money(bandcamp_physical_sales_payable.sum_monetized(:net_revenue_amount))
   end
 
-  def digital_revenue
-    return 0.to_money if @product.is_a?(Merch)
-
-    bandcamp_revenue + distrokid_revenue + patreon_digital_revenue
+  def distrokid_streaming_revenue
+    royalty_money(distrokid_sales.sum(:earnings_usd).to_money('USD'))
   end
 
-  def physical_revenue
-    return 0.to_money unless @product.is_a?(Merch)
+  def patreon_gross_revenue
+    patreon_sales.sum_monetized(:proportional_pledge_amount)
+  end
 
-    (bandcamp_revenue - cost_of_goods) + destributor_revenue + patreon_physical_revenue
+  def patreon_net_revenue
+    royalty_money(patreon_sales.sum_monetized(:net_revenue_amount))
+  end
+
+  def iam8bit_gross_revenue
+    return royalty_money(0.to_money) unless @product.is_a?(Merch) && @product.iam8bit?
+
+    iam8bit_sales.sum_monetized(:gross_revenue_amount)
+  end
+
+  def iam8bit_net_revenue
+    return royalty_money(0.to_money) unless @product.is_a?(Merch) && @product.iam8bit?
+
+    royalty_money(iam8bit_sales.sum_monetized(:net_revenue_amount))
+  end
+
+  def bandcamp_pledge_gross_revenue
+    return royalty_money(0.to_money) unless @product.is_a?(Merch) && @product.bandcamp_campaign?
+
+    bandcamp_pledges.sum_monetized(:pledge_amount)
+  end
+
+  def bandcamp_pledge_net_revenue
+    return royalty_money(0.to_money) unless @product.is_a?(Merch) && @product.bandcamp_campaign?
+
+    royalty_money(bandcamp_pledges.sum_monetized(:net_revenue_amount))
   end
 
   def gross_revenue
-    digital_revenue + physical_revenue
+    bandcamp_digital_gross_revenue + distrokid_streaming_revenue +
+      bandcamp_physical_gross_revenue + patreon_gross_revenue +
+      iam8bit_gross_revenue + bandcamp_pledge_gross_revenue
   end
 
-  # The total income to be divided between the organization and payees
-  def net_income
-    # TODO: how to properly account for upfront costs???
-    gross_revenue - upfront_costs
+  def net_revenue
+    bandcamp_digital_net_revenue + distrokid_streaming_revenue +
+      bandcamp_physical_net_revenue + patreon_net_revenue +
+      iam8bit_net_revenue + bandcamp_pledge_net_revenue
   end
 
-  # The distribution to the organization for digital sales, before any contributor donations
-  def organization_cut_digital
-    return 0.to_money if digital_revenue.zero? || gross_revenue.zero? # avoid divide-by-zero
-
-    organization_distribution_digital * net_income * (digital_revenue / gross_revenue)
-  end
-
-  # The distribution to the organization for digital sales, before any contributor donations
-  def organization_cut_physical
-    return 0.to_money if physical_revenue.zero? || gross_revenue.zero? # avoid divide-by-zero
-
-    organization_distribution_merch * net_income * (physical_revenue / gross_revenue)
-  end
-
-  # The distribution to the organization, before any contributor donations
-  def organization_cut
-    # TODO: should the org eat losses?
-    return net_income if net_income.negative?
-
-    organization_cut_digital + organization_cut_physical
-  end
-
-  # Some contributors may opt to donate their cut to the organization instead
-  def donated_royalites
-    payout_amounts[:out].values.sum
-  end
-
-  # How much the organization keeps, including both cut and donated royalties
-  def organization_income
-    organization_cut + donated_royalites
-  end
-
-  # How much in royalties is owed to each contributor who has not opted out of royalties.
-  # Returns Hash[Payee => Money]
-  def royalties_owed
-    payout_amounts[:in]
-  end
-
-  def total_royalties_owed
-    return 0.to_money if payout_amounts[:in].empty?
-
-    payout_amounts[:in].values.sum
-  end
-
-  def royalties_owed_to(payee)
-    royalties_owed[payee] || 0.to_money
+  def distributable_income
+    royalty_money(
+      bandcamp_digital_net_revenue + distrokid_streaming_revenue +
+      (bandcamp_physical_net_revenue_payable - cost_of_goods) +
+      patreon_net_revenue + iam8bit_net_revenue + bandcamp_pledge_net_revenue
+    )
   end
 
   private
 
-  def production_expenses
-    @product.rendered_services.where(rendered_at: @start_at...@end_at).sum_monetized(:compensation)
+  def royalty_money(money)
+    RoyaltyMoney.new(money, @product)
   end
 
-  def bandcamp_sales
-    @product.bandcamp_sales.payable.where(purchased_at: @start_at...@end_at)
+  def bandcamp_digital_sales
+    @product.bandcamp_sales.digital.where(purchased_at: @start_at...@end_at)
+  end
+
+  def bandcamp_physical_sales_all
+    @product.bandcamp_sales.merch.where(purchased_at: @start_at...@end_at)
+  end
+
+  def bandcamp_physical_sales_payable
+    @product.bandcamp_sales.merch.payable.where(purchased_at: @start_at...@end_at)
   end
 
   def bandcamp_pledges
@@ -162,24 +249,5 @@ class RoyaltyCalculator
 
   def patreon_sales
     @product.patreon_sales.where(period: @start_at...@end_at)
-  end
-
-  def payout_amounts
-    return { in: {}, out: {} } if net_income.negative?
-
-    @payout_amounts ||= begin
-      opted_out, opted_in = @product.payout_amounts(net_income - organization_cut).partition do |payee, _amount|
-        payee.opted_out_of_royalties?
-      end
-      { out: opted_out.to_h, in: opted_in.to_h }
-    end
-  end
-
-  def organization_distribution_digital
-    Rails.application.config.app_config[:organization_cut][:digital]
-  end
-
-  def organization_distribution_merch
-    Rails.application.config.app_config[:organization_cut][:merch]
   end
 end

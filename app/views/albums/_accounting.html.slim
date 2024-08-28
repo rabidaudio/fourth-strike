@@ -8,12 +8,16 @@ section.section
       tr
         - if albums.count > 1
           th Project
-        th Digital Album Sale Revenue
+        th Digital Album Sale Revenue (Gross)
+        th Digital Album Sale Revenue (Net)
         th Streaming Revenue
-        th Associated Merch Revenue
+        th Associated Merch Revenue (Gross)
+        th Associated Merch Revenue (Net - Production Costs)
         th Total Revenue
-        th Upfront Production Costs
+        th Distributable Income
         th Royalties
+        th Organization Income
+        th Production Costs
         th Organization Profit
     tbody
       - albums.each do |album|
@@ -21,28 +25,36 @@ section.section
           - if albums.count > 1
             td
               a href=album_path(album) = album.name
-                - if album.artist_name
-                  span = ' by '
-                  a href=merch_index_path(artist: album.artist_name) = album.artist_name
+              - if album.artist_name
+                br
+                span = ' by '
+                a href=merch_index_path(artist: album.artist_name) = album.artist_name
           td
-            = album.digital_sale_revenue.format
+            = album.project.digital_sale_gross_revenue.round.format
             br
-            span.is-italic.is-size-7 = "#{number_with_delimiter(album.bandcamp_downloads)} Bandcamp downloads"
+            span.is-italic.is-size-7 = "#{number_with_delimiter(album.project.bandcamp_downloads)} Bandcamp downloads"
           td
-            = album.streaming_revenue.format
+            = album.project.digital_sale_net_revenue.round.format
+          td
+            = album.project.streaming_revenue.round.format
             br
-            span.is-italic.is-size-7 = "#{number_with_delimiter(album.total_streams)} Lifetime streams"
+            span.is-italic.is-size-7 = "#{number_with_delimiter(album.project.total_streams)} Lifetime streams"
           - has_unfulfilled = album.unfulfilled_merch_items.present?
+          td
+            = album.project.merch_gross_revenue.round.format
           td class=(has_unfulfilled ? 'is-warning' : '')
-            = album.merch_revenue.format
+            = album.project.merch_net_revenue_less_costs.round.format
             - if has_unfulfilled
               br
-              span.is-italic.is-size-7 = " *Not all merch orders fulfilled: #{album.unfulfilled_merch_items.sum_monetized(:net_revenue_amount).format} of unfulfilled orders"
-          td = album.total_associated_revenue.format
-          td class=(album.negative? ? 'is-danger' : '') = album.expenses.format
+              span.is-italic.is-size-7 = " *Not all merch orders fulfilled: #{album.unfulfilled_merch_items.sum_monetized(:net_revenue_amount).round.format} of unfulfilled orders"
+          td = album.project.total_net_revenue.round.format
+          td = album.project.distributable_income.round.format
           - if album.splits.empty?
-            td.is-warning colspan="2"
+            td.is-warning
               span.is-italic.is-size-7 No splits assigned
           - else
-            td = album.total_royalties.format
-            td = album.profit.format
+            td = album.project.payable_royalties.round.format
+          td = album.project.organization_royalties.round.format
+          td = album.project.production_expenses.round.format
+          td class=(album.splits.present? && album.project.organization_profit.negative? ? 'is-danger' : '')
+            = album.project.organization_profit.round.format

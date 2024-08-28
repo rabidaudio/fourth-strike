@@ -54,11 +54,6 @@ class Album < ApplicationRecord
 
   validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/, allow_nil: true }
 
-  delegate :bandcamp_downloads, :total_streams, :digital_sale_revenue, :streaming_revenue,
-           :merch_revenue, :total_associated_revenue, :expenses,
-           :total_royalties, :profit, :negative?,
-           to: :project_calculator
-
   def self.find_by_upc(upc)
     where('upcs like ?', "%\"#{upc}\"%").first
   end
@@ -71,9 +66,7 @@ class Album < ApplicationRecord
     attributes['private']
   end
 
-  private
-
-  def project_calculator
-    @project_calculator || ProjectCalculator.new(self)
+  def project
+    @project ||= ProjectCalculator.new(self)
   end
 end

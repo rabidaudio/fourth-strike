@@ -5,8 +5,12 @@
 class PayoutCalculator
   prepend CalculatorCache
 
-  cache_calculations :for_album_sales, :for_track_sales, :for_merch_sales, :for_services_rendered, :total_owed,
-                     :for_royalties
+  cache_calculations :for_album_sales,
+                     :for_track_sales,
+                     :for_merch_sales,
+                     :for_royalties,
+                     :for_services_rendered,
+                     :total_owed
 
   def initialize(payee, from: Time.zone.at(0), to: Time.zone.now)
     @payee = payee
@@ -15,20 +19,19 @@ class PayoutCalculator
   end
 
   def self.total_owed_for_everyone
-    Payee.find_each.map { |payee| PayoutCalculator.new(payee).total_owed }.sum
+    Payee.find_each.sum { |payee| PayoutCalculator.new(payee).total_owed }
   end
 
   def for_album_sales
-    @for_album_sales ||= albums.map { |album| royalties_for(album) }.sum
+    albums.map { |album| royalties_for(album) }.sum
   end
 
   def for_track_sales
-    @for_track_sales ||= tracks.map { |track| royalties_for(track) }.sum
+    tracks.map { |track| royalties_for(track) }.sum
   end
 
   def for_merch_sales
-    # merch.map { |item| royalties_for(item) }.sum
-    0.to_money # TODO
+    merch_items.map { |item| royalties_for(item) }.sum
   end
 
   def for_royalties
@@ -40,7 +43,7 @@ class PayoutCalculator
   end
 
   def for_services_rendered
-    @for_services_rendered ||= services_rendered.sum_monetized(:compensation)
+    services_rendered.sum_monetized(:compensation)
   end
 
   def total_owed
@@ -53,7 +56,7 @@ class PayoutCalculator
   private
 
   def royalties_for(product)
-    RoyaltyCalculator.new(product, from: @start_at, to: @end_at).royalties_owed_to(@payee)
+    RoyaltyCalculator.new(product, from: @start_at, to: @end_at).distributable_income.royalties_owed_to(@payee)
   end
 
   def albums
@@ -65,8 +68,7 @@ class PayoutCalculator
   end
 
   def merch_items
-    # Merch.joins(splits: :payee).where(payees: {id: @payee })
-    [] # TODO
+    Merch.joins(splits: :payee).where(payees: { id: @payee })
   end
 
   def services_rendered
