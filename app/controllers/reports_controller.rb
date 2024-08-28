@@ -15,7 +15,9 @@ class ReportsController < ApplicationController
     interval = ActiveSupport::Duration.parse(params[:interval])
     org_name = Rails.application.config.app_config[:organization_name]
     report = ReportBuilder.new(time_range: from...to, interval: interval).to_combined_xls
-    send_data report.read_string, filename: "#{org_name.underscore}_reports_#{from.to_date.iso8601}_#{to.to_date.iso8601}.xlsx", disposition: 'attachment'
+    send_data report.read_string,
+              filename: "#{org_name.underscore}_reports_#{from.to_date.iso8601}_#{to.to_date.iso8601}.xlsx",
+              disposition: 'attachment'
   end
 
   def needs_attention
