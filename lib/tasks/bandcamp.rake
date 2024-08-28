@@ -183,7 +183,6 @@ namespace :bandcamp do
 
   desc 'Loads merch items from a hand-crafted report'
   task :load_merch_items => :environment do
-
     merch_count = 0
     ActiveRecord::Base.transaction do
       # Load from the hand-created report
@@ -252,7 +251,6 @@ namespace :bandcamp do
 
   desc 'Loads Bandcamp sale data from their raw data report'
   task :load_report => :environment do
-
     path = Rails.root.glob('storage/exports/Fourth-Strike-Records_sales_*').max
     raise StandardError, 'Report not found' if path.nil?
 
@@ -423,7 +421,6 @@ namespace :bandcamp do
   end
 
   task :load_pledges => :environment do
-
     path = Rails.root.join('storage/exports/thegarages_pledgers.csv')
 
     ActiveRecord::Base.transaction do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_01_155222) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_03_165840) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -188,6 +188,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_01_155222) do
     t.string "net_revenue_amount_currency", default: "USD", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "proportional_pledge_amount_cents", default: 0, null: false
+    t.string "proportional_pledge_amount_currency", default: "USD", null: false
     t.index ["customer_name_hashed", "period", "product_type", "product_id"], name: "idx_on_customer_name_hashed_period_product_type_pro_57f480592f", unique: true
     t.index ["product_type", "product_id"], name: "index_patreon_sales_on_product"
   end

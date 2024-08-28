@@ -27,7 +27,6 @@ namespace :home_sheet do
   end
 
   task :load_rendered_services => :environment do
-
     CalculatorCache::Manager.defer_recompute do
       ActiveRecord::Base.transaction do
         RenderedService.destroy_all
@@ -84,7 +83,6 @@ namespace :home_sheet do
   end
 
   task :load_internal_merch_orders => :environment do
-
     path = Rails.root.glob('storage/exports/FOURTH STRIKE HOME SHEET*.xlsx').first
     xlsx = Roo::Spreadsheet.open(path.to_s)
 
@@ -166,11 +164,16 @@ namespace :home_sheet do
             raise StandardError, "Unknown tier: #{row[:tier]}" if tier_config.blank?
 
             hashed_name = Digest::MD5.hexdigest(row[:name])
-            digital_revenue = row[:weighted_amount].to_money('USD') * tier_config[:digital_distribution]
-            physical_revenue = row[:weighted_amount].to_money('USD') - digital_revenue
 
-            unless digital_revenue.zero?
-              weighted = digital_revenue / month_config[:digital].count
+            digital_revenue_gross = row[:pledge_amount].to_money('USD') * tier_config[:digital_distribution]
+            physical_revenue_gross = row[:pledge_amount].to_money('USD') - digital_revenue_gross
+
+            digital_revenue_net = row[:weighted_amount].to_money('USD') * tier_config[:digital_distribution]
+            physical_revenue_net = row[:weighted_amount].to_money('USD') - digital_revenue_net
+
+            unless digital_revenue_net.zero?
+              weighted_gross = digital_revenue_gross / month_config[:digital].count
+              weighted_net = digital_revenue_net / month_config[:digital].count
 
               month_config[:digital].each do |album_name|
                 album = Album.find_by!(name: album_name)
@@ -180,23 +183,28 @@ namespace :home_sheet do
                                      product_id: album.id,
                                      period: month,
                                      tier: row[:tier],
-                                     net_revenue_amount_cents: weighted.cents,
-                                     net_revenue_amount_currency: weighted.currency.iso_code,
+                                     net_revenue_amount_cents: weighted_net.cents,
+                                     net_revenue_amount_currency: weighted_net.currency.iso_code,
+                                     proportional_pledge_amount_cents: weighted_gross.cents,
+                                     proportional_pledge_amount_currency: weighted_gross.currency.iso_code,
                                      customer_name_hashed: hashed_name
                                    }, unique_by: [:customer_name_hashed, :period, :product_type, :product_id])
               end
             end
 
             merch_items = tier_config[:merch].map { |type| Merch.find_by!(sku: month_config[type]) }
-            weighted = physical_revenue / merch_items.count if merch_items.present?
+            weighted_gross = physical_revenue_gross / merch_items.count if merch_items.present?
+            weighted_net = physical_revenue_net / merch_items.count if merch_items.present?
             merch_items.each do |merch|
               PatreonSale.upsert({
                                    product_type: 'Merch',
                                    product_id: merch.id,
                                    period: month,
                                    tier: row[:tier],
-                                   net_revenue_amount_cents: weighted.cents,
-                                   net_revenue_amount_currency: weighted.currency.iso_code,
+                                   net_revenue_amount_cents: weighted_net.cents,
+                                   net_revenue_amount_currency: weighted_gross.currency.iso_code,
+                                   proportional_pledge_amount_cents: weighted_gross.cents,
+                                   proportional_pledge_amount_currency: weighted_gross.currency.iso_code,
                                    customer_name_hashed: hashed_name
                                  }, unique_by: [:customer_name_hashed, :period, :product_type, :product_id])
             end

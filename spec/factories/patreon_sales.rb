@@ -4,16 +4,18 @@
 #
 # Table name: patreon_sales
 #
-#  id                          :integer          not null, primary key
-#  customer_name_hashed        :string           not null
-#  net_revenue_amount_cents    :integer          default(0), not null
-#  net_revenue_amount_currency :string           default("USD"), not null
-#  period                      :date             not null
-#  product_type                :string           not null
-#  tier                        :string           not null
-#  created_at                  :datetime         not null
-#  updated_at                  :datetime         not null
-#  product_id                  :integer          not null
+#  id                                  :integer          not null, primary key
+#  customer_name_hashed                :string           not null
+#  net_revenue_amount_cents            :integer          default(0), not null
+#  net_revenue_amount_currency         :string           default("USD"), not null
+#  period                              :date             not null
+#  product_type                        :string           not null
+#  proportional_pledge_amount_cents    :integer          default(0), not null
+#  proportional_pledge_amount_currency :string           default("USD"), not null
+#  tier                                :string           not null
+#  created_at                          :datetime         not null
+#  updated_at                          :datetime         not null
+#  product_id                          :integer          not null
 #
 # Indexes
 #

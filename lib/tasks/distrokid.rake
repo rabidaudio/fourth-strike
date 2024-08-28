@@ -3,7 +3,6 @@
 namespace :distrokid do
   desc 'Loads Distrokid sale data from their raw data report'
   task :load_report => :environment do
-
     path = Rails.root.glob('storage/exports/DistroKid_*.tsv').max
     raise StandardError, 'Report not found' if path.nil?
 
@@ -89,7 +88,6 @@ namespace :distrokid do
 
   desc 'Load the report mapping ISRCs to bandcamp urls and update album/track information'
   task :import_isrcs => :environment do
-
     csv = CSV.read(Rails.root.join('storage/exports/ISRCs to Bandcamp URLs.csv'), headers: true)
     rows = csv.each.to_a
 

@@ -25,7 +25,6 @@ namespace :paypal do
 
   desc 'Loads payout data from Paypal transactions'
   task :load_payouts => :environment do
-
     settings = YAML.load_file(Rails.root.join('storage/exports/corrected_paypal_accounts.yml'))
 
     strip = ->(v) { v&.strip }
