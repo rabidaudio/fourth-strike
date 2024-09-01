@@ -44,6 +44,8 @@ gem 'nokogiri'
 gem 'http'
 # Execute JS from Ruby
 gem 'execjs', require: false
+# Delayed Job, simple db-backed job runner
+gem 'delayed_job_active_record'
 
 # Allow data migrations like schema migrations [https://github.com/ilyakatz/data-migrate]
 gem 'data_migrate', '~> 9.3'

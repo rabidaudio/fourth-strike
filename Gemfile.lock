@@ -135,6 +135,11 @@ GEM
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
+    delayed_job (4.1.12)
+      activesupport (>= 3.0, < 8.0)
+    delayed_job_active_record (4.1.10)
+      activerecord (>= 3.0, < 8.0)
+      delayed_job (>= 3.0, < 5)
     diff-lcs (1.5.1)
     domain_name (0.6.20240107)
     dotenv (3.1.2)
@@ -513,6 +518,7 @@ DEPENDENCIES
   csv
   data_migrate (~> 9.3)
   debug
+  delayed_job_active_record
   dotenv
   execjs
   factory_bot_rails (~> 6.4)
