@@ -94,10 +94,6 @@ class Payee < ApplicationRecord
     balance > Payout.payout_at
   end
 
-  def royalties_owed_for(product)
-    RoyaltyCalculator.new(product).royalties_owed_to(self)
-  end
-
   def royalties_owed(**)
     PayoutCalculator.new(self, **).for_royalties
   end
@@ -110,8 +106,8 @@ class Payee < ApplicationRecord
     PayoutCalculator.new(self, **).total_owed
   end
 
-  def paid_out(from: Time.zone.at(0), to: Time.zone.now)
-    payouts.where(paid_at: from..).where(paid_at: ...to).sum_monetized(:amount)
+  def paid_out(**)
+    PayoutCalculator.new(self, **).total_paid
   end
 
   def balance(**)

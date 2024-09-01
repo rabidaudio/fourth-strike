@@ -19,8 +19,10 @@ class ProjectCalculator
 
   delegate :name, to: :@album
 
-  def initialize(album)
+  def initialize(album, from: Time.zone.at(0), to: Time.zone.now)
     @album = album
+    @start_at = from
+    @end_at = to
   end
 
   def bandcamp_downloads
@@ -106,15 +108,15 @@ class ProjectCalculator
   private
 
   def album_calculator
-    @album_calculator ||= RoyaltyCalculator.new(@album)
+    @album_calculator ||= RoyaltyCalculator.new(@album, from: @start_at, to: @end_at)
   end
 
   def track_calculators
-    @track_calculators ||= @album.tracks.map { |t| RoyaltyCalculator.new(t) }
+    @track_calculators ||= @album.tracks.map { |t| RoyaltyCalculator.new(t, from: @start_at, to: @end_at) }
   end
 
   def merch_calculators
-    @merch_calculators ||= @album.merch_items.map { |m| RoyaltyCalculator.new(m) }
+    @merch_calculators ||= @album.merch_items.map { |m| RoyaltyCalculator.new(m, from: @start_at, to: @end_at) }
   end
 
   def all_calculators
@@ -122,23 +124,24 @@ class ProjectCalculator
   end
 
   def bandcamp_album_sales
-    @album.bandcamp_sales.count
+    @album.bandcamp_sales.where(purchased_at: @start_at...@end_at).count
   end
 
   def bandcamp_track_sales
-    BandcampSale.where(product_type: 'Track', product_id: @album.tracks).count
+    BandcampSale.where(product_type: 'Track', product_id: @album.tracks).where(purchased_at: @start_at...@end_at).count
   end
 
   def patreon_digital_sales
-    @album.patreon_sales.count
+    @album.patreon_sales.where(period: @start_at...@end_at).count
   end
 
   def distrokid_album_streams
-    @album.distrokid_sales.streaming.sum(:quantity)
+    @album.distrokid_sales.streaming.where(reported_at: @start_at...@end_at).sum(:quantity)
   end
 
   def distrokid_track_streams
-    DistrokidSale.where(product_type: 'Track', product_id: @album.tracks).streaming.sum(:quantity)
+    DistrokidSale.where(product_type: 'Track',
+                        product_id: @album.tracks).streaming.where(reported_at: @start_at...@end_at).sum(:quantity)
   end
 
   def bandcamp_album_sale_gross_revenue

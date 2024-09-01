@@ -43,7 +43,7 @@ class ReportBuilder
   # How did we do on a per-album basis?
   def project_report # rubocop:disable Metrics/AbcSize
     Report.new({
-                 'Release Date' => ->(p) { p.album.release_date.to_date },
+                 'Release Date' => ->(p) { p.album.release_date.to_date.iso8601 },
                  'Album' => ->(p) { p.album.name },
                  'Artist' => ->(p) { p.album.artist_name },
                  'Digital Album Sales' => :bandcamp_downloads,
@@ -65,43 +65,50 @@ class ReportBuilder
                  'Project Expenses' => ->(p) { p.production_expenses.round.format },
                  'Organization Profit' => ->(p) { p.organization_profit.round.format }
                }) do
-      Album.order(release_date: :desc).find_each.map(&:project)
+      Album.order(release_date: :desc).find_each.map do |album|
+        ProjectCalculator.new(album, from: time_range.begin, to: time_range.end)
+      end
     end
   end
 
-  # The total funds incoming to the organization
-  # def incoming_report
+  # def organization_profit_report
   #   Report.new({
-  #                'Time Period Start' => ->(r) { r[:start].to_date },
-  #                'Time Period End' => ->(r) { r[:end].to_date },
-  #                'Source' => ->(r) { r[:source] },
-  #                'Gross Revenue' => ->(r) { r[:gross_revenue].format },
-  #                'Net Revenue' => ->(r) { r[:net_revenue].format },
-  #                'Org Distribution' => ->(r) { r[:organization_distribution].format },
-  #                'Artist Royalties' => ->(r) { r[:artist_royalties].format },
-  #                'Org Royalties' => ->(r) { r[:org_royalties].format },
-  #                'Donated Royalties' => ->(r) { r[:donated_royalties].format },
-  #                'Total Org Income' => ->(r) { r[:org_income].format }
+  #                'Time Period Start' => ->(r) { r[:start].to_date.iso8601 },
+  #                'Time Period End' => ->(r) { r[:end].to_date.iso8601 },
+  #                'Organization Profit' => ->(r) { r[:profit].round.format }
   #              }) do
-  #     time_iterator.map do |range|
-  #       # BANDCAMP DIGITAL SALES
-
-  #       # BANDCAMP MERCH SALES
-  #       # iam8bit merch sales
-  #       # Distrokid streaming royalties
-  #       # Bandcamp campaigns
-  #       # Patreon
-  #     end.flatten
+  #     time_iterator(time_range,).map do |range|
+  #       {
+  #         start: range.begin,
+  #         end: range.end,
+  #         profit: Album.find_each.sum do |album|
+  #                   ProjectCalculator.new(album, from: range.begin, to: range.end).organization_profit
+  #                 end
+  #       }
+  #     end
   #   end
   # end
 
-  # def outgoing_report
-
-  # def payee_report
+  def payee_report
+    Report.new({
+                 'FSN' => :fsn,
+                 'Name' => :name,
+                 'Charity?' => ->(p) { p.is_charity? ? 'TRUE' : 'FALSE' },
+                 'Donated Royalties?' => ->(p) { p.opted_out_of_royalties? ? 'TRUE' : 'FALSE' },
+                 'Royalties Earned' =>
+                    ->(p) { p.royalties_owed(from: time_range.begin, to: time_range.end).round.format },
+                 'Services Rendered' =>
+                    ->(p) { p.services_rendered_owed(from: time_range.begin, to: time_range.end).round.format },
+                 'Paid Out' => ->(p) { p.paid_out(from: time_range.begin, to: time_range.end).round.format },
+                 'Balance' => ->(p) { p.balance(from: time_range.begin, to: time_range.end).round.format }
+               }) do
+      Payee.order(fsn: :asc)
+    end
+  end
 
   def bandcamp_digital_sale_report
     Report.new({
-                 'Purchase Date' => ->(r) { r.purchased_at.to_date },
+                 'Purchase Date' => ->(r) { r.purchased_at.to_date.iso8601 },
                  'Bandcamp Transaction ID' => :bandcamp_transaction_id,
                  'Gross Revenue' => ->(r) { r.subtotal_amount.format },
                  'Net Revenue' => ->(r) { r.net_revenue_amount.format },
@@ -114,8 +121,8 @@ class ReportBuilder
 
   def distrokid_stream_report
     Report.new({
-                 'Reported Date' => ->(r) { r.reported_at.to_date },
-                 'Sale Period' => ->(r) { r.sale_period.to_date },
+                 'Reported Date' => ->(r) { r.reported_at.to_date.iso8601 },
+                 'Sale Period' => ->(r) { r.sale_period.to_date.iso8601 },
                  'Title' => :title,
                  'Artist' => :artist_name,
                  'Product' => ->(r) { "#{r.product_type}/#{r.product_id}" },
@@ -129,7 +136,7 @@ class ReportBuilder
 
   def bandcamp_merch_sale_report
     Report.new({
-                 'Purchase Date' => ->(r) { r.purchased_at.to_date },
+                 'Purchase Date' => ->(r) { r.purchased_at.to_date.iso8601 },
                  'Bandcamp Transaction ID' => :bandcamp_transaction_id,
                  'Product' => ->(r) { "#{r.product_type}/#{r.product_id}" },
                  'SKU' => :sku,
@@ -138,7 +145,7 @@ class ReportBuilder
                  'Gross Revenue' => ->(r) { r.subtotal_amount.format },
                  'Net Revenue' => ->(r) { r.net_revenue_amount.format },
                  'Production Cost' => ->(r) { r.merch_fulfillment&.production_cost&.format },
-                 'Shipped Date' => ->(r) { r.merch_fulfillment&.shipped_on&.to_date },
+                 'Shipped Date' => ->(r) { r.merch_fulfillment&.shipped_on&.to_date&.iso8601 },
                  'Printify Order' => ->(r) { r.merch_fulfillment&.printify_order_number }
                }) do
       BandcampSale.merch.includes(:merch_fulfillment).where(purchased_at: time_range).order(purchased_at: :asc)
@@ -147,7 +154,7 @@ class ReportBuilder
 
   def services_rendered_report
     Report.new({
-                 'Rendered Date' => ->(r) { r.rendered_at },
+                 'Rendered Date' => ->(r) { r.rendered_at.to_date.iso8601 },
                  'Payee' => ->(r) { "#{r.payee.name} / #{r.payee.fsn}" },
                  'Description' => :description,
                  'Project' => ->(r) { r.album&.name },
@@ -161,7 +168,7 @@ class ReportBuilder
 
   def patreon_report
     Report.new({
-                 'Period' => ->(r) { r.period },
+                 'Period' => ->(r) { r.period.to_date.iso8601 },
                  'Customer' => :customer_name_hashed,
                  'Tier' => :tier,
                  'Product' => ->(r) { "#{r.product_type}/#{r.product_id}" },
@@ -175,15 +182,14 @@ class ReportBuilder
   def to_combined_xls
     FastExcel.open.tap do |workbook|
       {
-        # 'FUNDS_IN' => incoming_report,
-        # 'FUNDS_OUT' => outgoing_report,
-        # PAYEES
         'PROJECTS' => project_report,
         'BANDCAMP DIGITAL SALES' => bandcamp_digital_sale_report,
         'DISTROKID STREAMS' => distrokid_stream_report,
         'BANDCAMP MERCH SALES' => bandcamp_merch_sale_report,
         'SERVICES RENDERED' => services_rendered_report,
-        'PATREON' => patreon_report
+        'PATREON' => patreon_report,
+        'PAYEES' => payee_report
+        # 'PROFIT' => organization_profit_report
       }.each do |name, report|
         worksheet = workbook.add_worksheet(name)
         report.each_row do |row|
@@ -193,9 +199,7 @@ class ReportBuilder
     end
   end
 
-  private
-
-  def time_iterator
+  def self.time_iterator(time_range, interval)
     Enumerator.new do |y|
       start = time_range.begin
       loop do
@@ -208,5 +212,11 @@ class ReportBuilder
         start = end_
       end
     end
+  end
+
+  private
+
+  def time_iterator
+    self.class.time_iterator(time_range, interval)
   end
 end

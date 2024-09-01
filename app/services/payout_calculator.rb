@@ -10,7 +10,8 @@ class PayoutCalculator
                      :for_merch_sales,
                      :for_royalties,
                      :for_services_rendered,
-                     :total_owed
+                     :total_owed,
+                     :total_paid
 
   def initialize(payee, from: Time.zone.at(0), to: Time.zone.now)
     @payee = payee
@@ -19,19 +20,19 @@ class PayoutCalculator
   end
 
   def self.total_owed_for_everyone
-    Payee.find_each.sum { |payee| PayoutCalculator.new(payee).total_owed }
+    Payee.find_each.sum { |payee| PayoutCalculator.new(payee).total_owed }.to_money
   end
 
   def for_album_sales
-    albums.map { |album| royalties_for(album) }.sum
+    albums.map { |album| royalties_for(album) }.sum.to_money
   end
 
   def for_track_sales
-    tracks.map { |track| royalties_for(track) }.sum
+    tracks.map { |track| royalties_for(track) }.sum.to_money
   end
 
   def for_merch_sales
-    merch_items.map { |item| royalties_for(item) }.sum
+    merch_items.map { |item| royalties_for(item) }.sum.to_money
   end
 
   def for_royalties
@@ -51,6 +52,10 @@ class PayoutCalculator
       for_royalties,
       for_services_rendered
     ].sum
+  end
+
+  def total_paid
+    @payee.payouts.where(paid_at: @start_at...@end_at).sum_monetized(:amount)
   end
 
   private

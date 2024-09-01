@@ -1,6 +1,6 @@
 <script setup>
   import { computed } from 'vue'
-  import { Bar, Chart } from 'vue-chartjs'
+  import { Bar } from 'vue-chartjs'
   import 'chart.js/auto'
 
   const props = defineProps(['data'])
