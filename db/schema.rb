@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_03_165840) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_01_203053) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -99,6 +99,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_03_165840) do
     t.index ["paypal_transaction_id"], name: "index_bandcamp_sales_on_paypal_transaction_id"
     t.index ["product_type", "product_id"], name: "index_bandcamp_sales_on_product"
     t.index ["upc"], name: "index_bandcamp_sales_on_upc"
+  end
+
+  create_table "delayed_jobs", force: :cascade do |t|
+    t.integer "priority", default: 0, null: false
+    t.integer "attempts", default: 0, null: false
+    t.text "handler", null: false
+    t.text "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string "locked_by"
+    t.string "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
   create_table "distrokid_sales", force: :cascade do |t|

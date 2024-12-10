@@ -60,6 +60,9 @@ services:
       - app
     restart: always
 
+
+    # bundle exec rake jobs:work
+
 volumes:
   storage:
     external: true
