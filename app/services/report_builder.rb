@@ -73,11 +73,11 @@ class ReportBuilder
 
   def organization_profit_report
     ReportData.new({
-                 'Time Period Start' => ->(r) { r[:start].to_date.iso8601 },
-                 'Time Period End' => ->(r) { r[:end].to_date.iso8601 },
-                 'Organization Profit' => ->(r) { r[:profit].round.format }
-               }) do
-      time_iterator(time_range,).map do |range|
+                     'Time Period Start' => ->(r) { r[:start].to_date.iso8601 },
+                     'Time Period End' => ->(r) { r[:end].to_date.iso8601 },
+                     'Organization Profit' => ->(r) { r[:profit].round.format }
+                   }) do
+      time_iterator.map do |range|
         {
           start: range.begin,
           end: range.end,
@@ -188,7 +188,7 @@ class ReportBuilder
         'BANDCAMP MERCH SALES' => bandcamp_merch_sale_report,
         'SERVICES RENDERED' => services_rendered_report,
         'PATREON' => patreon_report,
-        'PAYEES' => payee_report
+        'PAYEES' => payee_report,
         'PROFIT' => organization_profit_report
       }.each do |name, report|
         worksheet = workbook.add_worksheet(name)
