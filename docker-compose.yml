@@ -1,5 +1,3 @@
-version: "3.3"
-
 services:
   nginx:
     build:
@@ -23,6 +21,7 @@ services:
     environment:
       - TERM=xterm
     restart: "no"
+  # TODO: doesn't work
   # chrome:
   #   image: zenika/alpine-chrome
   #   command: --no-sandbox --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 https://www.chromestatus.com/
@@ -31,9 +30,10 @@ services:
   #   networks:
   #     - app
   #   restart: unless-stopped
+  
   app:
     # build: .
-    image: registry.digitalocean.com/fourth-strike/app:latest
+    image: rabidaudio/fourth-strike:latest
     ports:
       - 3000:3000
     volumes:
@@ -48,27 +48,27 @@ services:
     networks:
       - app
     restart: always
+    environment: &appenv
+      - RAILS_ENV=production
+      - RAILS_SERVE_STATIC_FILES=true
+      - RAILS_LOG_LEVEL=info
+      - RAILS_LOG_TO_STDOUT=true
+      - HOSTNAME=app.fourth-strike.net
+      - RAILS_MIN_THREADS=1
+      # - CHROME_URL=http://chrome:9222
+      - DISCORD_CLIENT_ID
+      - DISCORD_CLIENT_SECRET
+      - RAILS_MASTER_KEY
   worker:
     # build: .
-    image: registry.digitalocean.com/fourth-strike/app:latest
+    image: rabidaudio/fourth-strike:latest
     volumes:
       - storage:/rails/storage
     networks:
       - app
     restart: always
     command: bundle exec rake jobs:work
-
-environment:
-  - RAILS_ENV=production
-  - RAILS_SERVE_STATIC_FILES=true
-  - RAILS_LOG_LEVEL=info
-  - RAILS_LOG_TO_STDOUT=true
-  - HOSTNAME=app.fourth-strike.net
-  - RAILS_MIN_THREADS=1
-  # - CHROME_URL=http://chrome:9222
-  - DISCORD_CLIENT_ID
-  - DISCORD_CLIENT_SECRET
-  - RAILS_MASTER_KEY
+    environment: *appenv
 
 volumes:
   storage:

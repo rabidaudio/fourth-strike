@@ -104,17 +104,31 @@ and then scale back down when finished.
 ## Initial Deployment
 
 ```bash
-# Mount the external volume
-mkdir -p /mnt/volume_nyc3_01
-mount -o discard,defaults,noatime /dev/disk/by-id/scsi-0DO_Volume_volume-nyc3-01 /mnt/volume_nyc3_01
-mkdir -p /mnt/volume_nyc3_01/storage
-# Make it auto-mount
-echo '/dev/disk/by-id/scsi-0DO_Volume_volume-nyc3-01 /mnt/volume_nyc3_01 ext4 defaults,nofail,discard 0 0' | sudo tee -a /etc/fstab
-# Create a persistent docker volume for it
-docker volume create --opt type=none --opt o=bind --opt device=/mnt/volume_nyc3_01/storage storage
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+# Add the repository to Apt sources:
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+# Install docker
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+# Create a persistent docker volume for the volume
+docker volume create --opt type=none --opt o=bind --opt device=/mnt/HC_Volume_101758628/storage storage
+# install Let'sEncrypt
+sudo apt install certbot
+mkdir -p /var/www/_letsencrypt
 # Load code
 git clone https://github.com/rabidaudio/fourth-strike
 cd fourth-strike
+# load secrets to .env
+# bootstrap ssl
+docker compose run -p "80:80" letsencrypt certbot certonly --expand --standalone -w /tmp/acme_challenge -d app.fourth-strike.com
+# configure cron jobs
+echo '5 0 * * 1 cd /root/fourth-strike && docker compose restart' | crontab
+# start
 docker compose run app DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rake db:schema:load
 docker compose start
 ```
@@ -122,6 +136,9 @@ docker compose start
 ## Updates
 
 ```bash
+# automatically
+docker compose pull && docker compose up -d
+# Manually
 cd fourth-strike
 # pull latest code
 git pull
