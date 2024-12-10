@@ -188,8 +188,9 @@ class ReportBuilder
         'BANDCAMP MERCH SALES' => bandcamp_merch_sale_report,
         'SERVICES RENDERED' => services_rendered_report,
         'PATREON' => patreon_report,
-        'PAYEES' => payee_report,
-        'PROFIT' => organization_profit_report
+        'PAYEES' => payee_report
+        # TODO: disabled, too slow
+        # 'PROFIT' => organization_profit_report
       }.each do |name, report|
         worksheet = workbook.add_worksheet(name)
         report.each_row do |row|
