@@ -29,6 +29,8 @@ Rails.application.routes.draw do
     post '/append', to: 'splits#append', as: 'append_split'
   end
 
+  match '/internal/jobs' => DelayedJobWeb, :anchor => false, :via => [:get, :post]
+
   get '/privacy', to: 'static_pages#privacy'
   root 'static_pages#home'
 end

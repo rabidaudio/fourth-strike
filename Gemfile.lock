@@ -140,6 +140,11 @@ GEM
     delayed_job_active_record (4.1.10)
       activerecord (>= 3.0, < 8.0)
       delayed_job (>= 3.0, < 5)
+    delayed_job_web (1.4.4)
+      activerecord (> 3.0.0)
+      delayed_job (> 2.0.3)
+      rack-protection (>= 1.5.5)
+      sinatra (>= 1.4.4)
     diff-lcs (1.5.1)
     domain_name (0.6.20240107)
     dotenv (3.1.2)
@@ -252,6 +257,8 @@ GEM
     msgpack (1.7.2)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
+    mustermann (3.0.3)
+      ruby2_keywords (~> 0.0.1)
     mutex_m (0.2.0)
     net-http (0.4.1)
       uri
@@ -412,6 +419,7 @@ GEM
       rubocop (>= 1.33.0, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
     ruby-progressbar (1.13.0)
+    ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     selenium-webdriver (4.23.0)
       base64 (~> 0.2)
@@ -419,6 +427,12 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    sinatra (4.0.0)
+      mustermann (~> 3.0)
+      rack (>= 3.0.0, < 4)
+      rack-protection (= 4.0.0)
+      rack-session (>= 2.0.0, < 3)
+      tilt (~> 2.0)
     slim (5.2.1)
       temple (~> 0.10.0)
       tilt (>= 2.1.0)
@@ -519,6 +533,7 @@ DEPENDENCIES
   data_migrate (~> 9.3)
   debug
   delayed_job_active_record
+  delayed_job_web
   dotenv
   execjs
   factory_bot_rails (~> 6.4)
