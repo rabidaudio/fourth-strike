@@ -22,9 +22,9 @@ section.section
       a href=issues_path Needs Attention
 
 section.section
-  h1.is-size-2 Download Financial Report
+  h1.is-size-2 Generate Report
 
-  = form_tag(reports_combined_path, method: :get, class: "form", 'data-turbo' => "false") do
+  = form_tag(reports_generate_path, method: :get, class: "form", 'data-turbo' => "false") do
     .field
       label.label = "From (inclusive)"
       .control
@@ -43,4 +43,45 @@ section.section
       .control
         - tax_year_end = Time.zone.strptime(Rails.application.config.app_config[:tax_year_start], "%m-%d")
         - tax_year_start = tax_year_end - 1.year
-        a.button href=reports_combined_path(from: tax_year_start.to_date.iso8601, to: tax_year_end.to_date.iso8601, interval: 'P1M') Download Previous Tax Year Report
+        a.button href=reports_generate_path(from: tax_year_start.to_date.iso8601, to: tax_year_end.to_date.iso8601, interval: 'P1M') Download Previous Tax Year Report
+
+section.section
+  h1.is-size-2 Reports
+
+  = render_pagination(@reports)
+
+  table.table
+    thead
+      tr
+        th Generated At
+        th Report
+        th Status
+        th
+    tbody
+      - @reports.each do |report|
+        tr
+          td
+            = localized_datetime(report.generated_at)
+            - if report.generated_by.present?
+              br
+              = "by #{report.generated_by.discord_handle}"
+          td
+            code = report.filename
+          td
+            - if report.pending?
+              span.tag.is-warning Pending
+            - elsif report.running?
+              span.tag.is-info Running
+            - elsif report.completed?
+              span.tag.is-success Completed
+            - elsif report.failed?
+              span.tag.is-danger Failed
+          td
+            - if report.completed?
+              a href=reports_download_path(report.id) data-turbo="false" Download
+        - if report.error_message.present?
+          tr
+            td colspan="4"
+              pre.is-size-7 style="max-width: 50%; overflow: scroll" = report.error_message
+
+  = render_pagination(@reports)

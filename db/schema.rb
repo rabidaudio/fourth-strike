@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_01_203053) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_10_171201) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -249,6 +249,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_01_203053) do
     t.index ["payee_id"], name: "index_rendered_services_on_payee_id"
   end
 
+  create_table "reports", force: :cascade do |t|
+    t.datetime "generated_at", null: false
+    t.integer "generated_by_id", null: false
+    t.integer "state", default: 0, null: false
+    t.string "filename", null: false
+    t.json "args", default: "{}", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "error_message"
+    t.index ["generated_by_id"], name: "index_reports_on_generated_by_id"
+  end
+
   create_table "splits", force: :cascade do |t|
     t.integer "payee_id", null: false
     t.string "product_type", null: false
@@ -289,6 +301,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_01_203053) do
   add_foreign_key "payouts", "payees"
   add_foreign_key "rendered_services", "albums"
   add_foreign_key "rendered_services", "payees"
+  add_foreign_key "reports", "admins", column: "generated_by_id"
   add_foreign_key "splits", "payees"
   add_foreign_key "tracks", "albums"
 end

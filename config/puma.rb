@@ -39,7 +39,9 @@ pidfile ENV.fetch('PIDFILE', 'tmp/pids/server.pid')
 plugin :tmp_restart
 
 on_booted do
-  Rails.logger.info('Recomputing...')
-  CalculatorCache::Manager.recompute_all!
-  Rails.logger.info('Compute cache loaded')
+  if Rails.env.production?
+    Rails.logger.info('Recomputing...')
+    CalculatorCache::Manager.recompute_all!
+    Rails.logger.info('Compute cache loaded')
+  end
 end

@@ -18,7 +18,8 @@ Rails.application.routes.draw do
 
   get '/reports', to: 'reports#index'
   get '/reports/projects', to: 'reports#projects'
-  get '/reports/combined', to: 'reports#combined_excel_report'
+  get '/reports/generate', to: 'reports#combined_excel_report', as: 'reports_generate'
+  get '/reports/:id/download', to: 'reports#download', as: 'reports_download'
   get '/issues', to: 'reports#needs_attention'
 
   scope path: '/products/:product_type/:product_id/splits' do
