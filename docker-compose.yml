@@ -45,23 +45,30 @@ services:
         tmpfs:
           size: "524288" # 512kb
           mode: 01777 # make sure it's rw by the rails user
-    environment:
-      - RAILS_ENV=production
-      - RAILS_SERVE_STATIC_FILES=true
-      - RAILS_LOG_LEVEL=info
-      - RAILS_LOG_TO_STDOUT=true
-      - HOSTNAME=app.fourth-strike.net
-      - RAILS_MIN_THREADS=1
-      # - CHROME_URL=http://chrome:9222
-      - DISCORD_CLIENT_ID
-      - DISCORD_CLIENT_SECRET
-      - RAILS_MASTER_KEY
     networks:
       - app
     restart: always
+  worker:
+    # build: .
+    image: registry.digitalocean.com/fourth-strike/app:latest
+    volumes:
+      - storage:/rails/storage
+    networks:
+      - app
+    restart: always
+    command: bundle exec rake jobs:work
 
-
-    # bundle exec rake jobs:work
+environment:
+  - RAILS_ENV=production
+  - RAILS_SERVE_STATIC_FILES=true
+  - RAILS_LOG_LEVEL=info
+  - RAILS_LOG_TO_STDOUT=true
+  - HOSTNAME=app.fourth-strike.net
+  - RAILS_MIN_THREADS=1
+  # - CHROME_URL=http://chrome:9222
+  - DISCORD_CLIENT_ID
+  - DISCORD_CLIENT_SECRET
+  - RAILS_MASTER_KEY
 
 volumes:
   storage:

@@ -189,7 +189,7 @@ class ReportBuilder
         'SERVICES RENDERED' => services_rendered_report,
         'PATREON' => patreon_report,
         'PAYEES' => payee_report
-        # TODO: disabled, too slow
+        # TODO: disabled, too slow (~20min)
         # 'PROFIT' => organization_profit_report
       }.each do |name, report|
         worksheet = workbook.add_worksheet(name)

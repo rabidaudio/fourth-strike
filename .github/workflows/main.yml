@@ -19,7 +19,6 @@ jobs:
         name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: registry.digitalocean.com
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
@@ -27,4 +26,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: registry.digitalocean.com/fourth-strike/app:${{ github.sha }},registry.digitalocean.com/fourth-strike/app:latest
+          tags: rabidaudio/fourth-strike:${{ github.sha }},rabidaudio/fourth-strike:latest

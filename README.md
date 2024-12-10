@@ -94,7 +94,7 @@ keeps backups/record keeping incredibly simple.
 
 ## Deployment
 
-App is hosted on a DigitalOcean droplet, inside of docker compose, accessed via SSH.
+App is hosted on Hetzner, inside of docker compose, accessed via SSH.
 A volume is mounted for persistent storage for portability and backup purposes. An
 nginx container acts as SSL termination and certificates are provided by Let'sEncrypt.
 
