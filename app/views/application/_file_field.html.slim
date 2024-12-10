@@ -1,0 +1,9 @@
+.field
+  .file.has-name data-controller="file_upload_name"
+    label.file-label type="file" name=field_name
+      = file_field_tag(field_name, class: "file-input", 'data-file_upload_name-target' => 'input')
+      span.file-cta
+        span.file-icon
+          i.ri-file-upload-line
+        span.file-label Choose a file…
+      span.file-name data-file_upload_name-target='filename' = placeholder

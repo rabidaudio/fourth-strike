@@ -18,7 +18,7 @@ class RequireAuthenticatedAdminMiddleware
 
   def logged_in?(env)
     req = ActionDispatch::Request.new(env)
-    return false unless req.session['user'].present?
+    return false if req.session['user'].blank?
 
     current_user = User.new(**req.session['user'])
     return false if current_user.expired?

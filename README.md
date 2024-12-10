@@ -137,7 +137,8 @@ docker compose start
 
 ```bash
 # automatically
-docker compose pull && docker compose up -d
+ssh root@app.fourth-strike.com 'cd fourth-strike && docker compose pull && docker compose up -d'
+
 # Manually
 cd fourth-strike
 # pull latest code

@@ -29,7 +29,10 @@ Rails.application.routes.draw do
     post '/append', to: 'splits#append', as: 'append_split'
   end
 
-  match '/internal/jobs' => DelayedJobWeb, :anchor => false, :via => [:get, :post]
+  get '/imports', to: 'imports#index', as: 'imports'
+  post '/imports/distrokid', to: 'imports#import_distrokid_streams'
+
+  match '/internal/jobs' => DelayedJobWeb, :anchor => false, :via => [:get, :post], as: 'delayed_jobs'
 
   get '/privacy', to: 'static_pages#privacy'
   root 'static_pages#home'

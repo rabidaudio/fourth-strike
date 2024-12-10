@@ -6,6 +6,8 @@ import { application } from './application'
 
 import IsActiveController from './is_active_controller'
 import SpoilerController from './spoiler_controller'
+import FileUploadNameController from './file_upload_name_controller'
 
 application.register('is_active', IsActiveController)
 application.register('spoiler', SpoilerController)
+application.register('file_upload_name', FileUploadNameController)

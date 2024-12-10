@@ -1,0 +1,4 @@
+.tags.has-addons
+  span.tag Last Updated
+  span.tag class=(last_updated > 1.month.ago ? 'is-primary' : (last_updated > 3.months.ago ? 'is-warning' : 'is-danger'))
+    = localized_date(last_updated)

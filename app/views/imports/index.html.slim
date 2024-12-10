@@ -1,0 +1,42 @@
+section.section
+  h1.is-size-2 Data Import
+  
+  h3.is-size-4 DistroKid Streams
+  = render('last_updated', last_updated: DistrokidSale.maximum(:created_at))
+
+  p
+    span.is-bold Directions:
+    ol
+      li
+        span Log into
+        = ' '
+        a href="https://distrokid.com/mymusic/" target="_blank" DistroKid
+      li Go to "Bank" and select "See excruciating detail"
+      li Make sure it's loading everything ("All dates", "All artists", "All releases", "All stores")
+      li Click the Download icon in the top right
+      li Upload below
+
+  = form_tag(imports_distrokid_path, multipart: true) do
+    = render('file_field', field_name: "report", placeholder: 'DistroKid_XXXXXXXXXX.tsv')
+    = submit_tag "Upload", class: "button is-primary"
+
+
+  h3.is-size-4 iam8bit Sales
+  = render('last_updated', last_updated: Iam8bitSale.maximum(:created_at))
+
+  p
+    span.is-bold Directions:
+    ol
+      li
+        span Check
+        = ' '
+        code info@fourth-strike.net
+        = ' '
+        span for an email with  the subject line 'IAM8BIT, INC Qx 20xx Royalty Statement' (sent quarterly)
+      li Open the attachment and look for the latest quarter information
+      li
+        span Go
+        = ' '
+        a href=iam8bit_sales_path here
+        = ' '
+        span and "Add" records for both Wholesale and regular sales

@@ -40,7 +40,13 @@ nav.navbar role="navigation" aria-label="main navigation" data-controller="is_ac
         a.navbar-item href=merch_index_path Merch
         a.navbar-item href=payees_path Payees
         a.navbar-item href=rendered_services_path Services Rendered
-        a.navbar-item href=reports_path Reporting
+
+        .navbar-item.has-dropdown.is-hoverable
+          a.navbar-link Management
+          .navbar-dropdown
+            a.navbar-item href=reports_path Reporting
+            a.navbar-item href=imports_path Data Import
+            a.navbar-item href=delayed_jobs_path Background Jobs
 
     .navbar-end
       - unless admin?
