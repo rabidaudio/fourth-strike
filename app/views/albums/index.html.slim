@@ -33,7 +33,7 @@ h1.is-size-2 Releases
           .card-content style="min-height: 7.5em"
             p.title.is-4.two-line
               - if album.private?
-                span.tag.is-warning.is-light Private
+                span.tag.is-warning.is-light Hidden
                 = ' '
               span = album.name
             p.subtitle.is-6 = album.artist_name
