@@ -57,3 +57,10 @@ a {
   background: var(--bulma-text);
   cursor: pointer;
 }
+
+label.is-required:after {
+  content: ' *';
+  color: var(--bulma-danger);
+  font-size: 0.9em;
+  vertical-align: super;
+}
