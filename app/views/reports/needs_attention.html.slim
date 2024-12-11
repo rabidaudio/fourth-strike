@@ -3,6 +3,27 @@ section.section
 
   = render 'merch/unfulfilled'
 
+  - if DistrokidSale.maximum(:created_at) < 1.month.ago
+    article.message.is-warning
+      .message-header
+        span = "Streaming revenue is #{how_long_ago(DistrokidSale.maximum(:created_at), round: 1.week)} out of date"
+      .message-body
+        a href=imports_path Directions
+
+  - if BandcampSale.maximum(:created_at) < 1.month.ago
+    article.message.is-warning
+      .message-header
+        span = "Bandcamp sales are #{how_long_ago(BandcampSale.maximum(:created_at), round: 1.week)} out of date"
+      .message-body
+        a href=imports_path Directions
+
+  - if Iam8bitSale.maximum(:created_at) < 3.months.ago
+    article.message.is-warning
+      .message-header
+        span = "iam8bit sales report is #{how_long_ago(Iam8bitSale.maximum(:created_at), round: 1.month)} out of date"
+      .message-body
+        a href=imports_path Directions
+
   - unless @due_for_payout.empty?
     article.message.is-warning
       .message-header
@@ -67,3 +88,5 @@ section.section
                       a href=merch_path(merch) = merch.name
                     td
                       a href=edit_splits_path(product_type: 'Merch', product_id: merch.id) Edit
+  
+

@@ -16,6 +16,4 @@ class ImportsController < ApplicationController
     flash[:success] = 'Loading report. The data will update over the next couple of minutes'
     redirect_to imports_path
   end
-
-  # TODO: needs attention: no iam8bit sales for previous quarter
 end

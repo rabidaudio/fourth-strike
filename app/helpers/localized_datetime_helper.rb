@@ -38,6 +38,19 @@ module LocalizedDatetimeHelper
     time.strftime("#{fmt[:date]} #{fmt[:time]}")
   end
 
+  # Return a human-readable string of how long ago a time was, optionally rounded
+  def how_long_ago(time, round: 1.second)
+    duration = ActiveSupport::Duration.build(Time.zone.now - time)
+    duration.parts.each do |unit, count|
+      next unless 1.send(unit) <= round
+
+      unit_value = count.send(unit)
+      rounded = (unit_value / round).round * round
+      duration = duration - unit_value + rounded
+    end
+    duration.inspect
+  end
+
   private
 
   def determine_region
