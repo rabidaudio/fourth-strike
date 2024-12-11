@@ -33,6 +33,7 @@ Rails.application.routes.draw do
 
   get '/imports', to: 'imports#index', as: 'imports'
   post '/imports/distrokid', to: 'imports#import_distrokid_streams'
+  post '/imports/bandcamp', to: 'imports#import_bandcamp_sales'
 
   match '/internal/jobs' => DelayedJobWeb, :anchor => false, :via => [:get, :post], as: 'delayed_jobs'
 

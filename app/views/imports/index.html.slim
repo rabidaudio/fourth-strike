@@ -1,6 +1,30 @@
 section.section
   h1.is-size-2 Data Import
-  
+
+
+  h3.is-size-4 Bandcamp Sales (Digital & Physical)
+  = render('last_updated', last_updated: BandcampSale.maximum(:created_at))
+
+  p
+    span.is-bold Directions:
+    ol
+      li
+        span Log into
+        = ' '
+        a href=Rails.application.config.app_config[:bandcamp][:url] target="_blank" Bandcamp
+      li In the top right, click on the menu and go to "Tools"
+      li Select the "Raw data report" and the appropriate time range
+      li 
+        | Make sure it's loading the necessary fields ("All artists", "Payment details", "Item details").
+        | "Buyer details" can be ignored for privacy purposes, it isn't utilized
+      li Click "Export raw data report"
+      li Upload below
+
+  = form_tag(imports_bandcamp_path, multipart: true) do
+    = render('file_field', field_name: "report", placeholder: 'xxxx-xxxx_bandcamp_raw_data_xxx.csv')
+    = submit_tag "Upload", class: "button is-primary"
+
+
   h3.is-size-4 DistroKid Streams
   = render('last_updated', last_updated: DistrokidSale.maximum(:created_at))
 

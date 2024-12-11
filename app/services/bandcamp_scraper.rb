@@ -25,7 +25,7 @@ module BandcampScraper
         bandcamp_id: track['item']['additionalProperty'].find { |p| p['name'] == 'track_id' }['value'].to_s,
         bandcamp_url: track['item']['@id'],
         name: track['item']['name'],
-        lyrics: track['item']['recordingOf']['lyrics']['text']
+        lyrics: track.dig('item', 'recordingOf', 'lyrics', 'text')
       }
     end
 
