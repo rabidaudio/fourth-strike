@@ -54,6 +54,8 @@ class Album < ApplicationRecord
 
   validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/, allow_nil: true }
 
+  accepts_nested_attributes_for :tracks
+
   def self.find_by_upc(upc)
     where('upcs like ?', "%\"#{upc}\"%").first
   end

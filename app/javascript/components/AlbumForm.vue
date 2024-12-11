@@ -120,18 +120,19 @@
       </div>
     </div>
 
-    <div class="field">
-      <label class="label is-required">Catalog Number</label>
+    <!-- <div class="field">
+      <label class="label">Catalog Number</label>
       <div class="control">
         <input class="input" name="album[catalog_number]" type="text" v-model="album.catalog_number" placeholder="ABC-001">
       </div>
-    </div>
+    </div> -->
 
     <div class="field">
       <label class="label">UPCs</label>
       <div class="control">
         <input class="input" name="album[upcs]" type="tags" v-model="album.upcs" placeholder="0123456789000">
       </div>
+      <p class="help">From DistroKid</p>
     </div>
 
     <div class="field">
@@ -159,6 +160,10 @@
         <span>&nbsp;</span>
         <button @click.prevent="removeTrackAt(index)"><i class="ri-delete-bin-6-line"></i></button>
       </h4>
+
+      <input type="hidden" name="album[tracks][][id]" v-model="track.id">
+      <input type="hidden" name="album[tracks][][bandcamp_id]" v-model="track.bandcamp_id">
+      <input type="hidden" name="album[tracks][][track_number]" v-model="track.track_number">
 
       <div class="field is-horizontal">
         <div class="field-label">
@@ -220,9 +225,6 @@
           </div>
         </div>
       </div>
-
-      <input type="hidden" name="album[tracks][][bandcamp_id]" v-model="track.bandcamp_id">
-      <input type="hidden" name="album[tracks][][track_number]" v-model="track.track_number">
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">

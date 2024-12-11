@@ -6,12 +6,22 @@ p
   br
   span = "Released #{localized_date(@album.release_date)}"
 
+  - if @album.catalog_number.present?
+    br
+    span = "UPC: "
+    code = @album.catalog_number
+
   - if admin? && @album.upcs
     br
     span = "UPC: "
     - @album.upcs.each do |upc|
       code = upc
 
+- if admin?
+  .block
+    .field
+      a.button href=edit_album_path(@album)
+        span Edit
 
 - if @album.private?
   p

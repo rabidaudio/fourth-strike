@@ -1,12 +1,12 @@
 section.section
-  h1.is-size-2 Create Album
+  h1.is-size-2 Update Album
 
   .columns
     .column.is-full
-      = form_for(@album, method: :create) do |f|
+      = form_for(@album) do |f|
         
         div vue-component="AlbumForm" props=@props.to_json
 
         .field
           .control
-            = f.submit "Create", class: "button is-link"
+            = f.submit "Update", class: "button is-link"

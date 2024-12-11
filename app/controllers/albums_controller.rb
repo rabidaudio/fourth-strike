@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AlbumsController < ApplicationController
-  # before_action :raise_unless_logged_in!, except: [:index, :show]
+  before_action :raise_unless_logged_in!, except: [:index, :show]
 
   def index
     @albums = Album.order(release_date: :desc)
@@ -16,149 +16,80 @@ class AlbumsController < ApplicationController
   end
 
   def extract_bandcamp_details
+    info = BandcampScraper.extract_album_info(params[:url])
+    # TODO: serializers?
     render json: {
-      album: {
-        name: 'THE GARAGES SIGN OFF @ DESERT BUS 2024',
-        artist_name: 'the garages',
-        album_art_url: 'https://f4.bcbits.com/img/a0623417941_16.jpg',
-        bandcamp_price: { cents: 666, currency: 'USD' },
-        release_date: '2024-11-13',
-        bandcamp_id: '827202132'
-      },
-      tracks: [
-        {
-          bandcamp_url: 'https://thegarages.bandcamp.com/track/bones-to-ohio-anyone-else-live-db2024',
-          bandcamp_id: '3812987682',
-          name: 'bones to ohio (anyone else) [live @ db2024]',
-          track_number: 1,
-          lyrics: <<~LYRICS,
-            i wanna be anyone
-            i wanna be anyone anyone else
-            anyone else but me
-
-            give it up for a thicker shell
-            i wanna be anyone anyone else
-            so what’s it gonna be?
-
-            don’t care if it hurts like hell
-            i just wanna tear away every sticky cell
-            that feels anything anything anything like myself
-
-            don’t need anybody’s help
-            i’m gonna be anyone anyone else
-
-            yeah the shell is strong but the body’s weak
-            you gotta learn how to yell before you learn how to speak
-            it’s all bitter work with your face in the dirt
-            do you think it’ll sting do you think it’ll hurt
-            i want the burning taste of infinity
-            put the scales in my eyes where everybody can see
-            i just wanna be ok
-            and i don’t wanna be myself today
-
-            nothing left to call home
-            half a season to be alone, be alone again
-            what’s it take to leave
-
-            my skin keeps getting tight
-            i need someone to dig me out dig me out tonight
-            and learn how to breathe
-
-            nothing left in this desert town
-            gonna burn it all burn it all burn it all down
-            so what’s it gonna be?
-
-            calling out for a god to help
-            i’m gonna be anyone anyone else
-
-            yeah the shell is strong but the body’s weak
-            you gotta learn how to yell before you learn how to speak
-            it’s all bitter work with your face in the dirt
-            do you think it’ll sting do you think it’ll hurt
-            i want the burning taste of infinity
-            put the scales in my eyes where everybody can see
-            i just wanna be ok
-            i just wanna be ok
-
-            i left a decent life for a step outside
-            when it all comes down, will we be alright
-            (hold on to me, darling, hold on to me)
-            i swear i’m on a knife’s edge waiting to fall for anything
-            i don’t care what the future brings
-            i just gotta get away from the rest of me
-            (hold on to me, darling, hold on to me)
-            i don’t wanna be dead, i just wanna be free
-            i don’t wanna be dead, i just wanna be free
-
-            yeah the shell is strong but the body’s weak
-            you gotta learn how to yell before you learn how to speak
-            it’s all bitter work with your face in the dirt
-            do you think it’ll sting do you think it’ll hurt
-            i want the burning taste of infinity
-            put the scales in my eyes where everybody can see
-            i’m getting sick and tired of the shape i’m in
-            do you think it’ll fail, do you think it’s a sin
-            as i disappear in the hole in the sky
-            was it worth all the pain? was it all just a lie?
-            my body's getting sore
-            and i'm not gonna be myself anymore
-          LYRICS
-          credits: <<~CREDITS
-            written by max (noise-land.bandcamp.com)
-            originally on short circuit 02
-            lead vocals by riley (yuppiesupper.bandcamp.com, @thwackamabob on tumblr and twitter)
-            backing vocals by vigilant baker (vigilantbaker.bandcamp.com)
-            lead guitar by max (noise-land.bandcamp.com)
-            rhythm guitar by rolo (jenandrolo.bandcamp.com) and raph (apha.bandcamp.com, twitter.com/aphamusic)
-            drums by hibi (hibi.bandcamp.com, twitter.com/hibiscuitss)
-            bass by jennifer cat (jenandrolo.bandcamp.com)
-            sax by rosie (thornsband.bandcamp.com, @rosie.drown on instagram)
-            gang vocals by em (vigilanceandgrace.bandcamp.com), pitch (imperfectpitch.bandcamp.com), cliff, astrid, ras (ebhband.bandcamp.com), and tegan (tonalchroma.bandcamp.com)#{' '}
-          CREDITS
-        }
-      ]
+      album: info.except(:bandcamp_price, :tracks).merge(
+        bandcamp_price: { cents: info[:bandcamp_price].cents, currency: info[:bandcamp_price].currency.iso_code }
+      ),
+      tracks: info[:tracks]
     }
   end
 
   def new
-    #  id                      :integer          not null, primary key
-    #  album_art_url           :string
-    #  artist_name             :string           not null
-    #  bandcamp_price_cents    :integer          default(0), not null
-    #  bandcamp_price_currency :string           default("USD"), not null
-    #  bandcamp_url            :string           not null
-    #  catalog_number          :string
-    #  name                    :string           not null
-    #  private                 :boolean          default(FALSE), not null
-    #  release_date            :date
-    #  upcs                    :string
-    #  created_at              :datetime         not null
-    #  updated_at              :datetime         not null
-    #  bandcamp_id             :string
-
-    @album = Album.new(artist_name: 'the garages')
-    # restore_changes!(@album)
+    @album = Album.new
+    restore_changes!(@album)
+    @tracks = [Track.new(track_number: 1)]
     @props = {
       album: @album,
-      tracks: []
+      tracks: @tracks
+    }
+  end
+
+  def edit
+    @album = Album.find(params[:id])
+    restore_changes!(@album)
+    @props = {
+      album: @album,
+      tracks: @album.tracks
     }
   end
 
   def create
-    # data = HTTP.get('https://thegarages.bandcamp.com/album/the-garages-sign-off-desert-bus-2024')
-    # body = Nokogiri::XML.parse(data.body.to_s)
-    # album_art_url = body.css('a.popupImage').attr('href').value
+    @album = Album.new(album_params.except(:tracks))
+    @album.tracks = album_params[:tracks].map { |t| Track.new(t) }
+    @album.save!
+    flash[:success] = 'Album published'
+    redirect_to albums_path
+  rescue StandardError => e
+    log_error!(e)
+    flash[:danger] = e.message
+    record_changes!(@album)
+    redirect_to new_album_path
+  end
 
-    # metadata = JSON.parse(body.css('script[type="application/ld+json"]').text)
-    # artist_name = metadata.name
+  def update
+    ActiveRecord::Base.transaction do
+      @album = Album.find(params[:id])
+      @album.assign_attributes(album_params.except(:tracks))
+      @album.save!
 
-    # metadata = JSON.parse(body.css("script[data-tralbum]").attr('data-tralbum').value)
-    # private = !metadata['current']['private'].nil?
-    # name = metadata['current']['title']
-    # metadata['album_release_date']
-    # metadata['current']['minimum_price'].to_money('USD')
+      album_params[:tracks].each do |track_params|
+        track = track_params[:id].present? ? Track.find(track_params[:id]) : Track.new(album: @album)
+        track.assign_attributes(track_params.except(:id))
+        track.save!
+      end
+    end
+    flash[:success] = 'Updated album'
+    redirect_to album_path(@album)
+  rescue StandardError => e
+    log_error!(e)
+    flash[:danger] = e.message
+    record_changes!(@album)
+    redirect_to edit_album_path(@album)
+  end
 
-    # metadata = JSON.parse(body.css('#pagedata').attr('data-blob').value)
-    # bandcamp_id = metadata['album_id']
+  private
+
+  def album_params
+    params.require(:album).permit(
+      :bandcamp_url, :name, :artist_name, :bandcamp_id, :bandcamp_price_cents, :bandcamp_price_currency,
+      :album_art_url, :release_date, :catalog_number, :upcs, :private,
+      tracks: [:id, :name, :track_number, :bandcamp_url, :isrc, :bandcamp_id, :credits, :lyrics]
+    ).tap do |album_params|
+      album_params[:upcs] = album_params[:upcs].split(',')
+      album_params[:bandcamp_price] =
+        Money.new(album_params.delete(:bandcamp_price_cents), album_params.delete(:bandcamp_price_currency))
+    end
   end
 end
