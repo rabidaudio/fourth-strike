@@ -10,10 +10,10 @@ section.section
 
         = f.hidden_field :bandcamp_sale_id
 
-        = bulma_field(f, :text_field, @merch_fulfillment, :shipped_on, label: 'Shipped on', type: 'date')
+        = bulma_field(f, :text_field, @merch_fulfillment, :shipped_on, label: 'Shipped on', required: true, type: 'date')
 
         .field
-          label.label Production Costs
+          label.label.is-required Production Costs
           .control
             div vue-component="MoneyField" props={name: "merch_fulfillment[production_cost]"}.to_json
             p

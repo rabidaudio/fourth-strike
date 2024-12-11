@@ -5,6 +5,7 @@ module BulmaFormHelper
   def bulma_field(form, type, record, field_name, **kwargs, &)
     label = kwargs.delete(:label)
     label = " #{label}" if label && type == :check_box
+    required = kwargs.delete(:required) || false
     css_classes = kwargs.delete(:class)&.split || []
     css_classes << 'input' unless type == :check_box
     error = nil
@@ -16,6 +17,7 @@ module BulmaFormHelper
     field_args = { **kwargs, class: css_classes.join(' ') }
 
     render('form_field',
-           f: form, type: type, field_name: field_name, label: label, error: error, field_args: field_args, &)
+           f: form, type: type, field_name: field_name, label: label,
+           required: required, error: error, field_args: field_args, &)
   end
 end

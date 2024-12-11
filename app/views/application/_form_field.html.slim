@@ -2,7 +2,7 @@
 - if type == :check_box
   .field
     .control
-      label.checkbox
+      label.checkbox class=(required ? 'is-required' : '')
         = f.send(type, field_name, **field_args)
         span = label
       = yield
@@ -11,7 +11,7 @@
 - else
   .field
     - if label
-      label.label = label
+      label.label class=(required ? 'is-required' : '') = label
     .control
       = f.send(type, field_name, **field_args)
       = yield

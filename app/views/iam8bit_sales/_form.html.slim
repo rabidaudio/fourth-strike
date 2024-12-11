@@ -2,25 +2,25 @@
 section.section
   = form_for(@iam8bit_sale) do |f|
     
-    = bulma_field(f, :text_field, @iam8bit_sale, :period, label: 'Quarter', type: 'date')
+    = bulma_field(f, :text_field, @iam8bit_sale, :period, label: 'Quarter', required: true, type: 'date')
 
-    = bulma_field(f, :text_field, @iam8bit_sale, :name, label: 'Name')
+    = bulma_field(f, :text_field, @iam8bit_sale, :name, required: true, label: 'Name')
 
     .field
-      label.label Product
+      label.label.is-required Product
       .control
         .select
           = select_tag("iam8bit_sale[merch_id]", options_for_select(Merch.iam8bit.pluck(:name, :id), @iam8bit_sale.product_id))
 
-    = bulma_field(f, :number_field, @iam8bit_sale, :quantity, label: 'Quantity', step: 1, autocomplete: 'off')
+    = bulma_field(f, :number_field, @iam8bit_sale, :quantity, label: 'Quantity', required: true, step: 1, autocomplete: 'off')
 
     .field
-      label.label Gross Revenue
+      label.label.is-required Gross Revenue
       .control
         div vue-component="MoneyField" props={name: "iam8bit_sale[gross_revenue_amount]"}.to_json
 
     .field
-      label.label Net Revenue (after transaction fees and iam8bit cut)
+      label.label.is-required Net Revenue (after transaction fees and iam8bit cut)
       .control
         div vue-component="MoneyField" props={name: "iam8bit_sale[net_revenue_amount]"}.to_json
 

@@ -28,14 +28,14 @@
 <!-- NOTE: assumes already in a form -->
 <template>
   <div class="field">
-    <label class="label">Payee</label>
+    <label class="label is-required">Payee</label>
     <div class="control">
       <PayeeSearch v-model="payee" fieldName="rendered_service[payee][fsn]"/>
     </div>
   </div>
 
   <div class="field">
-    <label class="label">Date Rendered</label>
+    <label class="label is-required">Date Rendered</label>
     <div class="control">
       <input class="input" name="rendered_service[rendered_at]" type="date" v-model="service.rendered_at">
     </div>
@@ -54,7 +54,7 @@
       <div class="select">
         <select name="rendered_service[album_id]" v-model="service.album_id">
           <option></option>
-          <option :value="id" v-for="(name, id) in props.albums">{{ name }}</option>
+          <option :value="id" v-for="[id, name] in props.albums">{{ name }}</option>
         </select>
       </div>
       <p class="help">
@@ -64,7 +64,7 @@
   </div>
 
   <div class="field">
-    <label class="label">For Artist (optional)</label>
+    <label class="label">For Artist</label>
     <div class="control">
       <div class="select">
         <select name="rendered_service[type]" v-model="service.artist_name">
@@ -76,7 +76,7 @@
   </div>
 
   <div class="field">
-    <label class="label">Type</label>
+    <label class="label is-required">Type</label>
     <div class="control">
       <div class="select">
         <select name="rendered_service[type]" v-model="service.type" @change="clearHoursIfFixed">
@@ -88,14 +88,14 @@
   </div>
 
   <div class="field" v-if="service.type == 'hourly'">
-    <label class="label">Hours</label>
+    <label class="label is-required">Hours</label>
     <div class="control">
       <input name="rendered_service[hours]" class="input" type="number" step=".05" autocomplete="off" v-model="service.hours" @input="recomputeCompensation" />
     </div>
   </div>
 
   <div class="field">
-    <label class="label">Compensation</label>
+    <label class="label is-required">Compensation</label>
     <div class="control">
       <MoneyField v-model="compensation" name="rendered_service[compensation]" />
     </div>

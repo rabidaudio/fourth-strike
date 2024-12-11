@@ -20,7 +20,7 @@ class RenderedServicesController < ApplicationController
       payee: @rendered_service.payee,
       hourly_rate: RenderedService.hourly_rate.to_f,
       artists: Album.distinct.pluck(:artist_name).sort,
-      albums: Album.order(release_date: :desc).pluck(:id, :name).to_h
+      albums: Album.order(release_date: :desc).pluck(:id, :name)
     }
   end
 
@@ -32,7 +32,7 @@ class RenderedServicesController < ApplicationController
       payee: @rendered_service.payee,
       hourly_rate: RenderedService.hourly_rate.to_f,
       artists: Album.distinct.pluck(:artist_name).sort,
-      albums: Album.order(release_date: :desc).pluck(:id, :name).to_h
+      albums: Album.order(release_date: :desc).pluck(:id, :name)
     }
   end
 
