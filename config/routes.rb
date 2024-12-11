@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   get 'auth/:provider/callback', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
 
+  post '/albums/bandcamp_details', to: 'albums#extract_bandcamp_details', as: 'extract_bandcamp_details'
+
   resources :artists, :payees, :albums, :tracks
   resources :merch_fulfillments, path: 'merch/fulfillment'
   resources :iam8bit_sales, path: 'merch/iam8bit'

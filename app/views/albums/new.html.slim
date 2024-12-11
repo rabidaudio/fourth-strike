@@ -1,0 +1,12 @@
+section.section
+  h1.is-size-2 Create Album
+
+  .columns
+    .column.is-full.is-one-third-desktop
+      = form_for(@album, method: :create) do |f|
+        
+        div vue-component="AlbumForm" props=@props.to_json
+
+        .field
+          .control
+            = f.submit "Create", class: "button is-link"

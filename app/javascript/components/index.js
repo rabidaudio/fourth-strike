@@ -7,6 +7,7 @@ import MoneyField from './MoneyField.vue'
 import StreamingChart from './StreamingChart.vue'
 import SaleChart from './SaleChart.vue'
 import ProjectChart from './ProjectChart.vue'
+import AlbumForm from './AlbumForm.vue'
 
 const Components = {
   PayeeSearch,
@@ -15,7 +16,8 @@ const Components = {
   MoneyField,
   StreamingChart,
   SaleChart,
-  ProjectChart
+  ProjectChart,
+  AlbumForm
 }
 
 window.addEventListener('turbo:load', () => {

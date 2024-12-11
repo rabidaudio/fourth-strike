@@ -9,6 +9,12 @@ css:
 
 h1.is-size-2 Releases
 
+- if admin?
+  .block
+    .field
+      a.button.is-primary href=new_album_path
+        span Add
+
 = render_pagination(@albums)
 
 .grid.is-col-min-9.is-gap-4
