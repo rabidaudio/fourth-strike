@@ -27,3 +27,16 @@ jobs:
         with:
           push: true
           tags: rabidaudio/fourth-strike:${{ github.sha }},rabidaudio/fourth-strike:latest
+
+      -
+        name: Reboot Server
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: app.fourth-strike.com
+          username: root
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd fourth-strike
+            git pull
+            docker compose pull
+            docker compose up -d
