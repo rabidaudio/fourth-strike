@@ -52,6 +52,10 @@ class Payee < ApplicationRecord
     )
   }
 
+  def self.org
+    Payee.find_by!(fsn: 'FS-000')
+  end
+
   def self.due_for_payout
     (current_scope || all).find_each.select(&:due_for_payout?)
   end
@@ -88,6 +92,10 @@ class Payee < ApplicationRecord
 
   def opted_out_of_royalties?
     opted_out_of_royalties
+  end
+
+  def org?
+    self == Payee.org
   end
 
   def due_for_payout?

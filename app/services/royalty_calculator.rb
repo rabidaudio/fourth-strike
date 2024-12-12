@@ -35,14 +35,14 @@ class RoyaltyCalculator
     # their royalties to the org
     def donated_royalties
       royalties.sum do |payee, value|
-        payee.opted_out_of_royalties? ? value : 0.to_money(currency)
+        payee.opted_out_of_royalties? && !payee.org? ? value : 0.to_money(currency)
       end || 0.to_money(currency)
     end
 
     # Total value of royalties to charities
     def charity_royalties
       royalties.sum do |payee, value|
-        payee.charity? ? value : 0.to_money(currency)
+        payee.charity? && !payee.org? ? value : 0.to_money(currency)
       end || 0.to_money(currency)
     end
 
@@ -50,7 +50,7 @@ class RoyaltyCalculator
     # Returns Hash[Payee => Money]
     def artist_royalties
       royalties.reject do |payee, _value|
-        payee.charity? || payee.opted_out_of_royalties?
+        payee.charity? || payee.opted_out_of_royalties? || payee.org?
       end.to_h
     end
 
@@ -61,7 +61,7 @@ class RoyaltyCalculator
 
     # Value of royalties where the org receives a split
     def org_royalties
-      royalties_owed_to(Payee.find_by!(fsn: 'FS-000'))
+      royalties_owed_to(Payee.org)
     end
 
     def total_org_income
@@ -139,7 +139,8 @@ class RoyaltyCalculator
   end
 
   def physical_products_sold
-    bandcamp_physical_sales_all.sum(&:quantity) + iam8bit_sales.sum(&:quantity) + patreon_sales.where(product_type: 'Merch').count
+    bandcamp_physical_sales_all.sum(&:quantity) + iam8bit_sales.sum(&:quantity) +
+      patreon_sales.where(product_type: 'Merch').count
   end
 
   def bandcamp_digital_gross_revenue
