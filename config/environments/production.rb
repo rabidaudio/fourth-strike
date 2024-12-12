@@ -83,8 +83,10 @@ Rails.application.configure do
   # Use a different cache store in production.
 
   # NOTE: don't want to put production cache on remote drive
-  # config.cache_store = :file_store, Rails.root.join('tmp/cache')
-  config.cache_store = :memory_store, { size: 128.megabytes }
+  # config.cache_store = :memory_store, { size: 128.megabytes }
+  # In prod, we're using a tempfs (memory) fs volume, so this should be
+  # comparable performance to memory_store but sharable across procs
+  config.cache_store = :file_store, Rails.root.join('tmp/cache')
 
   # config.cache_store = :redis_cache_store, config.redis_config
 

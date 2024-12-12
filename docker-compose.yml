@@ -38,6 +38,7 @@ services:
       - 3000:3000
     volumes:
       - storage:/rails/storage
+      - cache:/rails/tmp/cache
       # This works around a well-known quirk:
       # https://ieftimov.com/posts/docker-compose-stray-pids-rails-beyond/
       - type: tmpfs
@@ -64,6 +65,7 @@ services:
     image: rabidaudio/fourth-strike:latest
     volumes:
       - storage:/rails/storage
+      - cache:/rails/tmp/cache
     networks:
       - app
     restart: always
@@ -77,6 +79,11 @@ volumes:
     external: false
   acme_challenge:
     external: false
+  cache:
+    type: tempfs
+    target: /mnt/cache
+    tmpfs:
+      size: "268435456" # 256MB
 
 networks:
   app:
