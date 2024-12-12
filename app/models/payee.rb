@@ -38,7 +38,7 @@ class Payee < ApplicationRecord
     payee.fsn ||= Payee.next_fsn
   end
 
-  scope :missing_payment_info, -> { where(paypal_account: nil, opted_out_of_royalties: false) }
+  scope :missing_payment_info, -> { where.not(fsn: 'FS-000').where(paypal_account: nil, opted_out_of_royalties: false) }
 
   scope :search, lambda { |keyword|
     search_value = "%#{keyword.strip.downcase}%"
@@ -96,6 +96,10 @@ class Payee < ApplicationRecord
 
   def royalties_owed(**)
     PayoutCalculator.new(self, **).for_royalties
+  end
+
+  def royalties_owed_for(product)
+    RoyaltyCalculator.new(product).distributable_income.royalties_owed_to(self)
   end
 
   def services_rendered_owed(**)
