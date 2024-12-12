@@ -3,7 +3,14 @@
 
   const money = defineModel({ default: { cents: 0, currency: 'USD' } })
 
-  const props = defineProps(['name'])
+  const props = defineProps(['name', 'cents', 'currency'])
+
+  if (props.cents) {
+    money.value.cents = props.cents
+  }
+  if (props.currency) {
+    money.value.currency = props.currency
+  }
 
   function format(money) {
     return '$' + (Math.round(money.cents) / 100).toFixed(2)

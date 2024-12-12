@@ -5,24 +5,9 @@ section.section
   .columns
     .column.is-full.is-one-third-desktop
 
-      = 
       = form_for(@merch_fulfillment, url: merch_fulfillments_path, method: :post) do |f|
 
-        = f.hidden_field :bandcamp_sale_id
-
-        = bulma_field(f, :text_field, @merch_fulfillment, :shipped_on, label: 'Shipped on', required: true, type: 'date')
-
-        .field
-          label.label.is-required Production Costs
-          .control
-            div vue-component="MoneyField" props={name: "merch_fulfillment[production_cost]"}.to_json
-            p
-              | This should be the cost to produce the item. It should not include shipping costs, 
-              | bandcamp fees, or transaction fees; only the cost of the product.
-
-        = bulma_field(f, :text_field, @merch_fulfillment, :printify_order_number, label: 'Printify Order number', placeholder: '1932959.123')
-
-        = bulma_field(f, :text_area, @merch_fulfillment, :notes, label: 'Notes')
+        = render 'form', f: f
 
         .field
           .control

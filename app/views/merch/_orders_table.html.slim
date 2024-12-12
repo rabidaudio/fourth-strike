@@ -9,6 +9,7 @@ table.table
       th Production + Shipping Costs
       th Printify Order
       th Notes
+      th
   tbody
     - sales.each do |sale|
       tr
@@ -17,10 +18,11 @@ table.table
           a target="_blank" href="https://fourth-strike.bandcamp.com/merch_orders?payment_id=#{sale.bandcamp_transaction_id}"
             = sale.bandcamp_transaction_id
         td
+          span = sale.product.name
+          br
           code = sale.sku
           - if sale.option
-            br
-            span = sale.option
+            span = "[ #{sale.option} ]"
         td = sale.subtotal_amount.format
 
         - if sale.merch_fulfillment
@@ -41,3 +43,6 @@ table.table
           - if sale.merch_fulfillment&.notes&.present?
             pre
               = sale.merch_fulfillment.notes
+        td
+          - if sale.merch_fulfillment
+            a href=edit_merch_fulfillment_path(sale.merch_fulfillment) Edit

@@ -1,0 +1,14 @@
+section.section
+  h1.is-size-2 Edit Fulfillment
+
+
+  .columns
+    .column.is-full.is-one-third-desktop
+
+      = form_for(@merch_fulfillment, url: merch_fulfillment_path(@merch_fulfillment)) do |f|
+
+        = render 'form', f: f
+
+        .field
+          .control
+            = f.submit "Update", class: "button is-link"
