@@ -12,12 +12,14 @@ class ReportsController < ApplicationController
 
   def projects
     @albums = Album.includes(:tracks, :merch_items, :splits).order(release_date: :desc)
+    @albums = @albums.where('lower(artist_name) like ?', params[:artist].downcase) if params[:artist]
     @project_profit_data = @albums.map(&:project).reverse.map do |project|
       {
         name: project.name,
         organization_profit: project.organization_profit.round.to_f,
+        distributable_income: project.distributable_income.round.to_f
         # bandcamp_downloads
-        streams: project.total_streams
+        # streams: project.total_streams,
       }
     end
   end
