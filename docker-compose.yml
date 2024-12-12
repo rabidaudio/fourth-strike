@@ -80,10 +80,7 @@ volumes:
   acme_challenge:
     external: false
   cache:
-    type: tempfs
-    target: /mnt/cache
-    tmpfs:
-      size: "268435456" # 256MB
+    external: true
 
 networks:
   app:

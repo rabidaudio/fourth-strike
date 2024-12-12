@@ -117,6 +117,8 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 # Create a persistent docker volume for the volume
 docker volume create --opt type=none --opt o=bind --opt device=/mnt/HC_Volume_101758628/storage storage
+# Create a tmpfs volume for shared Rails cache
+docker volume create --driver local --opt type=tmpfs --opt device=tmpfs --opt o=size=256m,uid=1000,gid=1000,mode=01777 cache
 # install Let'sEncrypt
 sudo apt install certbot
 mkdir -p /var/www/_letsencrypt
@@ -135,18 +137,10 @@ docker compose start
 
 ## Updates
 
-```bash
-# automatically
-ssh root@app.fourth-strike.com 'cd fourth-strike && docker compose pull && docker compose up -d'
+Updates are triggered automatically by Github workflows.
 
-# Manually
-cd fourth-strike
-# pull latest code
-git pull
-# Restart containers
-docker compose restart
-# Run any pending migrations
-docker compose run app rake db:migrate
+```bash
+ssh root@app.fourth-strike.com 'cd fourth-strike && git pull && docker compose pull && docker compose up -d'
 ```
 
 ## Dependency Report
