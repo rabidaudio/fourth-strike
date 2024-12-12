@@ -251,7 +251,7 @@ namespace :bandcamp do
 
   desc 'Loads Bandcamp sale data from their raw data report'
   task :load_report => :environment do
-    path = Rails.root.glob('storage/exports/Fourth-Strike-Records_sales_*').max
+    path = Rails.root.glob('storage/exports/*_bandcamp_raw_data_*').max
     raise StandardError, 'Report not found' if path.nil?
 
     BandcampReport.load_report!(path)

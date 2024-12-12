@@ -13,6 +13,8 @@
 #  product_type                :string           not null
 #  purchased_at                :datetime         not null
 #  quantity                    :integer          not null
+#  refunded                    :boolean          default(FALSE), not null
+#  shipping_destination        :string
 #  sku                         :string
 #  subtotal_amount_cents       :integer          default(0), not null
 #  subtotal_amount_currency    :string           default("USD"), not null

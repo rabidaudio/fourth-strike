@@ -81,7 +81,7 @@ module CalculatorCache
     def recompute_royalties!(product)
       now_or_once_per_transaction(RoyaltyCalculator, product) do
         clear_cache(RoyaltyCalculator, product)
-        RoyaltyCalculator.new(product).total_royalties_owed if eager_recompute?
+        RoyaltyCalculator.new(product).distributable_income if eager_recompute?
         case product
         when Album then recompute_project!(product)
         when Track then recompute_project!(product.album)

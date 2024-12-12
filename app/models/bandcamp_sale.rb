@@ -13,6 +13,8 @@
 #  product_type                :string           not null
 #  purchased_at                :datetime         not null
 #  quantity                    :integer          not null
+#  refunded                    :boolean          default(FALSE), not null
+#  shipping_destination        :string
 #  sku                         :string
 #  subtotal_amount_cents       :integer          default(0), not null
 #  subtotal_amount_currency    :string           default("USD"), not null
@@ -66,6 +68,10 @@ class BandcampSale < ApplicationRecord
 
   # Require sales to be in the operating currency
   validates :subtotal_amount_currency, :net_revenue_amount_currency, inclusion: { in: Money.default_currency.iso_code }
+
+  def refunded?
+    refunded
+  end
 
   def overdue?
     return false unless product_type == 'Merch'

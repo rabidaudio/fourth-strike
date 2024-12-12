@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_10_171201) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_203742) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -94,6 +94,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_10_171201) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "option"
+    t.string "shipping_destination"
+    t.boolean "refunded", default: false, null: false
     t.index ["bandcamp_transaction_id", "item_url"], name: "index_bandcamp_sales_on_bandcamp_transaction_id_and_item_url", unique: true
     t.index ["item_url"], name: "index_bandcamp_sales_on_item_url"
     t.index ["paypal_transaction_id"], name: "index_bandcamp_sales_on_paypal_transaction_id"

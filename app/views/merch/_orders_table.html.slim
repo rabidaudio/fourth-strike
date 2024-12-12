@@ -3,7 +3,8 @@ table.table
     tr
       th Purchase Date
       th Transaction
-      th Option
+      th Product
+      th Destination
       th Subtotal
       th Shipped
       th Production + Shipping Costs
@@ -17,20 +18,27 @@ table.table
         td
           a target="_blank" href="https://fourth-strike.bandcamp.com/merch_orders?payment_id=#{sale.bandcamp_transaction_id}"
             = sale.bandcamp_transaction_id
+          - unless sale.refunded?
+            br
+            = button_to "Mark Refunded", refund_merch_sale_path(sale), method: :delete, class: "button"
         td
           span = sale.product.name
           br
           code = sale.sku
           - if sale.option
             span = "[ #{sale.option} ]"
-        td = sale.subtotal_amount.format
-
-        - if sale.merch_fulfillment
+        td = sale.shipping_destination
+        td style=(sale.refunded? ? 'text-decoration: line-through;' : '') = sale.subtotal_amount.format
+        - if sale.refunded?
+          td Refunded
+        - elsif sale.merch_fulfillment
           td.is-success
             = localized_date(sale.merch_fulfillment.shipped_on)
         - else
           td class=(sale.overdue? ? 'is-danger' : 'is-warning')
-            a href=new_merch_fulfillment_path(sale_id: sale.id) Pending
+            span Pending
+            br
+            a.button href=new_merch_fulfillment_path(sale_id: sale.id) Mark Shipped
 
         td
           - if sale.merch_fulfillment

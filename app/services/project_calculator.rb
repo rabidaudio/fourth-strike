@@ -7,7 +7,7 @@
 class ProjectCalculator
   prepend CalculatorCache
 
-  cache_calculations :bandcamp_downloads, :total_streams,
+  cache_calculations :bandcamp_downloads, :total_streams, :physical_products_sold,
                      :digital_sale_gross_revenue, :digital_sale_net_revenue,
                      :streaming_revenue,
                      :merch_gross_revenue, :merch_cost_of_goods, :merch_net_revenue,

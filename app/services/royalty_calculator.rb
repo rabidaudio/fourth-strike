@@ -109,7 +109,7 @@ class RoyaltyCalculator
     end
   end
 
-  cache_calculations :production_expenses, :cost_of_goods,
+  cache_calculations :production_expenses, :cost_of_goods, :physical_products_sold,
                      :bandcamp_digital_gross_revenue, :bandcamp_digital_net_revenue,
                      :bandcamp_physical_gross_revenue, :bandcamp_physical_net_revenue,
                      :bandcamp_physical_net_revenue_payable,
@@ -233,11 +233,11 @@ class RoyaltyCalculator
   end
 
   def bandcamp_physical_sales_all
-    @product.bandcamp_sales.merch.where(purchased_at: @start_at...@end_at)
+    @product.bandcamp_sales.merch.where(refunded: false).where(purchased_at: @start_at...@end_at)
   end
 
   def bandcamp_physical_sales_payable
-    @product.bandcamp_sales.merch.payable.where(purchased_at: @start_at...@end_at)
+    @product.bandcamp_sales.merch.where(refunded: false).payable.where(purchased_at: @start_at...@end_at)
   end
 
   def bandcamp_pledges

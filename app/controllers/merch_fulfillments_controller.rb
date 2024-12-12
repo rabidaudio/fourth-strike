@@ -48,6 +48,13 @@ class MerchFulfillmentsController < ApplicationController
     redirect_to edit_merch_fulfillment_path(@merch_fulfillment)
   end
 
+  def refund
+    @sale = BandcampSale.merch.find(params[:id])
+    @sale.update!(refunded: true)
+    flash[:success] = 'Order marked as refunded'
+    redirect_to merch_fulfillments_path
+  end
+
   private
 
   def fulfillment_params

@@ -127,6 +127,8 @@ class BandcampReport
                                   paypal_transaction_id: paypal_transaction_id,
                                   quantity: row['quantity'],
                                   purchased_at: purchased_at,
+                                  shipping_destination: [row['city'], row['region/state'],
+                                                         row['country code']].compact.join(', '),
                                   notes: notes
                                 }, unique_by: [:bandcamp_transaction_id, :item_url])
 
@@ -161,8 +163,10 @@ class BandcampReport
             end
 
           when 'payout' then next
-          # TODO: should we account for this?
-          when 'pending reversal', 'cancelled reversal', 'reversal', 'refund' then next # rubocop:disable Lint/DuplicateBranch
+          when 'pending reversal', 'cancelled reversal', 'reversal', 'refund'
+            # if a sale exists for this, refund it
+            # NOTE: any expenses related to refunds/chargebacks are implicitly eaten by the org
+            BandcampSale.where(bandcamp_transaction_id: bandcamp_transaction_id).update_all(refunded: true)
           else raise StandardError, "Unknown item type: #{row['item type']}"
           end
         end
