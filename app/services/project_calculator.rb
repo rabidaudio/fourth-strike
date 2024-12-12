@@ -33,6 +33,10 @@ class ProjectCalculator
     distrokid_album_streams + distrokid_track_streams
   end
 
+  def physical_products_sold
+    merch_calculators.sum(&:physical_products_sold)
+  end
+
   def digital_sale_gross_revenue
     bandcamp_album_sale_gross_revenue + bandcamp_track_sale_gross_revenue + patreon_digital_gross_revenue
   end

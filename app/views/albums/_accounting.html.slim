@@ -20,6 +20,34 @@ section.section
         th Production Costs
         th Organization Profit
     tbody
+      - if albums.count > 1
+        tr.is-info
+          td.is-italic TOTALS
+          td
+            = albums.map(&:project).sum(&:digital_sale_gross_revenue).round.format
+            br
+            span.is-italic.is-size-7 = "#{number_with_delimiter(albums.map(&:project).sum(&:bandcamp_downloads))} Bandcamp downloads"
+          td = albums.map(&:project).sum(&:digital_sale_net_revenue).round.format
+          td
+            = albums.map(&:project).sum(&:streaming_revenue).round.format
+            br
+            span.is-italic.is-size-7 = "#{number_with_delimiter(albums.map(&:project).sum(&:total_streams))} streams"
+          td
+            = albums.map(&:project).sum(&:merch_gross_revenue).round.format
+            br
+            span.is-italic.is-size-7 = "#{number_with_delimiter(albums.map(&:project).sum(&:physical_products_sold))} products sold"
+          - if BandcampSale.unfulfilled_merch.present?
+            td.is-warning
+          - else
+            td = albums.map(&:project).sum(&:merch_net_revenue_less_costs).round.format
+          td = albums.map(&:project).sum(&:total_net_revenue).round.format
+          td = albums.map(&:project).sum(&:distributable_income).round.format
+          td class=(albums.where.not(id: Album.joins(:splits)).present? ? 'is-warning': '')
+            = albums.map(&:project).sum(&:payable_royalties).round.format
+          td = albums.map(&:project).sum(&:organization_royalties).round.format
+          td = albums.map(&:project).sum(&:production_expenses).round.format
+          td = albums.map(&:project).sum(&:organization_profit).round.format
+
       - albums.each do |album|
         tr
           - if albums.count > 1
@@ -38,7 +66,7 @@ section.section
           td
             = album.project.streaming_revenue.round.format
             br
-            span.is-italic.is-size-7 = "#{number_with_delimiter(album.project.total_streams)} Lifetime streams"
+            span.is-italic.is-size-7 = "#{number_with_delimiter(album.project.total_streams)} streams"
           - has_unfulfilled = album.unfulfilled_merch_items.present?
           td
             = album.project.merch_gross_revenue.round.format

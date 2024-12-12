@@ -138,6 +138,10 @@ class RoyaltyCalculator
     MerchFulfillment.where(bandcamp_sale_id: bandcamp_physical_sales_payable).sum_monetized(:production_cost)
   end
 
+  def physical_products_sold
+    bandcamp_physical_sales_all.sum(&:quantity) + iam8bit_sales.sum(&:quantity) + patreon_sales.where(product_type: 'Merch').count
+  end
+
   def bandcamp_digital_gross_revenue
     bandcamp_digital_sales.sum_monetized(:subtotal_amount)
   end
