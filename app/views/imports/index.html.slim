@@ -21,6 +21,7 @@ section.section
       li Upload below
 
   = form_tag(imports_bandcamp_path, multipart: true) do
+    = hidden_field_tag(:type, :bandcamp)
     = render('file_field', field_name: "report", placeholder: 'xxxx-xxxx_bandcamp_raw_data_xxx.csv')
     = submit_tag "Upload", class: "button is-primary"
 
@@ -41,9 +42,11 @@ section.section
       li Upload below
 
   = form_tag(imports_distrokid_path, multipart: true) do
+    = hidden_field_tag(:type, :distrokid)
     = render('file_field', field_name: "report", placeholder: 'DistroKid_XXXXXXXXXX.tsv')
     = submit_tag "Upload", class: "button is-primary"
 
+  / TODO: paypal
 
   h3.is-size-4 iam8bit Sales
   = render('last_updated', last_updated: Iam8bitSale.maximum(:created_at))
