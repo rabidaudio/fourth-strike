@@ -1,0 +1,75 @@
+h1.is-size-2
+  - if params['unfulfilled'].to_b
+    span Unfulfilled Merch Orders
+  - else
+    span Merch Orders
+
+- if params['unfulfilled'].to_b && @sales.empty?
+  p No orders require shipping at this time.
+
+section.section
+  = render_pagination(@sales)
+
+  table.table
+    thead
+      tr
+        th Purchase Date
+        th Transaction
+        th Destination
+        th Product
+        th Subtotal
+        th Status
+        th Production + Shipping Costs
+        th Printify Order
+        th
+    tbody
+      - current_order_id = nil
+      - @sales.each do |sale|
+        tr
+          - if current_order_id != sale.bandcamp_transaction_id
+            - expected = @sales.where(bandcamp_transaction_id: sale.bandcamp_transaction_id).count
+            td rowspan=expected = localized_date(sale.purchased_at)
+            td rowspan=expected
+              a target="_blank" href="https://fourth-strike.bandcamp.com/merch_orders?payment_id=#{sale.bandcamp_transaction_id}"
+                = sale.bandcamp_transaction_id
+            td rowspan=expected = sale.shipping_destination
+          td
+            span = sale.product.name
+            br
+            code = sale.sku
+            - if sale.option
+              span = "[ #{sale.option} ]"
+
+          - if current_order_id != sale.bandcamp_transaction_id
+            td rowspan=expected style=(sale.refunded? ? 'text-decoration: line-through;' : '') = sale.subtotal_amount.format
+            - if sale.refunded?
+              td rowspan=expected Refunded
+            - elsif sale.merch_fulfillment
+              td.is-success rowspan=expected
+                = localized_date(sale.merch_fulfillment.shipped_on)
+            - else
+              td rowspan=expected class=(sale.overdue? ? 'is-danger' : 'is-warning') Pending
+
+          td
+            - if sale.merch_fulfillment
+              = sale.merch_fulfillment.production_cost.format
+              - if sale.merch_fulfillment.notes.present?
+                br
+                pre
+                  = sale.merch_fulfillment.notes
+          - if current_order_id != sale.bandcamp_transaction_id
+            td rowspan=expected
+              - if sale.merch_fulfillment&.printify_order_number.present?
+                a target="_blank" href="https://printify.com/app/store/1932959/orders/1?sort=-created_at&searchKey=#{sale.merch_fulfillment.printify_order_number}"
+                  = sale.merch_fulfillment.printify_order_number
+            td rowspan=expected
+              - unless sale.refunded?
+                = button_to "Mark Refunded", refund_merch_order_path(id: sale.bandcamp_transaction_id), method: :put, class: "button"
+                br
+              - if sale.merch_fulfillment
+                a.button href=edit_merch_fulfillment_path(sale.merch_fulfillment) Edit
+              - else
+                a.button href=new_merch_fulfillment_path(order_id: sale.bandcamp_transaction_id) Mark Shipped
+          - current_order_id = sale.bandcamp_transaction_id
+
+  = render_pagination(@sales)

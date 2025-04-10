@@ -60,11 +60,27 @@ section.section
 
           = render_pagination(@sales)
 
-          = render 'orders_table', sales: @sales
+          table.table
+            thead
+              tr
+                th Purchase Date
+                th Transaction
+                th Options
+            tbody
+              - @sales.each do |sale|
+                tr
+                  td = localized_date(sale.purchased_at)
+                  td
+                    a href=merch_orders_path(bandcamp_transaction_id: sale.bandcamp_transaction_id)
+                      = sale.bandcamp_transaction_id
+                  td
+                    code = sale.sku
+                    - if sale.option
+                      br
+                      span = "[ #{sale.option} ]"
 
           = render_pagination(@sales)
 
-      .columns
         .column
           h1.is-size-2 = "Internal Orders (#{@merch.internal_merch_orders.count})"
 

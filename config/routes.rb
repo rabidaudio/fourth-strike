@@ -13,8 +13,11 @@ Rails.application.routes.draw do
   post '/albums/bandcamp_details', to: 'albums#extract_bandcamp_details', as: 'extract_bandcamp_details'
 
   resources :artists, :payees, :albums, :tracks
-  resources :merch_fulfillments, path: 'merch/fulfillment'
-  delete '/merch/orders/:id/refund', to: 'merch_fulfillments#refund', as: 'refund_merch_sale'
+  
+  resources :merch_orders, path: '/merch/orders'
+  put '/merch/orders/:id/refund', to: 'merch_orders#refund', as: 'refund_merch_order'
+  resources :merch_fulfillments, path: '/merch/orders/fulfillments'
+
   resources :iam8bit_sales, path: 'merch/iam8bit'
   resources :merch
   resources :rendered_services, path: 'services_rendered'

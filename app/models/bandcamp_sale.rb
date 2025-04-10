@@ -48,7 +48,7 @@ class BandcampSale < ApplicationRecord
 
   has_one :merch_fulfillment, required: false, dependent: :restrict_with_exception
 
-  scope :unfulfilled_merch, -> { where(product_type: 'Merch').where.missing(:merch_fulfillment) }
+  scope :unfulfilled_merch, -> { where(product_type: 'Merch').where(refunded: false).where.missing(:merch_fulfillment) }
   # If a merch order hasn't been fulfilled, don't include it in money to be paid in royalties, since
   # we'll need those funds to fulfill the order
   scope :payable, -> { where.not(id: BandcampSale.unfulfilled_merch) }

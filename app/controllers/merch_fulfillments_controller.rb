@@ -3,16 +3,8 @@
 class MerchFulfillmentsController < ApplicationController
   before_action :raise_unless_admin!
 
-  def index
-    @merch = BandcampSale.where(product_type: 'Merch')
-    @merch = @merch.unfulfilled_merch if params['unfulfilled'].to_b
-    @merch = @merch.order(purchased_at: :desc)
-    @merch = @merch.where(product_id: params[:merch_id]) if params[:merch_id]
-    @merch = @merch.paginate(page: params[:page] || 1, per_page: 200)
-  end
-
   def new
-    @sale = BandcampSale.unfulfilled_merch.find(params[:sale_id])
+    @sales = BandcampSale.unfulfilled_merch.where(bandcamp_transaction_id: params[:order_id])
     @merch_fulfillment = MerchFulfillment.new(bandcamp_sale: @sale, shipped_on: Time.zone.today)
     restore_changes!(@merch_fulfillment)
   end
@@ -48,18 +40,11 @@ class MerchFulfillmentsController < ApplicationController
     redirect_to edit_merch_fulfillment_path(@merch_fulfillment)
   end
 
-  def refund
-    @sale = BandcampSale.merch.find(params[:id])
-    @sale.update!(refunded: true)
-    flash[:success] = 'Order marked as refunded'
-    redirect_to merch_fulfillments_path
-  end
-
   private
 
   def fulfillment_params
-    params.require(:merch_fulfillment).permit(:bandcamp_sale_id, :shipped_on, :production_cost_cents,
-                                              :production_cost_currency, :printify_order_number, :notes).tap do |params|
+    params.require(:merch_fulfillments).permit([:bandcamp_sale_id, :shipped_on, :production_cost_cents,
+                                              :production_cost_currency, :printify_order_number, :notes]).each do |params|
       params[:fulfilled_by_id] = current_user.admin.id
     end
   end
