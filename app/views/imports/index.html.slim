@@ -11,7 +11,7 @@ section.section
       li
         span Log into
         = ' '
-        a href=Rails.application.config.app_config[:bandcamp][:url] target="_blank" Bandcamp
+        a href="https://#{Rails.application.config.app_config[:bandcamp][:url]}" target="_blank" Bandcamp
       li In the top right, click on the menu and go to "Tools"
       li Select the "Raw data report" and the appropriate time range
       li 
