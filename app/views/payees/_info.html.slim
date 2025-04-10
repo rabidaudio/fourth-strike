@@ -42,17 +42,17 @@ section.section
         th Balance
     tbody
       tr
-        td = @payee.royalties_owed.format
-        td = @payee.services_rendered_owed.format
-        td = @payee.paid_out.format
+        td = @payee.royalties_owed.round.format
+        td = @payee.services_rendered_owed.round.format
+        td = @payee.paid_out.round.format
         
         - balance = @payee.balance
         - if balance.negative?
-          td.is-danger = balance.format
+          td.is-danger = balance.round.format
         - elsif @payee.due_for_payout?
-          td.is-warning = balance.format
+          td.is-warning = balance.round.format
         - else
-          td = balance.format
+          td = balance.round.format
 
 section.section id="royalties"
   h2.is-size-3 Royalties
@@ -69,7 +69,7 @@ section.section id="royalties"
             tr
               td
                 a href=album_path(album) = album.name
-              td = @payee.royalties_owed_for(album).format
+              td = @payee.royalties_owed_for(album).round.format
     
     .column
       table.table
@@ -82,7 +82,7 @@ section.section id="royalties"
             tr
               td
                 a href=track_path(track) = track.name
-              td = @payee.royalties_owed_for(track).format
+              td = @payee.royalties_owed_for(track).round.format
 
     .column
       table.table
@@ -95,7 +95,7 @@ section.section id="royalties"
             tr
               td
                 a href=merch_path(merch) = merch.name
-              td = @payee.royalties_owed_for(merch).format
+              td = @payee.royalties_owed_for(merch).round.format
 
 - unless @payee.charity?
   section.section id="services_rendered"
@@ -117,7 +117,7 @@ section.section id="payouts"
       - @payee.payouts.order(paid_at: :desc).each do |payout|
         tr
           td = localized_date(payout.paid_at)
-          td = payout.amount.format
+          td = payout.amount.round.format
           td
             - if payout.internal_merch_order.present?
               span Internal merch order

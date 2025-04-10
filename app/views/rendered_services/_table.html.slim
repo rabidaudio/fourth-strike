@@ -28,6 +28,6 @@ table.table
           - if service.hours?
             br
             span = " #{service.hours} hrs"
-        td = service.compensation.format
+        td = service.compensation.round.format
         td
           a href=edit_rendered_service_path(service) Edit

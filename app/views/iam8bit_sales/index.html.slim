@@ -31,8 +31,8 @@ section.section
                   span = ' by '
                   a href=merch_index_path(artist: album.artist_name) = album.artist_name
           td = sale.quantity
-          td = sale.gross_revenue_amount.format
-          td = sale.net_revenue_amount.format
+          td = sale.gross_revenue_amount.round.format
+          td = sale.net_revenue_amount.round.format
           td
             a href=edit_iam8bit_sale_path(sale) Edit
 
