@@ -76,6 +76,10 @@ module CalculatorCache
       recompute_payouts!(split.payee)
     end
 
+    def recompute_for_payout!(payout)
+      recompute_payouts!(payout.payee)
+    end
+
     private
 
     def recompute_royalties!(product)

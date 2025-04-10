@@ -12,8 +12,8 @@ Rails.application.routes.draw do
 
   post '/albums/bandcamp_details', to: 'albums#extract_bandcamp_details', as: 'extract_bandcamp_details'
 
-  resources :artists, :payees, :albums, :tracks
-  
+  resources :artists, :payees, :payouts, :albums, :tracks
+
   resources :merch_orders, path: '/merch/orders'
   put '/merch/orders/:id/refund', to: 'merch_orders#refund', as: 'refund_merch_order'
   resources :merch_fulfillments, path: '/merch/orders/fulfillments'

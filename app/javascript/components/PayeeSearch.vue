@@ -4,7 +4,9 @@
   import { payees_path } from '../routes'
 
   const props = defineProps({
-    fieldName: String
+    fieldName: String,
+    name: String,
+    fsn: String,
   })
 
   const payee = defineModel({ default: { name: '', fsn: '' } })
@@ -59,6 +61,11 @@
     searchValue.value = `${selectedPayee.name} / ${selectedPayee.fsn}`
     searchResults.value = []
     isDirty.value = false
+  }
+
+  // load if set from props
+  if (props.name && props.fsn) {
+    select(props)
   }
 </script>
 

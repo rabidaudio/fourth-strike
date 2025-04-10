@@ -1,0 +1,26 @@
+section.section
+  h1.is-size-2 Track Artist Payment
+
+  .columns
+    .column.is-full.is-one-third-desktop
+
+      = form_for(@payout, method: :create) do |f|
+        
+        .field
+          label.label.is-required Payee
+          .control
+            - payee_props = params[:payee_id] ? Payee.find(params[:payee_id]).slice(:name, :fsn) : {}
+            div vue-component="PayeeSearch" props=payee_props.merge(fieldName: "payout[payee_fsn]").to_json
+
+        .field
+          label.label.is-required Amount
+          .control
+            div vue-component="MoneyField" props={name: "payout[amount]"}.to_json
+        
+        = bulma_field(f, :text_field, @payout, :paid_at, label: 'Paid On', required: true, type: 'date')
+        
+        = bulma_field(f, :text_field, @payout, :paypal_transaction_id, required: false, label: 'Paypal Transaction ID', placeholder: 'ABCDEFG0123456789')
+
+        .field
+          .control
+            = f.submit "Submit", class: "button is-link"

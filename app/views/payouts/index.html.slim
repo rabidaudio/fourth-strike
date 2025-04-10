@@ -1,0 +1,31 @@
+h1.is-size-2
+  span Artist Royalty Payouts
+
+  p
+    a.button.m-1.is-primary href=new_payout_path
+      span Make Payment
+
+section.section
+  = render_pagination(@payouts)
+
+  table.table
+    thead
+      tr
+        th Date
+        th Payee
+        th Amount
+        th Paypal Transaction ID
+    tbody
+      - @payouts.each do |payout|
+        tr
+          td = localized_date(payout.paid_at)
+          td
+            span = payout.payee.name
+            br
+            a href=payee_path(payout.payee) = payout.payee.fsn
+          td = payout.amount.round.format
+          td
+            - if payout.paypal_transaction_id
+              code = payout.paypal_transaction_id
+
+  = render_pagination(@payouts)

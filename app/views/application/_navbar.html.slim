@@ -39,11 +39,12 @@ nav.navbar role="navigation" aria-label="main navigation" data-controller="is_ac
       - if admin?
         a.navbar-item href=merch_index_path Merch
         a.navbar-item href=payees_path Payees
-        a.navbar-item href=rendered_services_path Services Rendered
 
         .navbar-item.has-dropdown.is-hoverable
           a.navbar-link.navbar-item Management
           .navbar-dropdown
+            a.navbar-item href=payouts_path Payouts
+            a.navbar-item href=rendered_services_path Services Rendered
             a.navbar-item href=issues_path Needs Attention
             a.navbar-item href=reports_path Reporting
             a.navbar-item href=imports_path Data Import

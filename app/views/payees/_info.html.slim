@@ -105,7 +105,11 @@ section.section id="royalties"
 
 section.section id="payouts"
   h2.is-size-3 Payouts
-  
+
+  p
+    a.button.m-1.is-primary href=new_payout_path(payee_id: @payee.id)
+      span Pay
+
   table.table
     thead
       tr

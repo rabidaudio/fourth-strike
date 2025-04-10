@@ -6,7 +6,6 @@ class PayeesController < ApplicationController
   def index
     @payees = Payee.order(fsn: :desc)
     @payees = @payees.search(params[:search]) if params[:search].present?
-    per_page = (params[:limit]&.to_i || 200).clamp(1, 200)
     @payees = @payees.paginate(page: params[:page] || 1, per_page: per_page)
 
     respond_to do |format|
@@ -46,7 +45,7 @@ class PayeesController < ApplicationController
       redirect_to payees_path
     end
   rescue StandardError => e
-    flash[:error] = e.message
+    flash[:danger] = e.message
     record_changes!(@payee)
     record_changes!(@artist)
     redirect_to new_payee_path(with_artist: params[:with_artist])
@@ -60,7 +59,7 @@ class PayeesController < ApplicationController
       redirect_to payees_path
     end
   rescue StandardError => e
-    flash[:error] = e.message
+    flash[:danger] = e.message
     record_changes!(@payee)
     redurect_to edit_payee_path(@payee)
   end

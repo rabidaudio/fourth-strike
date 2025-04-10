@@ -36,6 +36,14 @@ class Payout < ApplicationRecord
   # Require all payouts to be in system currency
   validates :amount_currency, inclusion: { in: [MoneyRails.default_currency.iso_code] }
 
+  after_save do |payout|
+    CalculatorCache::Manager.recompute_for_payout!(payout)
+  end
+
+  after_destroy do |payout|
+    CalculatorCache::Manager.recompute_for_payout!(payout)
+  end
+
   def self.payout_at
     Rails.application.config.app_config[:payout_at].to_money
   end

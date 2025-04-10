@@ -24,7 +24,7 @@ class ArtistsController < ApplicationController
     flash[:success] = "Created artist profile #{@artist.name} for #{@artist.payee.fsn}"
     redirect_to payees_path
   rescue StandardError => e
-    flash[:error] = e.message
+    flash[:danger] = e.message
     record_changes!(@artist)
     redirect_to new_artist_path(payee_id: params[:artist][:payee_id])
   end

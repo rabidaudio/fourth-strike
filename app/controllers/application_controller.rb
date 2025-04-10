@@ -32,6 +32,10 @@ class ApplicationController < ActionController::Base
     Rails.logger.error(error.backtrace.join("\n"))
   end
 
+  def per_page
+    (params[:limit]&.to_i || 200).clamp(1, 200)
+  end
+
   private
 
   def set_locale
