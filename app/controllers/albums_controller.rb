@@ -87,6 +87,7 @@ class AlbumsController < ApplicationController
       :album_art_url, :release_date, :catalog_number, :upcs, :private,
       tracks: [:id, :name, :track_number, :bandcamp_url, :isrc, :bandcamp_id, :credits, :lyrics]
     ).tap do |album_params|
+      album_params[:private] = album_params[:private].to_b
       album_params[:upcs] = album_params[:upcs].split(',')
       album_params[:bandcamp_price] =
         Money.new(album_params.delete(:bandcamp_price_cents), album_params.delete(:bandcamp_price_currency))

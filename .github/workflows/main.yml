@@ -39,6 +39,6 @@ jobs:
             cd fourth-strike
             git pull
             docker compose pull
-            docker compose up -d
+            docker compose down
             docker compose exec app bundle exec rake db:migrate
             docker compose up -d
