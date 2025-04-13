@@ -50,13 +50,14 @@ section.section
             - else
               td rowspan=expected class=(sale.overdue? ? 'is-danger' : 'is-warning') Pending
 
-          td
-            - if sale.merch_fulfillment
-              = sale.merch_fulfillment.production_cost.format
-              - if sale.merch_fulfillment.notes.present?
-                br
-                pre
-                  = sale.merch_fulfillment.notes
+          - if current_order_id != sale.bandcamp_transaction_id
+            td rowspan=expected
+              - if sale.merch_fulfillment
+                = sale.merch_fulfillment.production_cost.format
+                - if sale.merch_fulfillment.notes.present?
+                  br
+                  pre
+                    = sale.merch_fulfillment.notes
           - if current_order_id != sale.bandcamp_transaction_id
             td rowspan=expected
               - if sale.merch_fulfillment&.printify_order_number.present?

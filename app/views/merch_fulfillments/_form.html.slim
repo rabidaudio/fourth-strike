@@ -1,32 +1,29 @@
-- @sale = @merch_fulfillments.first.bandcamp_sale
 p
   = "Order "
-  code = @sale.bandcamp_transaction_id
-  = " for placed on #{localized_date(@sale.purchased_at)} to #{@sale.shipping_destination}".
+  code = @bandcamp_transaction_id
+  / = " for placed on #{localized_date(@sales.first.purchased_at)} to #{@sales.first.shipping_destination}."
   br
-  a.button target="_blank" href="https://fourth-strike.bandcamp.com/merch_orders?payment_id=#{@sale.bandcamp_transaction_id}" View on Bandcamp
+  a.button target="_blank" href="https://fourth-strike.bandcamp.com/merch_orders?payment_id=#{@bandcamp_transaction_id}" View on Bandcamp
 
+= hidden_field_tag 'bandcamp_transaction_id', @bandcamp_transaction_id
 
-= bulma_field(f, :text_field, @merch_fulfillment, :printify_order_number, label: 'Printify Order number', placeholder: '1932959.123')
+.field
+  label.label.is-required Printify Order number
+  .control
+    = text_field :merch_fulfillment, :printify_order_number, class: 'input', placeholder: '1932959.123'
 
-- @merch_fulfillments.each do |mf|
-  = f.hidden_field 'merch_fulfillments[][bandcamp_sale_id]', mf.bandcamp_sale_id
+.field
+  label.label.is-required Shipped on
+  .control
+    = text_field :merch_fulfillment, :shipped_on, type: 'date', class: 'input'
 
-/ - if @merch_fulfillments.count == 1
-  / provide a simplified form with the total cost
+.field
+  label.label.is-required Production Costs
+  .control
+    div vue-component="MoneyField" props={name: "merch_fulfillment[production_cost]", cents: @merch_fulfillment.production_cost_cents, currency: @merch_fulfillment.production_cost_currency}.to_json
+    p This should be the cost to produce and ship the item. Use the "Total costs" field from Printify (cost of production, shipping, and tax).
 
-/ - else
-  / show a form for each item, and a separate shipping field
-
-/ = bulma_field(f, :text_field, @merch_fulfillment, :shipped_on, label: 'Shipped on', required: true, type: 'date')
-
-/ .field
-/   label.label.is-required Production Costs
-/   .control
-/     div vue-component="MoneyField" props={name: "merch_fulfillment[production_cost]", cents: @merch_fulfillment.production_cost_cents, currency: @merch_fulfillment.production_cost_currency}.to_json
-/     p
-/       | This should be the cost to produce and ship the item. Use the "Total costs" field from Printify (cost of production, shipping, and tax).
-/       br
-/       span.has-text-weight-bold NOTE: If the order contains multiple items, put in the total cost for this item only! Divide the shipping cost evenly between products. 
-
-= bulma_field(f, :text_area, @merch_fulfillment, :notes, label: 'Notes')
+.field
+  label.label Notes
+  .control
+    = text_area :merch_fulfillment, :notes, class: 'textarea'

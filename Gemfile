@@ -108,7 +108,7 @@ group :development, :test do
   # Check dependencies for known vulnerabilities
   gem 'bundler-audit', require: false
   # Lint
-  gem 'rubocop-rails', require: false
+  gem 'rubocop-rails', '~> 2.26', require: false
 
   # Generate fake test data
   gem 'faker', '~> 3.3'

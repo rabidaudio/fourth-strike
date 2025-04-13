@@ -146,7 +146,7 @@ class ReportBuilder
                      'Gross Revenue' => ->(r) { r.subtotal_amount.format },
                      'Net Revenue' => ->(r) { r.net_revenue_amount.format },
                      'Production Cost' => ->(r) { r.merch_fulfillment&.production_cost&.format },
-                     'Shipped Date' => ->(r) { r.merch_fulfillment&.shipped_on&.to_date&.iso8601 },
+                     'Shipped Date' => ->(r) { r.merch_fulfillment&.shipped_on&.to_date&.iso8601 }, # rubocop:disable Style/SafeNavigationChainLength
                      'Printify Order' => ->(r) { r.merch_fulfillment&.printify_order_number }
                    }) do
       BandcampSale.merch.includes(:merch_fulfillment).where(purchased_at: time_range).order(purchased_at: :asc)

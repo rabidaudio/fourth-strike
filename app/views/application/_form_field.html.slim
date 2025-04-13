@@ -3,7 +3,10 @@
   .field
     .control
       label.checkbox class=(required ? 'is-required' : '')
-        = f.send(type, field_name, **field_args)
+        - if f.nil?
+          = send(type, field_name, **field_args)
+        - else
+          = f.send(type, field_name, **field_args)
         span = label
       = yield
       - if error
@@ -13,7 +16,10 @@
     - if label
       label.label class=(required ? 'is-required' : '') = label
     .control
-      = f.send(type, field_name, **field_args)
+      - if f.nil?
+        = send(type, field_name, **field_args)
+      - else
+        = f.send(type, field_name, **field_args)
       = yield
       - if error
         p.help.is-danger = error
