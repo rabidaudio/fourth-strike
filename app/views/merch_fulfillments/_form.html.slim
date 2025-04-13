@@ -12,10 +12,10 @@ p
 - @merch_fulfillments.each do |mf|
   = f.hidden_field 'merch_fulfillments[][bandcamp_sale_id]', mf.bandcamp_sale_id
 
-- if @merch_fulfillments.count == 1
+/ - if @merch_fulfillments.count == 1
   / provide a simplified form with the total cost
 
-- else
+/ - else
   / show a form for each item, and a separate shipping field
 
 / = bulma_field(f, :text_field, @merch_fulfillment, :shipped_on, label: 'Shipped on', required: true, type: 'date')

@@ -12,18 +12,15 @@
 #  shipped_on               :date
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
-#  bandcamp_sale_id         :integer
 #  fulfilled_by_id          :integer
 #
 # Indexes
 #
-#  index_merch_fulfillments_on_bandcamp_sale_id  (bandcamp_sale_id)
-#  index_merch_fulfillments_on_fulfilled_by_id   (fulfilled_by_id)
+#  index_merch_fulfillments_on_fulfilled_by_id  (fulfilled_by_id)
 #
 # Foreign Keys
 #
-#  bandcamp_sale_id  (bandcamp_sale_id => bandcamp_sales.id)
-#  fulfilled_by_id   (fulfilled_by_id => admins.id)
+#  fulfilled_by_id  (fulfilled_by_id => admins.id)
 #
 
 # This record is created when a merch item is shipped. It records
@@ -36,7 +33,7 @@
 class MerchFulfillment < ApplicationRecord
   include MonitizedSum
 
-  belongs_to :bandcamp_sale, optional: true
+  has_many :bandcamp_sales, dependent: :restrict_with_exception
   # fulfilled by will be nil for internal merch orders
   belongs_to :fulfilled_by, class_name: 'Admin', optional: true
 

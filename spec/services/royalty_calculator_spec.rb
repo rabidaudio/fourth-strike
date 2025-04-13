@@ -167,7 +167,8 @@ RSpec.describe 'Payout calculations' do
       context 'fulfilled' do
         before do
           merch_orders.each do |order|
-            create(:merch_fulfillment, bandcamp_sale: order, production_cost: 5.50.to_money)
+            fulfillment = create(:merch_fulfillment, bandcamp_sales: [], production_cost: 5.50.to_money)
+            order.update!(merch_fulfillment: fulfillment)
           end
         end
 

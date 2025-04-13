@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_12_203742) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_13_185442) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -96,11 +96,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_203742) do
     t.string "option"
     t.string "shipping_destination"
     t.boolean "refunded", default: false, null: false
+    t.integer "merch_fulfillment_id"
     t.index ["bandcamp_transaction_id", "item_url"], name: "index_bandcamp_sales_on_bandcamp_transaction_id_and_item_url", unique: true
     t.index ["item_url"], name: "index_bandcamp_sales_on_item_url"
+    t.index ["merch_fulfillment_id"], name: "index_bandcamp_sales_on_merch_fulfillment_id"
     t.index ["paypal_transaction_id"], name: "index_bandcamp_sales_on_paypal_transaction_id"
     t.index ["product_type", "product_id"], name: "index_bandcamp_sales_on_product"
     t.index ["upc"], name: "index_bandcamp_sales_on_upc"
+  end
+
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -166,7 +171,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_203742) do
   end
 
   create_table "merch_fulfillments", force: :cascade do |t|
-    t.integer "bandcamp_sale_id"
     t.integer "production_cost_cents", default: 0, null: false
     t.string "production_cost_currency", default: "USD", null: false
     t.date "shipped_on"
@@ -175,7 +179,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_203742) do
     t.datetime "updated_at", null: false
     t.string "printify_order_number"
     t.text "notes"
-    t.index ["bandcamp_sale_id"], name: "index_merch_fulfillments_on_bandcamp_sale_id"
     t.index ["fulfilled_by_id"], name: "index_merch_fulfillments_on_fulfilled_by_id"
   end
 
@@ -295,11 +298,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_203742) do
   add_foreign_key "albums_merch_items", "albums"
   add_foreign_key "albums_merch_items", "merch_items"
   add_foreign_key "artists", "payees"
+  add_foreign_key "bandcamp_sales", "merch_fulfillments"
   add_foreign_key "internal_merch_orders", "merch_fulfillments"
   add_foreign_key "internal_merch_orders", "merch_items"
   add_foreign_key "internal_merch_orders", "payouts"
   add_foreign_key "merch_fulfillments", "admins", column: "fulfilled_by_id"
-  add_foreign_key "merch_fulfillments", "bandcamp_sales"
   add_foreign_key "payouts", "payees"
   add_foreign_key "rendered_services", "albums"
   add_foreign_key "rendered_services", "payees"

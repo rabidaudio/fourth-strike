@@ -44,7 +44,7 @@ class RenderedService < ApplicationRecord
   monetize :compensation_cents
   strip_attributes only: [:description]
 
-  enum type: {
+  enum :type, {
     fixed: 1,
     hourly: 2
   }

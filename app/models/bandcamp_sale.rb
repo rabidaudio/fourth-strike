@@ -22,6 +22,7 @@
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  bandcamp_transaction_id     :string
+#  merch_fulfillment_id        :integer
 #  paypal_transaction_id       :string
 #  product_id                  :integer          not null
 #
@@ -29,9 +30,14 @@
 #
 #  index_bandcamp_sales_on_bandcamp_transaction_id_and_item_url  (bandcamp_transaction_id,item_url) UNIQUE
 #  index_bandcamp_sales_on_item_url                              (item_url)
+#  index_bandcamp_sales_on_merch_fulfillment_id                  (merch_fulfillment_id)
 #  index_bandcamp_sales_on_paypal_transaction_id                 (paypal_transaction_id)
 #  index_bandcamp_sales_on_product                               (product_type,product_id)
 #  index_bandcamp_sales_on_upc                                   (upc)
+#
+# Foreign Keys
+#
+#  merch_fulfillment_id  (merch_fulfillment_id => merch_fulfillments.id)
 #
 
 # Revenue received from Bandcamp. This can come from digital sales of albums
@@ -46,9 +52,9 @@ class BandcampSale < ApplicationRecord
   monetize :subtotal_amount_cents
   monetize :net_revenue_amount_cents
 
-  has_one :merch_fulfillment, required: false, dependent: :restrict_with_exception
+  belongs_to :merch_fulfillment, optional: true
 
-  scope :unfulfilled_merch, -> { where(product_type: 'Merch').where(refunded: false).where.missing(:merch_fulfillment) }
+  scope :unfulfilled_merch, -> { where(product_type: 'Merch').where(refunded: false, merch_fulfillment_id: nil) }
   # If a merch order hasn't been fulfilled, don't include it in money to be paid in royalties, since
   # we'll need those funds to fulfill the order
   scope :payable, -> { where.not(id: BandcampSale.unfulfilled_merch) }

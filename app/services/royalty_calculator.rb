@@ -147,7 +147,9 @@ class RoyaltyCalculator
   def cost_of_goods
     return 0.to_money unless @product.is_a?(Merch)
 
-    MerchFulfillment.where(bandcamp_sale_id: bandcamp_physical_sales_payable).sum_monetized(:production_cost)
+    MerchFulfillment.joins(:bandcamp_sales).merge(
+      BandcampSale.where(id: bandcamp_physical_sales_payable)
+    ).sum_monetized(:production_cost)
   end
 
   def physical_products_sold

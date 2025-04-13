@@ -49,7 +49,7 @@ gem 'delayed_job_active_record'
 gem 'delayed_job_web'
 
 # Allow data migrations like schema migrations [https://github.com/ilyakatz/data-migrate]
-gem 'data_migrate', '~> 9.3'
+gem 'data_migrate', '~> 11.3'
 # Automatically comment model files with database fields [https://github.com/ctran/annotate_models]
 gem 'annotate', '~> 3.2', require: false
 # Strip whitespace from strings before they are saved to the database

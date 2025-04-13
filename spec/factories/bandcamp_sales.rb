@@ -22,6 +22,7 @@
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  bandcamp_transaction_id     :string
+#  merch_fulfillment_id        :integer
 #  paypal_transaction_id       :string
 #  product_id                  :integer          not null
 #
@@ -29,9 +30,14 @@
 #
 #  index_bandcamp_sales_on_bandcamp_transaction_id_and_item_url  (bandcamp_transaction_id,item_url) UNIQUE
 #  index_bandcamp_sales_on_item_url                              (item_url)
+#  index_bandcamp_sales_on_merch_fulfillment_id                  (merch_fulfillment_id)
 #  index_bandcamp_sales_on_paypal_transaction_id                 (paypal_transaction_id)
 #  index_bandcamp_sales_on_product                               (product_type,product_id)
 #  index_bandcamp_sales_on_upc                                   (upc)
+#
+# Foreign Keys
+#
+#  merch_fulfillment_id  (merch_fulfillment_id => merch_fulfillments.id)
 #
 FactoryBot.define do
   factory :bandcamp_sale do
@@ -68,9 +74,7 @@ FactoryBot.define do
 
       subtotal_amount { merch.list_price }
 
-      after_create do |sale|
-        create(:merch_fulfillment, bandcamp_sale: sale)
-      end
+      merch_fulfillment { association(:merch_fulfillment) }
     end
   end
 end

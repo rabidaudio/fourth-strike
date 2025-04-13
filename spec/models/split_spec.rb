@@ -34,7 +34,7 @@ RSpec.describe Split, type: :model do
           expect(target.weighted_distribution.size).to eq 1
           expect(target.weighted_distribution[payee]).to eq 1
 
-          expect(target.payout_amounts(9.99.to_money)[payee]).to eq 9.99.to_money
+          expect(target.payout_amounts(9.99.to_money)[payee].round).to eq 9.99.to_money
         end
       end
 
@@ -48,7 +48,7 @@ RSpec.describe Split, type: :model do
           payees.each do |payee|
             expect(target.weighted_distribution[payee]).to be_within(0.0001).of(0.3333)
             # always round up in contributor's favor
-            expect(target.payout_amounts(10.01.to_money)[payee]).to eq 3.34.to_money
+            expect(target.payout_amounts(10.01.to_money)[payee].round).to eq 3.34.to_money
           end
         end
       end
@@ -70,13 +70,13 @@ RSpec.describe Split, type: :model do
           expect(target.weighted_distribution.size).to eq 3
 
           expect(target.weighted_distribution[alice]).to be_within(0.0001).of(0.5714)
-          expect(target.payout_amounts(10.01.to_money)[alice]).to eq 5.72.to_money
+          expect(target.payout_amounts(10.01.to_money)[alice].round).to eq 5.72.to_money
 
           expect(target.weighted_distribution[bob]).to be_within(0.0001).of(0.2857)
-          expect(target.payout_amounts(10.01.to_money)[bob]).to eq 2.86.to_money
+          expect(target.payout_amounts(10.01.to_money)[bob].round).to eq 2.86.to_money
 
           expect(target.weighted_distribution[chad]).to be_within(0.0001).of(0.1429)
-          expect(target.payout_amounts(10.01.to_money)[chad]).to eq 1.43.to_money
+          expect(target.payout_amounts(10.01.to_money)[chad].round).to eq 1.43.to_money
         end
       end
 

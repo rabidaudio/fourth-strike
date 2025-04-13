@@ -126,7 +126,7 @@ GEM
     cssbundling-rails (1.4.0)
       railties (>= 6.0.0)
     csv (3.3.0)
-    data_migrate (9.4.0)
+    data_migrate (11.3.0)
       activerecord (>= 6.1)
       railties (>= 6.1)
     date (3.4.1)
@@ -529,7 +529,7 @@ DEPENDENCIES
   capybara
   cssbundling-rails
   csv
-  data_migrate (~> 9.3)
+  data_migrate (~> 11.3)
   debug
   delayed_job_active_record
   delayed_job_web

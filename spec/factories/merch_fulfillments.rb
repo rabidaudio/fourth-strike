@@ -12,26 +12,22 @@
 #  shipped_on               :date
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
-#  bandcamp_sale_id         :integer
 #  fulfilled_by_id          :integer
 #
 # Indexes
 #
-#  index_merch_fulfillments_on_bandcamp_sale_id  (bandcamp_sale_id)
-#  index_merch_fulfillments_on_fulfilled_by_id   (fulfilled_by_id)
+#  index_merch_fulfillments_on_fulfilled_by_id  (fulfilled_by_id)
 #
 # Foreign Keys
 #
-#  bandcamp_sale_id  (bandcamp_sale_id => bandcamp_sales.id)
-#  fulfilled_by_id   (fulfilled_by_id => admins.id)
+#  fulfilled_by_id  (fulfilled_by_id => admins.id)
 #
 FactoryBot.define do
   factory :merch_fulfillment do
-    bandcamp_sale { association(:bandcamp_sale, :merch) }
-
+    bandcamp_sales { [association(:bandcamp_sale, :merch)] }
     production_cost { 6.78.to_money }
 
-    shipped_on { bandcamp_sale.purchased_at + (0..4).to_a.sample.days }
+    shipped_on { (bandcamp_sales.first&.purchased_at || Time.zone.now) + (0..4).to_a.sample.days }
     fulfilled_by { association(:admin) }
   end
 end
