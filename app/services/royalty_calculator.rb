@@ -56,7 +56,12 @@ class RoyaltyCalculator
 
     # Total value of royalties to be paid to artists
     def total_artist_royalties
-      artist_royalties.values.sum || 0.to_money(currency)
+      # if no splits, just assume proper distribution
+      if @product.splits.empty?
+        to_money - organization_distribution
+      else
+        artist_royalties.values.sum || 0.to_money(currency)
+      end
     end
 
     # Value of royalties where the org receives a split
