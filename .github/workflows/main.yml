@@ -40,5 +40,5 @@ jobs:
             git pull
             docker compose pull
             docker compose down
-            docker compose exec app bundle exec rake db:migrate
+            docker compose run app bundle exec rake db:migrate:with_data
             docker compose up -d

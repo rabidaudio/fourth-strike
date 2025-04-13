@@ -1,7 +1,8 @@
 p
   = "Order "
   code = @bandcamp_transaction_id
-  / = " for placed on #{localized_date(@sales.first.purchased_at)} to #{@sales.first.shipping_destination}."
+  - if @sales.first
+    = " for placed on #{localized_date(@sales.first.purchased_at)} to #{@sales.first.shipping_destination}."
   br
   a.button target="_blank" href="https://fourth-strike.bandcamp.com/merch_orders?payment_id=#{@bandcamp_transaction_id}" View on Bandcamp
 

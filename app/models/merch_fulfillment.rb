@@ -34,6 +34,7 @@ class MerchFulfillment < ApplicationRecord
   include MonitizedSum
 
   has_many :bandcamp_sales, dependent: :restrict_with_exception
+  has_one :internal_merch_order, required: false, dependent: :restrict_with_exception
   # fulfilled by will be nil for internal merch orders
   belongs_to :fulfilled_by, class_name: 'Admin', optional: true
 
