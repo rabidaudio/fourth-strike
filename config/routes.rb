@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   get '/reports', to: 'reports#index'
   get '/reports/projects', to: 'reports#projects'
   get '/reports/generate', to: 'reports#combined_excel_report', as: 'reports_generate'
+  get '/reports/profit_and_loss', to: 'reports#profit_and_loss'
   get '/reports/:id/download', to: 'reports#download', as: 'reports_download'
   get '/issues', to: 'reports#needs_attention'
 

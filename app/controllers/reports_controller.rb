@@ -24,6 +24,16 @@ class ReportsController < ApplicationController
     end
   end
 
+  def profit_and_loss
+    tr_start = params[:start].present? ? Time.zone.parse(params[:start]) : 1.year.ago
+    tr_end = params[:end].present? ? Time.zone.parse(params[:end]) : (tr_start + 1.year)
+    @time_range = tr_start...tr_end
+    @stats = ProfitAndLossCalculator.new(@time_range)
+  rescue StandardError => e
+    flash[:danger] = e.message
+    redirect_to reports_path
+  end
+
   def combined_excel_report
     from = Time.zone.parse(params[:from])
     to = Time.zone.parse(params[:to])

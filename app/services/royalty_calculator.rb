@@ -124,6 +124,18 @@ class RoyaltyCalculator
     @end_at = to
   end
 
+  def album?
+    @product.is_a?(Album)
+  end
+
+  def track?
+    @product.is_a?(Track)
+  end
+
+  def merch?
+    @product.is_a?(Merch)
+  end
+
   # One time expenses for a project. For example: album art, mastering, etc.
   def production_expenses
     return 0.to_money unless @product.is_a?(Album)

@@ -71,23 +71,24 @@ class ReportBuilder
     end
   end
 
-  def organization_profit_report
-    ReportData.new({
-                     'Time Period Start' => ->(r) { r[:start].to_date.iso8601 },
-                     'Time Period End' => ->(r) { r[:end].to_date.iso8601 },
-                     'Organization Profit' => ->(r) { r[:profit].round.format }
-                   }) do
-      time_iterator.map do |range|
-        {
-          start: range.begin,
-          end: range.end,
-          profit: Album.find_each.sum do |album|
-                    ProjectCalculator.new(album, from: range.begin, to: range.end).organization_profit
-                  end
-        }
-      end
-    end
-  end
+  # TODO: this is wrong because it excludes non-project sales (e.g. some merch)
+  # def organization_profit_report
+  #   ReportData.new({
+  #                    'Time Period Start' => ->(r) { r[:start].to_date.iso8601 },
+  #                    'Time Period End' => ->(r) { r[:end].to_date.iso8601 },
+  #                    'Organization Profit' => ->(r) { r[:profit].round.format }
+  #                  }) do
+  #     time_iterator.map do |range|
+  #       {
+  #         start: range.begin,
+  #         end: range.end,
+  #         profit: Album.find_each.sum do |album|
+  #                   ProjectCalculator.new(album, from: range.begin, to: range.end).organization_profit
+  #                 end
+  #       }
+  #     end
+  #   end
+  # end
 
   def payee_report
     ReportData.new({

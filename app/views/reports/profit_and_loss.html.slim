@@ -1,0 +1,59 @@
+section.section
+  h2.is-size-3 Profit & Loss Report
+
+  = render 'pnl_form'
+
+  h3.is-size-4 Revenue
+  table.table
+    thead
+      tr
+        th Type
+        th Gross
+        th Net
+    tbody
+      tr
+        td Digital Sales
+        td = @stats.digital_gross_revenue.round.format
+        td = @stats.digital_net_revenue.round.format
+      tr
+        td Streaming
+        td = @stats.streaming_gross_revenue.round.format
+        td = @stats.streaming_net_revenue.round.format
+      tr
+        td Merch
+        td = @stats.merch_gross_revenue.round.format
+        td = @stats.merch_net_revenue.round.format
+
+  h3.is-size-4 Debts
+  table.table
+    thead
+      tr
+        th Type
+        th Owed
+        th Paid
+        th Outstanding
+    tbody
+      tr
+        td Charity
+        td = @stats.charity_dues.round.format
+        td = @stats.charities_paid.round.format
+        td = @stats.charity_outstanding.round.format
+      tr
+        td Artist Royalties & Services Rendered
+        td 
+          = @stats.artist_royalties_and_services_owed.round.format
+          br
+          span.is-italic Royalties:
+          = ' '
+          = @stats.artist_royalties_earned.round.format
+          br
+          span.is-italic Services:
+          = ' '
+          = @stats.services_rendered_owed.round.format
+        td = @stats.artist_royalties_and_services_paid.round.format
+        td = @stats.artist_outstanding.round.format
+
+  h4.is-size-4
+    span Organization Profit:
+    = ' '
+    = @stats.organization_profit.round.format

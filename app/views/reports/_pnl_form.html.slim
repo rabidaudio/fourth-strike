@@ -1,0 +1,13 @@
+= form_tag(reports_profit_and_loss_path, method: :get, class: "form", 'data-turbo' => "false") do
+    .field
+      label.label = "From (inclusive)"
+      .control
+        = date_field_tag :from, params[:start]&.to_date || 1.year.ago.to_date, class: 'input'
+    .field
+      label.label = "To (exclusive)"
+      .control
+        = date_field_tag :to, params[:end]&.to_date || Time.zone.now.to_date, class: 'input'
+    
+    .field
+      .control
+        = submit_tag "Generate P&L", class: "button is-primary"
