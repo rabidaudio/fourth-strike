@@ -39,6 +39,6 @@ jobs:
             cd fourth-strike
             git pull
             docker compose pull
-            docker compose down
+            docker compose down --remove-orphans
             docker compose run app bundle exec rake db:migrate:with_data
             docker compose up -d

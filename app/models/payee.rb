@@ -42,6 +42,7 @@ class Payee < ApplicationRecord
 
   scope :charity, -> { where(is_charity: true) }
   scope :artist, -> { where(is_charity: false) }
+  scope :not_org, -> { where.not(id: Payee.org) }
 
   scope :search, lambda { |keyword|
     search_value = "%#{keyword.strip.downcase}%"
@@ -60,7 +61,7 @@ class Payee < ApplicationRecord
   end
 
   def self.due_for_payout
-    (current_scope || all).where.not(fsn: 'FS-000').find_each.select(&:due_for_payout?)
+    (current_scope || all).not_org.find_each.select(&:due_for_payout?)
   end
 
   def albums

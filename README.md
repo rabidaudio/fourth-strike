@@ -140,7 +140,7 @@ docker compose start
 Updates are triggered automatically by Github workflows.
 
 ```bash
-ssh root@app.fourth-strike.com 'cd fourth-strike && git pull && docker compose pull && docker compose down && docker compose exec app bundle run rake db:migrate:with_data && docker compose up -d'
+ssh root@app.fourth-strike.com 'cd fourth-strike && git pull && docker compose pull && docker compose down --remove-orphans && docker compose exec app bundle run rake db:migrate:with_data && docker compose up -d'
 ```
 
 ## Dependency Report

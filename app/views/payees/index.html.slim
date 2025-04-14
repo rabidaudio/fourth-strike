@@ -6,6 +6,17 @@ h1.is-size-2 Payees
       span Add
 
 .block
+  h3.is-size-4 Outstanding Royalties Owed
+  table.table
+    tbody
+      tr
+        td To Charities
+        td = @due_to_charities.round.format
+      tr
+        td To Artists
+        td = @due_to_artists.round.format
+
+.block
   = form_with url: payees_path, method: :get do |form|
     .field
       p.control.has-icons-left
