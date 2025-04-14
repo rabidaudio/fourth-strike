@@ -60,7 +60,7 @@ class Payee < ApplicationRecord
   end
 
   def self.due_for_payout
-    (current_scope || all).find_each.select(&:due_for_payout?)
+    (current_scope || all).where.not(fsn: 'FS-000').find_each.select(&:due_for_payout?)
   end
 
   def albums
