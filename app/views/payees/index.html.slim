@@ -1,9 +1,13 @@
 h1.is-size-2 Payees
 
 .block
-  .field
-    a.button.is-primary href=new_payee_path
-      span Add
+  .field.is-grouped
+    .control
+      a.button.is-primary href=new_payee_path
+        span Add Payee
+    .control
+      a.button.is-primary href=new_payout_path
+        span Make Payment
 
 .block
   h3.is-size-4 Outstanding Royalties Owed

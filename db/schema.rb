@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_13_185442) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_14_175706) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -234,8 +234,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_13_185442) do
     t.string "amount_currency", default: "USD", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "note"
     t.index ["payee_id"], name: "index_payouts_on_payee_id"
-    t.index ["paypal_transaction_id"], name: "index_payouts_on_paypal_transaction_id", unique: true
   end
 
   create_table "rendered_services", force: :cascade do |t|

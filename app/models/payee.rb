@@ -64,6 +64,10 @@ class Payee < ApplicationRecord
     (current_scope || all).not_org.find_each.select(&:due_for_payout?)
   end
 
+  def self.total_owed
+    (current_scope || all).not_org.find_each.map(&:balance).filter(&:positive?).sum
+  end
+
   def albums
     Album.joins(:splits).where(splits: { payee: self }).distinct
   end

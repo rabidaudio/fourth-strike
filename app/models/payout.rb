@@ -7,6 +7,7 @@
 #  id                    :integer          not null, primary key
 #  amount_cents          :integer          default(0), not null
 #  amount_currency       :string           default("USD"), not null
+#  note                  :text
 #  paid_at               :datetime
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
@@ -15,8 +16,7 @@
 #
 # Indexes
 #
-#  index_payouts_on_payee_id               (payee_id)
-#  index_payouts_on_paypal_transaction_id  (paypal_transaction_id) UNIQUE
+#  index_payouts_on_payee_id  (payee_id)
 #
 # Foreign Keys
 #

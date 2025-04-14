@@ -8,8 +8,8 @@ class PayeesController < ApplicationController
     @payees = @payees.search(params[:search]) if params[:search].present?
     @payees = @payees.paginate(page: params[:page] || 1, per_page: per_page)
 
-    @due_to_charities = Payee.not_org.charity.find_each.map(&:balance).filter(&:positive?).sum
-    @due_to_artists = Payee.not_org.artist.where(opted_out_of_royalties: false).find_each.map(&:balance).filter(&:positive?).sum
+    @due_to_charities = Payee.charity.total_owed
+    @due_to_artists = Payee.artist.total_owed
 
     respond_to do |format|
       format.json do
