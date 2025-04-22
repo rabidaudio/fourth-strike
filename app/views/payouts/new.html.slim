@@ -21,7 +21,7 @@ section.section
         
         = bulma_field(f, :text_field, @payout, :paypal_transaction_id, required: false, label: 'Paypal Transaction ID', placeholder: 'ABCDEFG0123456789')
 
-        = bulma_field(f, :text_area, @payout, :notes, label: "Notes", class: "textarea", rows: 4)
+        = bulma_field(f, :text_area, @payout, :note, label: "Notes", class: "textarea", rows: 4)
 
         .field
           .control
