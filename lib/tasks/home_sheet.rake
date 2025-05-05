@@ -213,5 +213,38 @@ namespace :home_sheet do
       end
     end
   end
+
+  task :load_payouts => :environment do
+    path = Rails.root.glob('storage/exports/FOURTH STRIKE HOME SHEET*.xlsx').first
+    xlsx = Roo::Spreadsheet.open(path.to_s)
+
+    if Payout.where(note: 'Imported from home sheet, unknown paypal transaction and date').present?
+      raise StandardError, 'Payouts have already been imported from the home sheet'
+    end
+
+    CalculatorCache::Manager.defer_recompute do
+      ActiveRecord::Base.transaction do
+        xlsx.sheet('PAYOUTS').each_row_streaming(offset: 1, pad_cells: true) do |row|
+          next if row[0].blank?
+          next if row[1].blank?
+          next if row[0].value.match?(/RECIPIENT/)
+
+          _, fsn = HomeSheetReport.parse_payee(row[0].value)
+          payee = Payee.find_by(fsn: fsn)
+          raise StandardError, "Payee not found: #{row[0]}" unless payee
+
+          amount = row[1].value.to_money('USD')
+
+          puts "#{payee.fsn}\t#{amount.format}"
+          Payout.create!(
+            payee: payee,
+            amount: amount,
+            paid_at: Time.zone.local(2023,1,1), # NOTE: just an arbitrary date
+            note: 'Imported from home sheet, unknown paypal transaction and date'
+          )
+        end
+      end
+    end
+  end
 end
 # rubocop:enable Rails/SkipsModelValidations

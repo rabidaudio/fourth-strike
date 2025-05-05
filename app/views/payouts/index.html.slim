@@ -15,10 +15,13 @@ section.section
         th Payee
         th Amount
         th Paypal Transaction ID
+        th Notes
     tbody
       - @payouts.each do |payout|
         tr
-          td = localized_date(payout.paid_at)
+          td
+            - if payout.paid_at.present?
+              = localized_date(payout.paid_at)
           td
             span = payout.payee.name
             br
@@ -27,5 +30,8 @@ section.section
           td
             - if payout.paypal_transaction_id
               code = payout.paypal_transaction_id
+          td
+            - if payout.note.present?
+              pre = payout.note
 
   = render_pagination(@payouts)
