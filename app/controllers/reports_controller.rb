@@ -25,8 +25,8 @@ class ReportsController < ApplicationController
   end
 
   def profit_and_loss
-    tr_start = params[:start].present? ? Time.zone.parse(params[:start]) : 1.year.ago
-    tr_end = params[:end].present? ? Time.zone.parse(params[:end]) : (tr_start + 1.year)
+    tr_start = params[:from].present? ? Time.zone.parse(params[:from]) : 1.year.ago
+    tr_end = params[:to].present? ? Time.zone.parse(params[:to]) : (tr_start + 1.year)
     @time_range = tr_start...tr_end
     @stats = ProfitAndLossCalculator.new(@time_range)
   rescue StandardError => e

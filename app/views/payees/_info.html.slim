@@ -120,7 +120,9 @@ section.section id="payouts"
     tbody
       - @payee.payouts.order(paid_at: :desc).each do |payout|
         tr
-          td = localized_date(payout.paid_at)
+          td
+            - if payout.paid_at.present?
+              = localized_date(payout.paid_at)
           td = payout.amount.round.format
           td
             - if payout.internal_merch_order.present?

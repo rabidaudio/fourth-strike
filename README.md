@@ -75,7 +75,7 @@ rake bandcamp:load_pledges
 
 # Load payouts
 rake paypal:correct_paypal_accounts
-rake paypal:load_payouts
+rake home_sheet:load_payouts
 
 rails console
 # Basic cleanup
