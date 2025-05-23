@@ -106,6 +106,10 @@ class RoyaltyCalculator
       end
     end
 
+    def -(other)
+      self + (-1*other)
+    end
+
     private
 
     def organization_distribution_percentage
@@ -245,7 +249,7 @@ class RoyaltyCalculator
   def distributable_income
     royalty_money(
       bandcamp_digital_net_revenue + distrokid_streaming_revenue +
-      (bandcamp_physical_net_revenue_payable - cost_of_goods) +
+      bandcamp_physical_net_revenue_payable - cost_of_goods +
       patreon_net_revenue + iam8bit_net_revenue + bandcamp_pledge_net_revenue
     )
   end

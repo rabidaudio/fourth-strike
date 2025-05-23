@@ -13,7 +13,7 @@ section.section
         th Streaming Revenue
         th Associated Merch Revenue (Gross)
         th Associated Merch Revenue (Net - Production Costs)
-        th Total Revenue
+        th Total Gross Revenue
         th Distributable Income
         th Royalties
         th Organization Income
@@ -40,7 +40,7 @@ section.section
             td.is-warning
           - else
             td = albums.map(&:project).sum(&:merch_net_revenue_less_costs).round.format
-          td = albums.map(&:project).sum(&:total_net_revenue).round.format
+          td = albums.map(&:project).sum(&:total_gross_revenue).round.format
           td = albums.map(&:project).sum(&:distributable_income).round.format
           td class=(albums.where.not(id: Album.joins(:splits)).present? ? 'is-warning': '')
             = albums.map(&:project).sum(&:payable_royalties).round.format
@@ -75,7 +75,7 @@ section.section
             - if has_unfulfilled
               br
               span.is-italic.is-size-7 = " *Not all merch orders fulfilled: #{album.unfulfilled_merch_items.sum_monetized(:net_revenue_amount).round.format} of unfulfilled orders"
-          td = album.project.total_net_revenue.round.format
+          td = album.project.total_gross_revenue.round.format
           td = album.project.distributable_income.round.format
           - if album.splits.empty?
             td.is-warning
