@@ -27,8 +27,17 @@ class RoyaltyCalculator
       @royalties ||= @product.payout_amounts(to_money - organization_distribution)
     end
 
-    def royalties_owed_to(payee)
+    # How much in royalties the payee generated in splits. Includes royalties from
+    # payees who have donated theirs to the org
+    def royalties_earned_by(payee)
       royalties[payee] || 0.to_money(currency)
+    end
+
+    # Actual royalties owed
+    def royalties_owed_to(payee)
+      return 0.to_money if payee.opted_out_of_royalties? || payee.org?
+
+      royalties_earned_by(payee)
     end
 
     # Total amount of royalties to artists who have chosen to donate
@@ -66,7 +75,7 @@ class RoyaltyCalculator
 
     # Value of royalties where the org receives a split
     def org_royalties
-      royalties_owed_to(Payee.org)
+      royalties_earned_by(Payee.org)
     end
 
     def total_org_income
