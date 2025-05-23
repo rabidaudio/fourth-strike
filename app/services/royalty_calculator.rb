@@ -107,7 +107,7 @@ class RoyaltyCalculator
     end
 
     def -(other)
-      self + (-1*other)
+      self + (-1 * other)
     end
 
     private

@@ -239,7 +239,7 @@ namespace :home_sheet do
           Payout.create!(
             payee: payee,
             amount: amount,
-            paid_at: Time.zone.local(2023,1,1), # NOTE: just an arbitrary date
+            paid_at: Time.zone.local(2023, 1, 1), # NOTE: just an arbitrary date
             note: 'Imported from home sheet, unknown paypal transaction and date'
           )
         end

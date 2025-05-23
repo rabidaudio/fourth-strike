@@ -472,3 +472,26 @@ patreon:
         - short circuit 01
       t-shirt: T-GEC
       cassette: C-GEC-001
+
+
+sig_figs:
+  splits:
+      'max / FS-131': 14.57205255
+      'jackson / FS-128': 18.170347
+      'nour / FS-136': 13.04953721
+      'zack.ry / FS-015': 11.35646688
+      'eames / FS-126': 8.571428571
+      'jay / FS-129': 8.075709779
+      'noe / FS-135': 5.047318612
+      'mahal / FS-123': 3.028391167
+      'sam / FS-137': 6.960169168
+      'nic (SFC) / FS-134': 3.296703297
+      'lily (sfc) / FS-181': 2.523659306
+      'chrome / FS-124': 1.35126703
+      'sevan / FS-138': 0.8791208791
+      'pierce (sfc) / FS-182': 0.2197802198
+      'rosie (sfc) / FS-183': 0.6593406593
+      'rowan (sfc) / FS-184': 1.514195584
+      'rhys (sfc) / FS-185': 0.2523659306
+      'didi (sfc) / FS-186': 0.2523659306
+      'carla (sfc) / FS-189': 0.2197802198
