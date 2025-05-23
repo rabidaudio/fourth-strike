@@ -313,6 +313,14 @@ home_sheet:
       private: true
       variants: [] # TODO?
       album: UNSTABLE
+    - name: UNDEFINED - TEE
+      artist_name: the garages
+      bandcamp_url: ''
+      sku: T-UDF
+      list_price: '$23.33'
+      private: true
+      variants: [] # TODO?
+      album: '#2'
     - name: Putrid Shark - TEE
       artist_name: Putrid Shark
       bandcamp_url: ''
@@ -417,12 +425,12 @@ patreon:
     '2021-05-01':
       digital:
         - storm's here
-        - "STRIKE TWO​!​!"
+        - "STRIKE TWO​!​!" # sic
         - Immaterial Shores
         - "Voxes: Somnolent"
         - "where we droppin, boys?"
         - "Tribute Act 2: Headliners"
-      t-shirt: T-UND # undefined
+      t-shirt: T-UDF # undefined
       cassette: C-CON-001 # CONSUMED
     '2021-06-01':
       digital:
