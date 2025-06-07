@@ -56,7 +56,7 @@ section.section
                 = sale.merch_fulfillment.production_cost.format
                 - if sale.merch_fulfillment.notes.present?
                   br
-                  pre
+                  pre style="max-width: 100px"
                     = sale.merch_fulfillment.notes
           - if current_order_id != sale.bandcamp_transaction_id
             td rowspan=expected

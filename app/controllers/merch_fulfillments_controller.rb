@@ -12,6 +12,7 @@ class MerchFulfillmentsController < ApplicationController
 
   def edit
     @merch_fulfillment = MerchFulfillment.find(params[:id])
+    @sales = @merch_fulfillment.bandcamp_sales
     restore_changes!(@merch_fulfillment)
   end
 
