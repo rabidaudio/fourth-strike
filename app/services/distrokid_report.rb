@@ -10,7 +10,7 @@ class DistrokidReport
         # we just assume we're loading all data, and wipe and reload the whole table.
         DistrokidSale.delete_all
 
-        CSV.foreach(path, headers: true, col_sep: "\t", liberal_parsing: true, encoding: 'iso-8859-1') do |row|
+        CSV.foreach(path, headers: true) do |row|
           DistrokidReport::Row.new(row).record_sale!
         end
       end
@@ -26,9 +26,9 @@ class DistrokidReport
     end
 
     def product
-      @product ||= if row['Song/Album'] == 'Album'
+      @product ||= if row['Source Type'] == 'Album'
                      find_album_by_upc || find_album_by_name
-                   elsif row['Song/Album'] == 'Song'
+                   elsif row['Source Type'] == 'Song'
                      find_track_by_isrc || find_track_by_name
                    else
                      raise StandardError, 'Unknown type'
@@ -90,9 +90,13 @@ class DistrokidReport
       row['Earnings (USD)'].to_f
     end
 
+    def royalties_withheld
+      row['Songwriter Royalties Withheld (USD)'].to_f
+    end
+
     def validate!
-      if row['Songwriter Royalties Withheld'] != '0'
-        raise StandardError, "Songwriter royalties were withheld; we don't have logic to account for this"
+      unless royalties_withheld.zero?
+        raise StandardError, "Songwriter royalties were withheld; we don't have logic to account for this. #{row}"
       end
 
       if row['Team Percentage'] != '100'
