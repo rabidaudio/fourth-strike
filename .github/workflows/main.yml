@@ -33,7 +33,7 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: app.fourth-strike.com
-          username: root
+          username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd fourth-strike
