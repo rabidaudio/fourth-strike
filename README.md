@@ -94,12 +94,10 @@ keeps backups/record keeping incredibly simple.
 
 ## Deployment
 
-App is hosted on Hetzner, inside of docker compose, accessed via SSH.
-A volume is mounted for persistent storage for portability and backup purposes. An
+App is hosted on AWS, inside of docker compose, accessed via SSH. The instance is backed up monthly, and backups are retained for 3 months. The "storage" directory is mounted within the container for loading/backing up data. An
 nginx container acts as SSL termination and certificates are provided by Let'sEncrypt.
 
-If loading a lot of data into production, it can help to scale up to a larger instance for a bit
-and then scale back down when finished.
+If loading a lot of data into production, it can help to scale up to a larger instance for a bit and then scale back down when finished.
 
 ## Initial Deployment
 
@@ -115,8 +113,12 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
 sudo apt-get update
 # Install docker
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+# allow regular user to use docker
+sudo usermod -aG docker $USER
+# May need to log out and back in
 # Create a persistent docker volume for the volume
-docker volume create --opt type=none --opt o=bind --opt device=/mnt/HC_Volume_101758628/storage storage
+mkdir -p ~/storage/_data
+docker volume create --opt type=none --opt o=bind --opt device=~/storage storage
 # Create a tmpfs volume for shared Rails cache
 docker volume create --driver local --opt type=tmpfs --opt device=tmpfs --opt o=size=256m,uid=1000,gid=1000,mode=01777 cache
 # install Let'sEncrypt
@@ -128,11 +130,11 @@ cd fourth-strike
 # load secrets to .env
 # bootstrap ssl
 docker compose run -p "80:80" letsencrypt certbot certonly --expand --standalone -w /tmp/acme_challenge -d app.fourth-strike.com
-# configure cron jobs
-echo '5 0 * * 1 cd /root/fourth-strike && docker compose restart' | crontab
+# set env vars
+export 'RAILS_MASTER_KEY=...' DISCORD_CLIENT_ID='...' DISCORD_CLIENT_SECRET='...'
 # start
-docker compose run app DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rake db:schema:load
-docker compose start
+docker compose run app bin/rake db:schema:load
+docker compose up -d
 ```
 
 ## Updates
