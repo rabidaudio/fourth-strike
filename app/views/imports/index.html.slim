@@ -39,11 +39,12 @@ section.section
       li Go to "Bank" and select "See excruciating detail"
       li Make sure it's loading everything ("All dates", "All artists", "All releases", "All stores")
       li Click the Download icon in the top right
+      li Unzip the file
       li Upload below
 
   = form_tag(imports_distrokid_path, multipart: true) do
     = hidden_field_tag(:type, :distrokid)
-    = render('file_field', field_name: "report", placeholder: 'DistroKid_XXXXXXXXXX.tsv')
+    = render('file_field', field_name: "report", placeholder: 'results.csv')
     = submit_tag "Upload", class: "button is-primary"
 
   / TODO: paypal
