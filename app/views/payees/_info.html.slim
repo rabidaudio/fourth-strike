@@ -27,6 +27,10 @@ section.section
       a.button.m-1 href=new_artist_path(payee_id: @payee.id)
         span Create Artist Profile
 
+  - if admin? && @payee.notes.present?
+    h4.is-size-4 Notes
+    pre = @payee.notes
+
 section.section
   h1.is-size-2 Accounting
 

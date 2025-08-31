@@ -146,6 +146,15 @@
         Visible to admins only. Useful for albums that are unreleased, have been taken down, or are no longer associated with the label.
       </p>
     </div>
+
+    <div class="field">
+      <label class="label is-required">Notes</label>
+      <div class="control">
+        <textarea class="textarea" name="album[notes]" v-model="album.notes"></textarea>
+      </div>
+      <p class="help">Visible to admins only</p>
+    </div>
+
   </section>
 
 

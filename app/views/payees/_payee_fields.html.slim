@@ -8,3 +8,7 @@
 = bulma_field(f, :check_box, @payee, :is_charity, label: "This is a charity")
 
 = bulma_field(f, :check_box, @payee, :opted_out_of_royalties, label: "This recipient has chosen to donate their royalties to #{Rails.application.config.app_config[:organization_name]}")
+
+- if admin?
+  = bulma_field(f, :text_area, @payee, :notes, label: "Notes")
+    p.help Visible to admins only

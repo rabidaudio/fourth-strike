@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_14_175706) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_31_144927) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -33,6 +33,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_14_175706) do
     t.integer "bandcamp_price_cents", default: 0, null: false
     t.string "bandcamp_price_currency", default: "USD", null: false
     t.boolean "private", default: false, null: false
+    t.text "notes"
     t.index ["bandcamp_id"], name: "index_albums_on_bandcamp_id", unique: true
     t.index ["bandcamp_url"], name: "index_albums_on_bandcamp_url", unique: true
     t.index ["catalog_number"], name: "index_albums_on_catalog_number", unique: true
@@ -222,6 +223,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_14_175706) do
     t.string "fsn", null: false
     t.boolean "is_charity", default: false, null: false
     t.boolean "opted_out_of_royalties", default: false, null: false
+    t.text "notes"
     t.index ["fsn"], name: "index_payees_on_fsn", unique: true
     t.index ["paypal_account"], name: "index_payees_on_paypal_account"
   end

@@ -4,6 +4,9 @@ section.section
   .columns
     .column.is-full
       = form_for(@album) do |f|
+        .field
+          .control
+            = f.submit "Update", class: "button is-link"
         
         div vue-component="AlbumForm" props=@props.to_json
 

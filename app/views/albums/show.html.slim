@@ -23,6 +23,11 @@ p
       a.button href=edit_album_path(@album)
         span Edit
 
+- if admin? && @album.notes.present?
+  .block
+    h4.is-size-4 Notes
+    pre = @album.notes
+
 - if @album.private?
   p
     span.tag.is-danger Private (Hidden/Removed from Bandcamp)

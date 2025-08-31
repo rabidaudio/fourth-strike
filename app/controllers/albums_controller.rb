@@ -84,7 +84,7 @@ class AlbumsController < ApplicationController
   def album_params
     params.require(:album).permit(
       :bandcamp_url, :name, :artist_name, :bandcamp_id, :bandcamp_price_cents, :bandcamp_price_currency,
-      :album_art_url, :release_date, :catalog_number, :upcs, :private,
+      :album_art_url, :release_date, :catalog_number, :upcs, :private, :notes,
       tracks: [:id, :name, :track_number, :bandcamp_url, :isrc, :bandcamp_id, :credits, :lyrics]
     ).tap do |album_params|
       album_params[:private] = album_params[:private].to_b

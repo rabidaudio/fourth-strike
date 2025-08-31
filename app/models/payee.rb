@@ -8,6 +8,7 @@
 #  fsn                    :string           not null
 #  is_charity             :boolean          default(FALSE), not null
 #  name                   :string           not null
+#  notes                  :text
 #  opted_out_of_royalties :boolean          default(FALSE), not null
 #  paypal_account         :string
 #  created_at             :datetime         not null
@@ -31,6 +32,8 @@ class Payee < ApplicationRecord
 
   has_many :splits, dependent: :destroy
   has_many :rendered_services, dependent: :restrict_with_exception
+
+  strip_attributes
 
   validates :fsn, format: { with: /\AFS-[0-9]{3}\z/, message: 'should match the form FS-XXX' }
 
