@@ -36,6 +36,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           script: |
+            source ./env
             cd fourth-strike
             git pull
             docker compose pull

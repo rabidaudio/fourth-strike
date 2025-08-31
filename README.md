@@ -143,7 +143,7 @@ docker compose up -d
 Updates are triggered automatically by Github workflows.
 
 ```bash
-ssh root@app.fourth-strike.com 'cd fourth-strike && git pull && docker compose pull && docker compose down --remove-orphans && docker compose run app bundle exec rake db:migrate:with_data && docker compose up -d'
+ssh -i fourth-strike-aws.pem ubuntu@app.fourth-strike.com 'source ./env && cd fourth-strike && git pull && docker compose pull && docker compose down --remove-orphans && docker compose run app bundle exec rake db:migrate:with_data && docker compose up -d'
 ```
 
 ## Dependency Report
