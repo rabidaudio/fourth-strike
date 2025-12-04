@@ -1,6 +1,6 @@
 # Fourth Strike
 
-[This is a web-app](https://app.fourth-strike.com) for tracking projects released by [Fourth Strike](https://fourth-strike.com/). It allows browsing the complete catalog and handles accounting and payouts to artists.
+[This is a web-app](https://app.fourth-strike.com) for tracking projects released by [Fourth Strike](https://fourth-strike.com/). It allows browsing the complete catalog and handles accounting and payouts to artists. Work in Progress.
 
 ## Setup
 
