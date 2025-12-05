@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, triggerRef, defineModel } from 'vue'
+  import { computed, triggerRef } from 'vue'
 
   const money = defineModel({ default: { cents: 0, currency: 'USD' } })
 

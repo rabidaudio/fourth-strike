@@ -36,6 +36,7 @@
 # album income before paying out royalties.
 class RenderedService < ApplicationRecord
   include MonitizedSum
+
   self.inheritance_column = '_type'
 
   belongs_to :payee

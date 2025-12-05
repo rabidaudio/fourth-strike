@@ -1,0 +1,11 @@
+${HOSTNAME} {
+  request_body {
+    max_size 250MB
+  }
+
+  handle /_proxy_health {
+    respond "OK"
+  }
+
+  reverse_proxy app:3000
+}

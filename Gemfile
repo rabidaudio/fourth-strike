@@ -31,7 +31,6 @@ gem 'turbo-rails'
 
 gem 'omniauth'
 gem 'omniauth-discord'
-gem 'omniauth-rails_csrf_protection'
 
 # Faster JSON parsing
 gem 'oj'

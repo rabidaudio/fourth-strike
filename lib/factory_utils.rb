@@ -5,6 +5,6 @@ module FactoryUtils
   extend self
 
   def sanitize_for_url(str)
-    str.gsub(' ', '_').downcase.dasherize.gsub(/[^a-z\-]/, '')
+    str.gsub(' ', '_').downcase.dasherize.gsub(/[^a-z-]/, '')
   end
 end

@@ -1,4 +1,4 @@
-require: rubocop-rails
+plugins: rubocop-rails
 
 AllCops:
   TargetRubyVersion: 3.3
@@ -50,7 +50,7 @@ Style/FormatStringToken:
 Style/ModuleFunction:
   EnforcedStyle: extend_self
 
-Naming/PredicateName:
+Naming/PredicatePrefix:
   Exclude:
     - 'spec/**/*'
 
@@ -66,6 +66,10 @@ Style/GuardClause:
 #   https://github.com/thoughtbot/factory_bot/issues/698
 #   https://github.com/aha-app/rubocop-aha/pull/4
 Style/SymbolProc:
+  Enabled: false
+
+# `.one?` and `.many?` seem to not be supported on this version of ruby
+Style/CollectionQuerying:
   Enabled: false
 
 # SIZE / COMPLEXITY

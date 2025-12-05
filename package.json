@@ -23,7 +23,7 @@
     "lint:check": "run-p -c -l rubylint jslint",
     "lint": "run-s -c -l rubylint:fix jslint:fix"
   },
-  "author": "Julien Knight <cjk@rabidaudio.com>",
+  "author": "Julien Knight <julien@rabidaudio.com>",
   "license": "MIT",
   "devDependencies": {
     "@vue/cli": "^5.0.8",

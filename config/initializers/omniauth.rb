@@ -5,3 +5,5 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 end
 
 OmniAuth.config.logger = Rails.logger
+
+OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection.new(key: :_csrf_token)
