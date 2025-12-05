@@ -122,17 +122,11 @@ mkdir -p ~/storage/exports
 docker volume create --opt type=none --opt o=bind --opt device=~/storage storage
 # Create a tmpfs volume for shared Rails cache
 docker volume create --driver local --opt type=tmpfs --opt device=tmpfs --opt o=size=256m,uid=1000,gid=1000,mode=01777 cache
-# install Let'sEncrypt
-sudo apt install certbot
-mkdir -p /var/www/_letsencrypt
 # Load code
 git clone https://github.com/rabidaudio/fourth-strike
 cd fourth-strike
 # load secrets to .env
-# bootstrap ssl
-docker compose run -p "80:80" letsencrypt certbot certonly --expand --standalone -w /tmp/acme_challenge -d app.fourth-strike.com
-# set env vars
-echo 'export RAILS_MASTER_KEY=... DISCORD_CLIENT_ID=... DISCORD_CLIENT_SECRET=...' >> ~/.bash_profile
+echo 'export RAILS_MASTER_KEY=... DISCORD_CLIENT_ID=... DISCORD_CLIENT_SECRET=...' > .env
 # start
 docker compose run app bin/rake db:schema:load
 docker compose up -d

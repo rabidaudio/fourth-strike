@@ -1,4 +1,4 @@
-${HOSTNAME} {
+{$HOSTNAME} {
   request_body {
     max_size 250MB
   }

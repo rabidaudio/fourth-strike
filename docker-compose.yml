@@ -10,6 +10,8 @@ services:
       - caddy_config:/config
     networks:
       - app
+    environment:
+      - HOSTNAME=app.fourth-strike.com
     restart: always
   app:
     # build: .
@@ -54,7 +56,9 @@ services:
 volumes:
   storage:
     external: true
-  proxy:
+  caddy_data:
+    external: false
+  caddy_config:
     external: false
   cache:
     external: true

@@ -6,7 +6,7 @@ const aliasPlugin = require('esbuild-plugin-alias')
 // "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
 
 const CONFIG = {
-  entryPoints: ['app/javascript/*.*'],
+  entryPoints: ['app/javascript/*.js'],
   format: 'esm',
   plugins: [
     aliasPlugin({
