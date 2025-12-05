@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, computed, defineModel } from 'vue'
+  import { ref, computed } from 'vue'
 
   import { payees_path } from '../routes'
 
