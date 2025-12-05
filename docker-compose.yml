@@ -1,36 +1,16 @@
 services:
-  nginx:
+  proxy:
     build:
       context: proxy
     ports:
       - 80:80
       - 443:443
     volumes:
-      - letsencrypt:/etc/letsencrypt:ro
-      - acme_challenge:/var/www/_letsencrypt
+      - caddy_data:/data
+      - caddy_config:/config
     networks:
       - app
     restart: always
-  letsencrypt:
-    image: certbot/certbot
-    command: sh -c "certbot certonly --expand --webroot -w /tmp/acme_challenge -d app.fourth-strike.com --text --agree-tos --email info@fourth-strike.com --rsa-key-size 4096 --verbose --non-interactive --keep-until-expiring --preferred-challenges=http"
-    entrypoint: ""
-    volumes:
-      - letsencrypt:/etc/letsencrypt
-      - acme_challenge:/tmp/acme_challenge
-    environment:
-      - TERM=xterm
-    restart: "no"
-  # TODO: doesn't work
-  # chrome:
-  #   image: zenika/alpine-chrome
-  #   command: --no-sandbox --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 https://www.chromestatus.com/
-  #   ports:
-  #     - 9222:9222
-  #   networks:
-  #     - app
-  #   restart: unless-stopped
-  
   app:
     # build: .
     image: rabidaudio/fourth-strike:latest
@@ -54,9 +34,8 @@ services:
       - RAILS_SERVE_STATIC_FILES=true
       - RAILS_LOG_LEVEL=info
       - RAILS_LOG_TO_STDOUT=true
-      - HOSTNAME=app.fourth-strike.net
+      - HOSTNAME=app.fourth-strike.com
       - RAILS_MIN_THREADS=1
-      # - CHROME_URL=http://chrome:9222
       - DISCORD_CLIENT_ID
       - DISCORD_CLIENT_SECRET
       - RAILS_MASTER_KEY
@@ -75,9 +54,7 @@ services:
 volumes:
   storage:
     external: true
-  letsencrypt:
-    external: false
-  acme_challenge:
+  proxy:
     external: false
   cache:
     external: true
