@@ -31,7 +31,7 @@
 # bandcamp fees, or transaction fees; only the cost of the product.
 # fulfilled_by_id is a pointer to the Admin who marked the product as shipped.
 class MerchFulfillment < ApplicationRecord
-  include MonitizedSum
+  include MonetizedSum
 
   has_many :bandcamp_sales, dependent: :restrict_with_exception
   has_one :internal_merch_order, required: false, dependent: :restrict_with_exception

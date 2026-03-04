@@ -41,7 +41,7 @@
 class Album < ApplicationRecord
   include Product
   include JsonStringColumn
-  include MonitizedSum
+  include MonetizedSum
 
   strip_attributes except: [:upcs]
   json_string_attributes :upcs

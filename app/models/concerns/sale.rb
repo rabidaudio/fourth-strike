@@ -5,7 +5,7 @@ module Sale
   extend ActiveSupport::Concern
 
   included do |base|
-    base.include MonitizedSum
+    base.include MonetizedSum
 
     base.belongs_to :product, polymorphic: true
     base.has_many :splits,

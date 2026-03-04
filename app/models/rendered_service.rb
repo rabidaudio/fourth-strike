@@ -35,7 +35,7 @@
 # If there is an album associated with it, these fees will come off the top of
 # album income before paying out royalties.
 class RenderedService < ApplicationRecord
-  include MonitizedSum
+  include MonetizedSum
 
   self.inheritance_column = '_type'
 

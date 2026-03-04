@@ -12,7 +12,7 @@
 # TODO
 
 - re-work donated royalties: track payouts but pay to org instead
-- fix nginx client body size - distrokid uploads too big, setting didnt work
+- re-work charity payouts to be a one-time fixed amount (determined retroactively after a specified date)
 - mobile friendly for tables
 - Patreon
 - Check that can access all accounts without phone number, so we can turn that off

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Helper for summing Monetized columns across query results.
-module MonitizedSum
+module MonetizedSum
   extend ActiveSupport::Concern
 
   class_methods do
@@ -10,7 +10,7 @@ module MonitizedSum
       return 0.to_money if scope.empty?
 
       currency_counts = scope.regroup("#{field}_currency").count
-      raise StandardError, 'Cannot sum payouts in differenct currencies' if currency_counts.size > 1
+      raise StandardError, 'Cannot sum payouts in different currencies' if currency_counts.size > 1
 
       currency = currency_counts.to_a.first.first
       cents = scope.sum("#{field}_cents")

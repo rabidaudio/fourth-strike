@@ -25,7 +25,7 @@
 
 # A payout is an instance when the organization made a payment to a Payee.
 class Payout < ApplicationRecord
-  include MonitizedSum
+  include MonetizedSum
 
   belongs_to :payee
 
