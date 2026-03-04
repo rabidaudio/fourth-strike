@@ -44,8 +44,8 @@ gem 'http'
 # Execute JS from Ruby
 gem 'execjs', require: false
 # Delayed Job, simple db-backed job runner
-gem 'delayed_job_active_record'
-gem 'delayed_job_web'
+gem 'delayed_job_active_record', '~> 4.1.11'
+gem 'delayed_job_web', '~> 1.4.4'
 
 # Allow data migrations like schema migrations [https://github.com/ilyakatz/data-migrate]
 gem 'data_migrate', '~> 11.3'

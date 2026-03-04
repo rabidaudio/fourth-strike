@@ -28,3 +28,10 @@ class RequireAuthenticatedAdminMiddleware
 end
 
 DelayedJobWeb.use(RequireAuthenticatedAdminMiddleware)
+
+if ENV['HOSTNAME'].present?
+  DelayedJobWeb.set(:host_authorization, { permitted_hosts: [
+    *DelayedJobWeb.host_authorization[:permitted_hosts],
+    ENV['HOSTNAME'],
+  ] })
+end

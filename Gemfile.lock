@@ -566,8 +566,8 @@ DEPENDENCIES
   csv
   data_migrate (~> 11.3)
   debug
-  delayed_job_active_record
-  delayed_job_web
+  delayed_job_active_record (~> 4.1.11)
+  delayed_job_web (~> 1.4.4)
   dotenv
   execjs
   factory_bot_rails (~> 6.4)

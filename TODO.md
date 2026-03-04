@@ -1,10 +1,24 @@
+# NOTES
+
+- CIC can't just give debts and money over to LLC due to asset lock. Only another UK CIC/charity could do that
+- However, we could create a business contract between CIC and LLC for LLC to manage payments
+- IP shouldn't be a problem to write off as $0 value, very common
+- Merch we'll need to write off, donate, or sell (garage sale anyone??)
+- CIC needs to not be trading for 3 months before shutting down
+- Any leftover money will go to designated charity (Equality Scotland) by default, can send it to a different charity with one form
+- Accounting year ends July 31st, can apply for one extension (up to September?) every 5 years
+- Possible for non-UK citizens to become directors
+
 # TODO
 
 - re-work donated royalties: track payouts but pay to org instead
 - fix nginx client body size - distrokid uploads too big, setting didnt work
 - mobile friendly for tables
 - Patreon
-
+- Check that can access all accounts without phone number, so we can turn that off
+- Get rid of merch
+- income: Twitch, YouTube? (probably via DistroKid)
+      Twitch is like 40GBP a year, not meaningful. Can send to org
 
 [Phase 4 - additional features]
 - better parsing of credits: instead of markdown, links to twitter,etc
