@@ -66,8 +66,6 @@ gem 'wannabe_bool'
 # `apt install libmaxminddb-dev`
 # `brew install libmaxminddb`
 # gem 'hive_geoip2'
-# Various utils I created at FIXD
-gem 'fixd_utils', github: 'fixdauto/ruby-fixd-utils', tag: 'v1.2.4'
 # A headless chrome browser, used for crawling bandcamp
 gem 'ferrum', require: false
 # Allow paging through active record results
