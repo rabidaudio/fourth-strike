@@ -41,6 +41,6 @@ jobs:
             git pull
             docker compose pull
             docker compose down --remove-orphans
+            docker compose run app bundle exec whenever > /etc/cron.d/fourth-strike
             docker compose run app bundle exec rake db:migrate:with_data
-            docker compose run app bundle exec whenever --update-crontab
             docker compose up -d

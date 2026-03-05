@@ -21,6 +21,10 @@
 
 # Learn more: http://github.com/javan/whenever
 
+# The cron is set on the host outside of Docker
+set :path, "/rails"
+set :job_template, "cd /home/ubuntu/fourth-strike && docker compose run app ':job'"
+
 every 8.hours do
   runner 'CurrencyUpdateJob.perform_later'
 end
