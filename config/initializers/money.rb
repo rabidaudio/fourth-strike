@@ -38,7 +38,7 @@ module CurrencyConversions
 
   def bank
     @bank ||= EuCentralBank.new(HistoricalStoreWithDaysOff.new).tap do |bank|
-      bank.update_historical_rates(bank_cache, true)
+      bank.update_historical_rates(bank_cache, true) if File.exist?(bank_cache)
     end
   end
 

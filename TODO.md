@@ -11,8 +11,14 @@
 
 # TODO
 
+- Calculate artist royalties owed to July 31 2025
+- shut down unneeded gmail accounts to save money
+- allow artists to join, view contributions, add artist profiles, update payment info, sign contract
+- LLC taxes
 - re-work donated royalties: track payouts but pay to org instead
 - re-work charity payouts to be a one-time fixed amount (determined retroactively after a specified date)
+- cache is not scalable, find better solution
+- Rails 8 upgrade
 - mobile friendly for tables
 - Patreon
 - Check that can access all accounts without phone number, so we can turn that off
