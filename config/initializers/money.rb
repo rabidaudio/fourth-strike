@@ -42,14 +42,23 @@ module CurrencyConversions
     end
   end
 
+  def update!
+    load_rates! if bank.historical_rates_updated_at < 1.day.ago
+  end
+
   def load_rates!
+    # download current rates
+    bank.update_rates
     # save all historical rates to storage
     bank.save_rates(bank_cache, EuCentralBank::ECB_ALL_HIST_URL)
     # load them into the money instance
     bank.update_historical_rates(bank_cache, true)
   end
 
-  delegate :exchange_with, to: :bank
+  def exchange_with(money, target_currency, date = nil)
+    update!
+    bank.exchange_with(money, target_currency, date)
+  end
 end
 
 MoneyRails.configure do |config|

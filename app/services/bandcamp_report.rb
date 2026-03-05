@@ -39,8 +39,8 @@ class BandcampReport
         operating_currency = Rails.application.config.app_config[:operating_currency]
         if row['currency'] != operating_currency
           puts("Converting currency #{row['currency']} to #{operating_currency} on #{purchased_at}")
-          subtotal = Money.default_bank.exchange_with(subtotal, operating_currency, purchased_at.to_date)
-          net = Money.default_bank.exchange_with(net, operating_currency, purchased_at.to_date)
+          subtotal = CurrencyConversions.exchange_with(subtotal, operating_currency, purchased_at.to_date)
+          net = CurrencyConversions.exchange_with(net, operating_currency, purchased_at.to_date)
         end
 
         case row['item type']
