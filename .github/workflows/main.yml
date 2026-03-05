@@ -36,11 +36,12 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           script: |
+            set -euo pipefail
+            trap 'echo "Failure on line $LINENO"' ERR
             source ./env
             cd fourth-strike
             git pull
             docker compose pull
             docker compose down --remove-orphans
-            docker compose run app bundle exec whenever > /etc/cron.d/fourth-strike
             docker compose run app bundle exec rake db:migrate:with_data
             docker compose up -d

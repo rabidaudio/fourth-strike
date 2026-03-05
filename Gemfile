@@ -46,7 +46,6 @@ gem 'execjs', require: false
 # Delayed Job, simple db-backed job runner
 gem 'delayed_job_active_record', '~> 4.1.11'
 gem 'delayed_job_web', '~> 1.4.4'
-gem 'whenever', '~> 1.1.2', require: false
 # Allow data migrations like schema migrations [https://github.com/ilyakatz/data-migrate]
 gem 'data_migrate', '~> 11.3'
 # Automatically comment model files with database fields [https://github.com/ctran/annotate_models]
