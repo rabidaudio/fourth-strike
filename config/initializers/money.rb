@@ -1,15 +1,66 @@
 # encoding : utf-8
 # frozen_string_literal: true
 
+# Convert Money to different currencies at a specified date of exchange
+module CurrencyConversions
+  extend self
+
+  # EU Central Bank doesn't publish rates on bank holidays or weekends.
+  # This store handles errors when rates can't be found by looking back up
+  # to @limit days until rates are available.
+  class HistoricalStoreWithDaysOff < Money::RatesStore::StoreWithHistoricalDataSupport
+
+    def initialize(limit = 7)
+      super(limit: limit)
+    end
+
+    def get_rate(currency_iso_from, currency_iso_to, date = nil)
+      return super if date.nil?
+
+      # make sure date is a Date from a time in UTC (i.e. EU time)
+      date = date.to_datetime.utc.to_date
+      attempts = 0
+      while true
+        rate = super(currency_iso_from, currency_iso_to, date)
+
+        return rate unless rate.nil?
+        return rate if attempts > @options[:limit]
+
+        attempts += 1
+        date -= 1.day
+      end
+    end
+  end
+
+  def bank_cache
+    Rails.root.join('storage/eu_central_bank_exchange_rates.xml')
+  end
+
+  def bank
+    @bank ||= EuCentralBank.new(HistoricalStoreWithDaysOff.new).tap do |bank|
+      bank.update_historical_rates(bank_cache, true)
+    end
+  end
+
+  def load_rates!
+    # save all historical rates to storage
+    bank.save_rates(bank_cache, EuCentralBank::ECB_ALL_HIST_URL)
+    # load them into the money instance
+    bank.update_historical_rates(bank_cache, true)
+  end
+
+  delegate :exchange_with, to: :bank
+end
+
 MoneyRails.configure do |config|
   # To set the default currency
-  #
-  config.default_currency = :usd
+  config.default_currency = Rails.application.config.app_config[:operating_currency]
 
   # Set default bank object
-  #
-  # Example:
-  # config.default_bank = EuCentralBank.new
+  config.default_bank = CurrencyConversions.bank
+  # NOTE: when using EuCentralBank, make sure explicitly call it using
+  # `CurrencyConversions.exchange_with(money, target_currency, date)`
+  # so that we account for the historical exchange rate.
 
   # Add exchange rates to current money bank object.
   # (The conversion rate refers to one direction only)

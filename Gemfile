@@ -46,7 +46,6 @@ gem 'execjs', require: false
 # Delayed Job, simple db-backed job runner
 gem 'delayed_job_active_record', '~> 4.1.11'
 gem 'delayed_job_web', '~> 1.4.4'
-
 # Allow data migrations like schema migrations [https://github.com/ilyakatz/data-migrate]
 gem 'data_migrate', '~> 11.3'
 # Automatically comment model files with database fields [https://github.com/ctran/annotate_models]
@@ -54,7 +53,9 @@ gem 'annotate', '~> 3.2', require: false
 # Strip whitespace from strings before they are saved to the database
 gem 'strip_attributes', '~> 1.13'
 # active record support for money and currency
-gem 'money-rails', '~> 1.15'
+gem 'money-rails', '~> 3.0'
+# use the EU central bank public data for currency conversions
+gem 'eu_central_bank', '~> 2.0.0'
 # Allow attaching a callback after the current DB transaction completes
 gem 'after_commit_everywhere', '~> 1.3'
 # add `to_b` method to objects which coerces user input to booleans

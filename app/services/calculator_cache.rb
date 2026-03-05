@@ -11,7 +11,7 @@
 module CalculatorCache
   extend ActiveSupport::Concern
 
-  # Used to invalide the cache when data changes
+  # Used to invalidate the cache when data changes
   module Manager
     extend self
 

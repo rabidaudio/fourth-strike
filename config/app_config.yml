@@ -100,9 +100,6 @@ bandcamp:
       list_price: '$23.33'
       private: true
 
-  # Manually fix Bandcamp sale that wasn't in USD. There's only one, from Sept 2020, when the conversion rate was 1USD = 0.7790GBP
-  currency_corrections:
-    '1685538022': 0.7790
   merch_skus:
     # SKUs have variant information such as size appended to them, but these merch items represent the product as a whole.
     # We'll go through each of these regexes, finding the first that match and returning the first partial match group as the true sku
