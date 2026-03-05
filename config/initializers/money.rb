@@ -9,9 +9,9 @@ module CurrencyConversions
   # This store handles errors when rates can't be found by looking back up
   # to @limit days until rates are available.
   class HistoricalStoreWithDaysOff < Money::RatesStore::StoreWithHistoricalDataSupport
-
-    def initialize(limit = 7)
-      super(limit: limit)
+    def initialize(opts = {}, rates = {})
+      opts[:limit] ||= 7
+      super
     end
 
     def get_rate(currency_iso_from, currency_iso_to, date = nil)
@@ -20,8 +20,8 @@ module CurrencyConversions
       # make sure date is a Date from a time in UTC (i.e. EU time)
       date = date.to_datetime.utc.to_date
       attempts = 0
-      while true
-        rate = super(currency_iso_from, currency_iso_to, date)
+      loop do
+        rate = super
 
         return rate unless rate.nil?
         return rate if attempts > @options[:limit]

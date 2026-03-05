@@ -4,17 +4,19 @@
 # rubocop:disable Rails/Output
 class DistrokidReport
   def self.upsert_all!(path)
-    CalculatorCache::Manager.defer_recompute do
-      ActiveRecord::Base.transaction do
-        # There isn't a good uniqueness for rows (it would be a combination of several), so instead
-        # we just assume we're loading all data, and wipe and reload the whole table.
-        DistrokidSale.delete_all
+    ActiveRecord::Base.transaction do
+      # There isn't a good uniqueness for rows (it would be a combination of several), so instead
+      # we just assume we're loading all data, and wipe and reload the whole table.
+      DistrokidSale.delete_all
 
-        CSV.foreach(path, headers: true) do |row|
-          DistrokidReport::Row.new(row).record_sale!
-        end
+      CSV.foreach(path, headers: true).each_with_index do |row, index|
+        drr = DistrokidReport::Row.new(row)
+        puts(drr.reported_at) if (index % 5000).zero?
+        drr.record_sale!
       end
     end
+    CalculatorCache::Manager.wipe_cache!
+    RecomputeCacheJob.perform_later
   end
 
   # A wrapper for a row object
@@ -54,28 +56,29 @@ class DistrokidReport
         return
       end
       validate!
-      DistrokidSale.create!(
-        artist_name: row['Artist'],
-        title: row['Title'],
-        isrc: row['ISRC'],
-        upc: row['UPC'],
-        store: row['Store'],
-        quantity: quantity,
-        product: product,
-        earnings_usd: earnings_usd,
-        reported_at: reported_at,
-        sale_period: sale_period
-      )
+      DistrokidSale.insert!({ # rubocop:disable Rails/SkipsModelValidations
+                              artist_name: row['Artist'],
+                              title: row['Title'],
+                              isrc: row['ISRC'],
+                              upc: row['UPC'],
+                              store: row['Store'],
+                              quantity: quantity,
+                              product_type: product.class.name,
+                              product_id: product.id,
+                              earnings_usd: earnings_usd,
+                              reported_at: reported_at,
+                              sale_period: sale_period
+                            })
+    end
+
+    def reported_at
+      Date.parse(row['Reporting Date'])
     end
 
     private
 
     def skipped_artist?
       row['Artist'].in?(Rails.application.config.app_config[:distrokid][:skip][:artists])
-    end
-
-    def reported_at
-      Date.parse(row['Reporting Date'])
     end
 
     def sale_period

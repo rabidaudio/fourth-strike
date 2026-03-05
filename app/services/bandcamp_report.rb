@@ -170,6 +170,8 @@ class BandcampReport
         end
       end
     end
+    CalculatorCache::Manager.wipe_cache!
+    RecomputeCacheJob.perform_later
   end
 end
 # rubocop:enable Rails/Output,Metrics/BlockLength,Rails/SkipsModelValidations

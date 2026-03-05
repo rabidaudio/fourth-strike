@@ -36,9 +36,13 @@ module CalculatorCache
       "calc/#{calc_class.name.underscore}/#{arg_path}?#{kwargs.to_query}"
     end
 
+    def wipe_cache!
+      Rails.cache.delete_matched('calc/*')
+    end
+
     def recompute_all!
       # Delete all cached values
-      Rails.cache.delete_matched('calc/*')
+      wipe_cache!
       # Then trigger a computation of everything
       PayoutCalculator.total_owed_for_everyone
       Album.find_each { |a| ProjectCalculator.new(a).organization_profit }
