@@ -8,7 +8,7 @@ ruby ENV.fetch('RUBY_VERSION', nil) || File.read('.ruby-version').chomp
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'puma', '>= 5.0'
-gem 'rails', '~> 7.2.2', '>= 7.2.2'
+gem 'rails', '~> 7.2.3', '>= 7.2.3'
 
 gem 'sqlite3', '~> 1.4'
 
