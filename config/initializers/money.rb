@@ -43,7 +43,7 @@ module CurrencyConversions
   end
 
   def update!
-    load_rates! if bank.historical_rates_updated_at < 1.day.ago
+    load_rates! if bank.historical_rates_updated_at.nil? || bank.historical_rates_updated_at < 1.day.ago
   end
 
   def load_rates!
