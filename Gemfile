@@ -48,8 +48,8 @@ gem 'delayed_job_active_record', '~> 4.1.11'
 gem 'delayed_job_web', '~> 1.4.4'
 # Allow data migrations like schema migrations [https://github.com/ilyakatz/data-migrate]
 gem 'data_migrate', '~> 11.3'
-# Automatically comment model files with database fields [https://github.com/ctran/annotate_models]
-gem 'annotate', '~> 3.2', require: false
+# Automatically comment model files with database fields [https://github.com/drwl/annotaterb fork of https://github.com/ctran/annotate_models]
+gem 'annotaterb', '~> 4.22', require: false
 # Strip whitespace from strings before they are saved to the database
 gem 'strip_attributes', '~> 1.13'
 # active record support for money and currency

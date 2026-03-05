@@ -22,6 +22,10 @@
 #  merch_fulfillment_id  (merch_fulfillment_id => merch_fulfillments.id)
 #  merch_item_id         (merch_item_id => merch_items.id)
 #  payout_id             (payout_id => payouts.id)
+#
+#  merch_fulfillment_id  (merch_fulfillment_id => merch_fulfillments.id)
+#  merch_item_id         (merch_item_id => merch_items.id)
+#  payout_id             (payout_id => payouts.id)
 
 # For a while, we allowed artists to have their royalties paid out in at-cost
 # merch items. To account for this, we create a merch fulfillment and a payout
