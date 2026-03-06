@@ -86,6 +86,15 @@ class RoyaltyCalculator
       Money.new(cents, currency)
     end
 
+    def marshal_dump
+      [@product.class.name, @product.id, *super]
+    end
+
+    def marshal_load(args)
+      @product = args[0].constantize.find(args[1])
+      super(args[2..])
+    end
+
     def dup_with(options = {})
       RoyaltyMoney.new(Money.new(cents, currency, options), product)
     end

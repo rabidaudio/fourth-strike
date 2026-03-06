@@ -183,3 +183,19 @@ Money.default_infinite_precision = true
 #     MoneySerializer.serialize(self)
 #   end
 # end
+
+# We store Money objects in Rails.cache. By default, Marshal.dump
+# will store the entire currency and bank object instances which
+# is very inefficient. Instead we monkey-patch Money with a minimal
+# serializer.
+class Money
+  def marshal_dump
+    [@fractional, @currency.iso_code]
+  end
+
+  def marshal_load(args)
+    @fractional = args[0]
+    @currency = Money::Currency.find(args[1])
+    @bank = Money.default_bank
+  end
+end
