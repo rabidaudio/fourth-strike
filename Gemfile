@@ -10,7 +10,7 @@ ruby ENV.fetch('RUBY_VERSION', nil) || File.read('.ruby-version').chomp
 gem 'puma', '>= 5.0'
 gem 'rails', '~> 7.2.2', '>= 7.2.2'
 
-gem 'sqlite3', '~> 1.4'
+gem 'sqlite3', '~> 2.9'
 
 gem 'cssbundling-rails'
 gem 'jsbundling-rails'
