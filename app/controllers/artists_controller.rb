@@ -47,8 +47,8 @@ class ArtistsController < ApplicationController
   private
 
   def artist_params
-    params.require(:artist).permit(:name, :discord_handle, :credit, :contact_info, :bio,
-                                   :aliases).tap do |artist_params|
+    params.expect(artist: [:name, :discord_handle, :credit, :contact_info, :bio,
+                           :aliases]).tap do |artist_params|
       artist_params[:aliases] = artist_params[:aliases].split(',')
     end
   end

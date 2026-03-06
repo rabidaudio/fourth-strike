@@ -57,8 +57,8 @@ class PayeesController < ApplicationController
   def update
     ActiveRecord::Base.transaction do
       @payee = Payee.find(params[:id])
-      @payee.update!(params.require(:payee).permit(:name, :paypal_account, :is_charity, :opted_out_of_royalties,
-                                                   :notes))
+      @payee.update!(params.expect(payee: [:name, :paypal_account, :is_charity, :opted_out_of_royalties,
+                                           :notes]))
       flash[:success] = 'Updated'
       redirect_to payees_path
     end
@@ -71,7 +71,7 @@ class PayeesController < ApplicationController
   private
 
   def new_payee_params
-    params.require(:payee).permit(:fsn, :name, :paypal_account, :is_charity, :opted_out_of_royalties, :notes)
+    params.expect(payee: [:fsn, :name, :paypal_account, :is_charity, :opted_out_of_royalties, :notes])
   end
 
   def new_artist_params

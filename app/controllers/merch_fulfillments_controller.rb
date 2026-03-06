@@ -51,10 +51,10 @@ class MerchFulfillmentsController < ApplicationController
   private
 
   def fulfillment_params
-    params.require(:merch_fulfillment).permit(
-      :shipped_on,
-      :production_cost_cents, :production_cost_currency,
-      :printify_order_number, :notes
+    params.expect(
+      merch_fulfillment: [:shipped_on,
+                          :production_cost_cents, :production_cost_currency,
+                          :printify_order_number, :notes]
     ).tap do |params|
       params[:fulfilled_by_id] = current_user.admin.id
     end

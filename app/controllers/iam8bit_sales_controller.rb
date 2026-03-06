@@ -41,10 +41,10 @@ class Iam8bitSalesController < ApplicationController
   private
 
   def sale_params
-    params.require(:iam8bit_sale).permit(
-      :period, :name, :merch_id, :quantity,
-      :gross_revenue_amount_cents, :gross_revenue_amount_currency,
-      :net_revenue_amount_cents, :net_revenue_amount_currency
+    params.expect(
+      iam8bit_sale: [:period, :name, :merch_id, :quantity,
+                     :gross_revenue_amount_cents, :gross_revenue_amount_currency,
+                     :net_revenue_amount_cents, :net_revenue_amount_currency]
     ).tap do |params|
       params[:product] = Merch.find(params.delete(:merch_id))
     end

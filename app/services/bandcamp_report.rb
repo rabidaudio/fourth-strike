@@ -128,7 +128,7 @@ class BandcampReport
                                   quantity: row['quantity'],
                                   purchased_at: purchased_at,
                                   shipping_destination: [row['city'], row['region/state'],
-                                                        row['country code']].compact.join(', '),
+                                                         row['country code']].compact.join(', '),
                                   notes: notes
                                 }, unique_by: [:bandcamp_transaction_id, :item_url])
 

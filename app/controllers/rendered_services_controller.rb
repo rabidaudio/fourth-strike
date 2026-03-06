@@ -64,9 +64,9 @@ class RenderedServicesController < ApplicationController
   private
 
   def service_params
-    params.require(:rendered_service).permit(
-      :rendered_at, :description, :type, :compensation_cents,
-      :compensation_currency, :hours, :artist_name, :album_id, payee: :fsn
+    params.expect(
+      rendered_service: [:rendered_at, :description, :type, :compensation_cents,
+                         :compensation_currency, :hours, :artist_name, :album_id, { payee: :fsn }]
     ).tap do |service_params|
       service_params[:payee] = if service_params[:payee][:fsn].present?
                                  Payee.find_by!(fsn: service_params[:payee][:fsn])
