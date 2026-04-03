@@ -31,7 +31,7 @@ class PayoutsController < ApplicationController
 
   def new_payout_params
     params.require(:payout).permit(:payee_fsn, :amount_cents, :amount_currency, :paid_at,
-                                   :paypal_transaction_id).tap do |payout_params|
+                                   :paypal_transaction_id, :note).tap do |payout_params|
       payout_params[:payee_id] = Payee.find_by!(fsn: payout_params.delete(:payee_fsn)).id if payout_params[:payee_fsn]
     end
   end
