@@ -1,5 +1,41 @@
 # NOTES
 
+
+TODO:
+- *get numbers for 24 and 25 (due to discrepancy)
+- save $$ on emails
+  - backup everything
+    - *info
+    - projects
+      - *email,etc
+      - drive: 300GB, need somewhere to put it
+    - thegarages
+      - 
+  - cancel squarespace, converts to google
+  - remove thegarages email (make an alias for projects?)
+- Shutdown heroku $7/mo
+- *Add payout for Rain
+  - for adobe (658.76) less phone (275.10) GBP
+  - oct 23 on
+- *Contract
+  - make sure transaction fees etc are before calculation
+  - Include some privacy policy / GDPR stuff
+  - If costs are more than 15%, org will eat costs
+  - If costs are less than 15%, remainder will be donated to charity
+- Form
+  - discord
+  - contact email
+  - paypal info
+  - contract - "legacy music" or default contract
+  - survey - what should happen to music
+    - llc shutdown
+  - explainer
+- Make separate hosting account
+- Migrate app and domain to GCP
+- rails 8
+
+
+
 - CIC can't just give debts and money over to LLC due to asset lock. Only another UK CIC/charity could do that
 - However, we could create a business contract between CIC and LLC for LLC to manage payments
 - IP shouldn't be a problem to write off as $0 value, very common
