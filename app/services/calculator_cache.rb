@@ -74,6 +74,13 @@ module CalculatorCache
       end
     end
 
+    def recompute_for_payee!(payee)
+      recompute_payouts!(payee)
+      payee.splits.distinct([:product_type, :product_id]).find_each do |split|
+        recompute_royalties!(split.product)
+      end
+    end
+
     # This should be called when a Split is created/updated/destroyed
     def recompute_for_split!(split)
       recompute_royalties!(split.product)

@@ -41,6 +41,12 @@ class Payee < ApplicationRecord
     payee.fsn ||= Payee.next_fsn
   end
 
+  after_save do |payee|
+    if payee.changes['opted_out_of_royalties'].first.present?
+      CalculatorCache::Manager.recompute_for_payee!(payee)
+    end
+  end
+
   scope :missing_payment_info, -> { where.not(fsn: 'FS-000').where(paypal_account: nil, opted_out_of_royalties: false) }
 
   scope :charity, -> { where(is_charity: true) }
