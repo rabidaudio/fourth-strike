@@ -20,7 +20,7 @@ class PayoutCalculator
   end
 
   def self.total_owed_for_everyone
-    Payee.find_each.sum { |payee| PayoutCalculator.new(payee).total_owed }.to_money
+    Payee.not_org.find_each.sum { |payee| PayoutCalculator.new(payee).total_owed }.to_money
   end
 
   def for_album_sales

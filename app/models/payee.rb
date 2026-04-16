@@ -48,7 +48,7 @@ class Payee < ApplicationRecord
   scope :missing_payment_info, -> { where.not(fsn: 'FS-000').where(paypal_account: nil, opted_out_of_royalties: false) }
 
   scope :charity, -> { where(is_charity: true) }
-  scope :artist, -> { where(is_charity: false) }
+  scope :artist, -> { not_org.where(is_charity: false) }
   scope :not_org, -> { where.not(fsn: 'FS-000') }
 
   scope :search, lambda { |keyword|

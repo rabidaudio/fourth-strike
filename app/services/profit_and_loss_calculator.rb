@@ -16,27 +16,27 @@ class ProfitAndLossCalculator
   end
 
   def digital_gross_revenue
-    sales_royalties.filter(&:album?).sum(&:gross_revenue)
+    sales_royalties.filter(&:album?).sum(&:gross_revenue) || 0.to_money
   end
 
   def digital_net_revenue
-    sales_royalties.filter(&:album?).sum(&:net_revenue)
+    sales_royalties.filter(&:album?).sum(&:net_revenue) || 0.to_money
   end
 
   def streaming_gross_revenue
-    sales_royalties.filter(&:track?).sum(&:gross_revenue)
+    sales_royalties.filter(&:track?).sum(&:gross_revenue) || 0.to_money
   end
 
   def streaming_net_revenue
-    sales_royalties.filter(&:track?).sum(&:net_revenue)
+    sales_royalties.filter(&:track?).sum(&:net_revenue) || 0.to_money
   end
 
   def merch_gross_revenue
-    sales_royalties.filter(&:merch?).sum(&:gross_revenue)
+    sales_royalties.filter(&:merch?).sum(&:gross_revenue) || 0.to_money
   end
 
   def merch_net_revenue
-    sales_royalties.filter(&:merch?).sum(&:net_revenue)
+    sales_royalties.filter(&:merch?).sum(&:net_revenue) || 0.to_money
   end
 
   def charity_dues
@@ -48,7 +48,8 @@ class ProfitAndLossCalculator
   end
 
   def charity_outstanding
-    charity_dues - charities_paid
+    # charity_dues - charities_paid # $301
+    charity_calculators.map(&:total_owed).select(&:positive?).sum # $301
   end
 
   def services_rendered_owed
@@ -68,7 +69,8 @@ class ProfitAndLossCalculator
   end
 
   def artist_outstanding
-    artist_royalties_earned + services_rendered_owed - artist_royalties_and_services_paid
+    # artist_royalties_earned + services_rendered_owed - artist_royalties_and_services_paid # $2,745
+    artist_calculators.map(&:total_owed).select(&:positive?).sum # $3,506
   end
 
   def organization_profit
@@ -126,5 +128,17 @@ class ProfitAndLossCalculator
 
   def artist_payouts
     @artist_payouts ||= Payout.joins(:payee).merge(Payee.artist).where(paid_at: time_range)
+  end
+
+  def payees
+    @payees ||= Payee.distinct.joins(:splits).where(splits: { product: sold_products })
+  end
+
+  def charity_calculators
+    payees.charity.map { |payee| PayoutCalculator.new(payee, from: time_range.begin, to: time_range.end) }
+  end
+
+  def artist_calculators
+    payees.artist.map { |payee| PayoutCalculator.new(payee, from: time_range.begin, to: time_range.end) }
   end
 end
