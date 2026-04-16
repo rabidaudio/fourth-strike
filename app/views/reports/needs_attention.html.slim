@@ -67,7 +67,7 @@ section.section
                   th Tracks
                   th
               tbody
-                - Track.without_splits.where.order_by_release_date_desc.each do |track|
+                - Track.without_splits.order_by_release_date_desc.each do |track|
                   tr
                     td
                       a href=track_path(track) = track.name
