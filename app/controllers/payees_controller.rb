@@ -65,7 +65,7 @@ class PayeesController < ApplicationController
   rescue StandardError => e
     flash[:danger] = e.message
     record_changes!(@payee)
-    redurect_to edit_payee_path(@payee)
+    redirect_to edit_payee_path(@payee)
   end
 
   private
