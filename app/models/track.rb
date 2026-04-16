@@ -30,7 +30,7 @@
 #
 
 # A track is a single song from an Album. Tracks have their own contributor splits
-# indepedent from Albums (which are used for individual track sales and streaming credits).
+# independent from Albums (which are used for individual track sales and streaming credits).
 # Distrokid identifies albums by ISRC.
 # Bandcamp has IDs for tracks, but they aren't included in reports.
 # Rather than matching on names, we use the Bandcamp URL as the unique identifier
@@ -52,6 +52,9 @@ class Track < ApplicationRecord
   scope :in_album_order, -> { order(Arel.sql('track_number ASC NULLS LAST')) }
 
   scope :order_by_release_date_desc, -> { joins(:album).order(Arel.sql('albums.release_date desc')).in_album_order }
+
+  # We don't need splits on tracks that don't have an ISRC since we won't get any streaming revenue
+  scope :without_splits, -> { where.missing(:splits).where.not(isrc: nil) }
 
   def total_streams(from: Time.zone.at(0), to: Time.zone.now)
     distrokid_sales.streaming.where(reported_at: from..).where(reported_at: ...to).sum(:quantity)
