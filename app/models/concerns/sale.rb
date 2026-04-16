@@ -8,7 +8,7 @@ module Sale
     base.include MonetizedSum
 
     base.belongs_to :product, polymorphic: true
-    base.has_many :splits,
+    base.has_many :splits, # rubocop:disable Rails/InverseOf
                   primary_key: [:product_type, :product_id],
                   foreign_key: [:product_type, :product_id],
                   dependent: nil

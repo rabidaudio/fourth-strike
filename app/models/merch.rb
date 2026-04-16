@@ -25,7 +25,7 @@
 
 # A merch item is a physical product such as a t-shit or cassette
 # which is sold via Bandcamp. Unlike digital sales, merch sales
-# have to be fullfilled by indicating the cost of the product
+# have to be fulfilled by indicating the cost of the product
 # and shipping.
 #
 # Merch can optionally be associated with an album. This is for tracking purposes only;
@@ -50,7 +50,7 @@
 # List price is the price on bandcamp, which is not necessarily what the user paid
 # due to discounts, the patreon, additional contributions, etc.
 # Variants is a JSON array of information about the variants available (e.g. size, color, etc).
-# NOTE: for physical versions of albums on Bancamp, such as cassettes, the url for the merch is the
+# NOTE: for physical versions of albums on Bandcamp, such as cassettes, the url for the merch is the
 # album itself.
 class Merch < ApplicationRecord
   include Product

@@ -22,7 +22,7 @@
 #  payee_id  (payee_id => payees.id)
 #
 
-# A Split is a proportional distribution of royalties for a splittable
+# A Split is a proportional distribution of royalties for a split-able
 # product (Album, Track, or Merch). Typically splits are allocated only
 # to major writing credits, not to additional credits such as extra
 # performers. Album splits are generally evenly divided across any

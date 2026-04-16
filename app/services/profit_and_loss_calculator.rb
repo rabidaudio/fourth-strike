@@ -3,16 +3,16 @@
 # Compute the total income and debts for the org for a given time period.
 # Works without all splits being calculated (although will over-estimate
 # artist dues if some artists have donated their royalties), but cannot
-# function without all merch fulfilments being tracked.
+# function without all merch fulfillments being tracked.
 class ProfitAndLossCalculator
   attr_accessor :time_range
 
   def initialize(time_range = 1.year.ago...Time.zone.now)
     @time_range = time_range
 
-    # if BandcampSale.where(purchased_at: time_range).unfulfilled_merch.present?
-    #   raise StandardError, 'Unable to compute profit and loss as merch shipments for this period have not been input'
-    # end
+    if BandcampSale.where(purchased_at: time_range).unfulfilled_merch.present?
+      raise StandardError, 'Unable to compute profit and loss as merch shipments for this period have not been input'
+    end
   end
 
   def digital_gross_revenue

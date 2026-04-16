@@ -102,9 +102,7 @@ module CalculatorCache
         when Track then recompute_project!(product.album)
         when Merch then product.albums.each { |a| recompute_project!(a) }
         end
-        product.payees.find_each do |payee|
-          recompute_payouts!(payee)
-        end
+        product.payees.find_each { |payee| recompute_payouts!(payee) }
       end
     end
 

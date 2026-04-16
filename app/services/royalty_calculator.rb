@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 # This class computes the amount owed to contributors for a single product (optionally over a time period).
-# All methods return Money inless otherwise indicated.
+# All methods return Money unless otherwise indicated.
 class RoyaltyCalculator
   prepend CalculatorCache
 
   # An extension of a money class that has splits associated
-  # with it. Able to calculate royalty disribution of an
+  # with it. Able to calculate royalty distribution of an
   # arbitrary amount
   class RoyaltyMoney < Money
     attr_accessor :product

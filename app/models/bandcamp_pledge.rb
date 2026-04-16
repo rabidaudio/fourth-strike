@@ -23,7 +23,7 @@
 #  index_bandcamp_pledges_on_product             (product_type,product_id)
 #
 
-# Bandcamp has a "Campaign" feature which is essentially like a Kickstarter.
+# Bandcamp has a "Campaign" feature which is essentially like a Kickstarter campaign.
 # Unfortunately they don't track them like sales; they come in a separate report.
 class BandcampPledge < ApplicationRecord
   include Sale

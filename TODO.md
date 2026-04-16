@@ -33,7 +33,13 @@ TODO:
 - Make separate hosting account
 - Migrate app and domain to GCP
 - rails 8
-
+- Re-think donations
+  - how do charities work?
+  - how does donating your royalties work if you've already been paid?
+  - you should still be able to see your earnings even if donating
+  - forwarding to another payee? jen/rolo?
+  - Lamb/L@L/SigFigs?
+- Separate credits table (copy from splits)
 
 
 - CIC can't just give debts and money over to LLC due to asset lock. Only another UK CIC/charity could do that
