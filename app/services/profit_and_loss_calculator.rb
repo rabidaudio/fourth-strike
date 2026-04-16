@@ -49,7 +49,7 @@ class ProfitAndLossCalculator
 
   def charity_outstanding
     # charity_dues - charities_paid # $301
-    charity_calculators.map(&:total_owed).select(&:positive?).sum # $301
+    charity_calculators.map(&:outstanding).select(&:positive?).sum # $301
   end
 
   def services_rendered_owed
@@ -70,7 +70,7 @@ class ProfitAndLossCalculator
 
   def artist_outstanding
     # artist_royalties_earned + services_rendered_owed - artist_royalties_and_services_paid # $2,745
-    artist_calculators.map(&:total_owed).select(&:positive?).sum # $3,506
+    artist_calculators.map(&:outstanding).select(&:positive?).sum # $3,506
   end
 
   def organization_profit

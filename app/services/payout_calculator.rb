@@ -58,6 +58,10 @@ class PayoutCalculator
     @payee.payouts.where(paid_at: @start_at...@end_at).sum_monetized(:amount)
   end
 
+  def outstanding
+    total_owed - total_paid
+  end
+
   private
 
   def royalties_for(product)
