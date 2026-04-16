@@ -37,7 +37,8 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  config.active_record.sqlite3_production_warning = false
+  # In Rails 8 they decided using sqlite in production was fine actually
+  # config.active_record.sqlite3_production_warning = false
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   config.assume_ssl = true
