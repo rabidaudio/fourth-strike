@@ -1,19 +1,22 @@
 # NOTES
 
-
 TODO:
+May
+- Reach out to Bertie about contract
+- switch over emails
+April
 - *get numbers for 24 and 25 (due to discrepancy)
 - save $$ on emails
   - backup everything
     - *info
-    - projects
+    - *projects
       - *email,etc
-      - drive: 300GB, need somewhere to put it
-    - thegarages
-      - 
+      - *drive: 300GB, need somewhere to put it
+    - *thegarages 
   - cancel squarespace, converts to google
   - remove thegarages email (make an alias for projects?)
 - Shutdown heroku $7/mo
+  - need access....
 - *Add payout for Rain
   - for adobe (658.76) less phone (275.10) GBP
   - oct 23 on
@@ -32,7 +35,7 @@ TODO:
   - explainer
 - Make separate hosting account
 - Migrate app and domain to GCP
-- rails 8
+- *rails 8
 - Re-think donations
   - how do charities work?
   - how does donating your royalties work if you've already been paid?
