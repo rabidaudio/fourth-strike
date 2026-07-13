@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_06_012506) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_13_185557) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -104,6 +104,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_06_012506) do
     t.index ["paypal_transaction_id"], name: "index_bandcamp_sales_on_paypal_transaction_id"
     t.index ["product_type", "product_id"], name: "index_bandcamp_sales_on_product"
     t.index ["upc"], name: "index_bandcamp_sales_on_upc"
+  end
+
+  create_table "contributions", force: :cascade do |t|
+    t.integer "track_id", null: false
+    t.integer "artist_id", null: false
+    t.boolean "is_songwriter", default: false, null: false
+    t.text "details"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["artist_id"], name: "index_contributions_on_artist_id"
+    t.index ["track_id"], name: "index_contributions_on_track_id"
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
@@ -301,6 +312,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_06_012506) do
   add_foreign_key "albums_merch_items", "merch_items"
   add_foreign_key "artists", "payees"
   add_foreign_key "bandcamp_sales", "merch_fulfillments"
+  add_foreign_key "contributions", "artists"
+  add_foreign_key "contributions", "tracks"
   add_foreign_key "internal_merch_orders", "merch_fulfillments"
   add_foreign_key "internal_merch_orders", "merch_items"
   add_foreign_key "internal_merch_orders", "payouts"

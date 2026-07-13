@@ -38,7 +38,7 @@ FactoryBot.define do
         Faker::Internet.username
       ].sample
     end
-    credit { "#{Faker::Music.band} ( #{Faker::Internet.username}.bandcamp.com )" }
+    credit { "#{Faker::Music.band} ( #{Faker::Internet.username(separators: ['_', '-'])}.bandcamp.com )" }
     aliases do
       (0..2).to_a.sample.times.map { Faker::Name.first_name }
     end

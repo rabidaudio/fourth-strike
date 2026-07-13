@@ -44,6 +44,10 @@ class Track < ApplicationRecord
   strip_attributes
 
   belongs_to :album
+  has_many :contributions, dependent: :restrict_with_exception
+  has_many :contributors, -> { distinct },
+           through: :contributions,
+           source: :artist
 
   validates :track_number, numericality: { greater_than_or_equal_to: 1, allow_nil: true }
 

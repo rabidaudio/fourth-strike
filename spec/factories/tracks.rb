@@ -44,10 +44,29 @@ FactoryBot.define do
       ].join('/')
     end
 
+    trait :with_contributions do
+      transient do
+        songwriter_count { Faker::Number.between(from: 1, to: 3) }
+        additional_count { Faker::Number.between(from: 0, to: 5) }
+      end
+
+      contributions do
+        songwriter_count.times.map do
+          association(:contribution, is_songwriter: true, track: instance)
+        end + additional_count.times.map do
+          association(:contribution, is_songwriter: false, track: instance)
+        end
+      end
+    end
+
     trait :with_splits do
+      with_contributions
+
       transient do
         distribution do
-          { association(:payee) => 1, association(:payee) => 1 }
+          contributions.songwriters.map do |contribution|
+            { contribution.payee => 1 }
+          end
         end
       end
 

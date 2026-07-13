@@ -24,6 +24,9 @@ TODO:
 - Contributions
   - Create contributions model
   - Create form to add contributions
+  - remove discord requirement from artist
+  - generate artist for every payee
+    - 11 artist profiles. wipe and recreate?
   - Setup permissions to allow artists to see their contributions but hide accounting
   - ensure artists can edit their own profiles and paypal info
   - audit non-admin access to data

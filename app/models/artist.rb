@@ -46,6 +46,7 @@ class Artist < ApplicationRecord
   include JsonStringColumn
 
   belongs_to :payee
+  has_many :contributions, dependent: :restrict_with_exception
 
   strip_attributes except: [:aliases]
   json_string_attributes :aliases

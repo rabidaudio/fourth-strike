@@ -45,7 +45,21 @@ FactoryBot.define do
     release_date { Faker::Date.backward(days: 365) }
     upcs { [Faker::Number.number(digits: 12).to_s] }
 
+    trait :with_tracks do
+      transient do
+        track_count { 10 }
+      end
+
+      tracks do
+        track_count.times.map do |i|
+          association(:track, :with_contributions, album: instance, track_number: i + 1)
+        end
+      end
+    end
+
     trait :with_splits do
+      with_tracks
+
       transient do
         distribution do
           { association(:payee) => 1, association(:payee) => 1 }

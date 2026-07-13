@@ -53,6 +53,8 @@ class Album < ApplicationRecord
   has_many :merch_items, class_name: 'Merch', through: :album_merch_items
   has_many :rendered_services, dependent: :restrict_with_exception
 
+  has_many :contributors, -> { distinct }, through: :tracks
+
   validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/, allow_nil: true }
 
   accepts_nested_attributes_for :tracks
