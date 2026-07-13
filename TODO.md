@@ -1,37 +1,36 @@
 # NOTES
 
+- Finalize contract
+  - reach out to Bertie
+- Blast out
+  - write up
+  - discord, email
+- Confirm info
+  - need discord access?
+  - show just the list
+    - songwriter
+    - album contributions
+      - which songs?
+    - no money
+    - historical and current:
+      - paypal
+      - name/credits
+      - discord handles
+- Fundraiser
+  - talk to the community
+    - album, live show, merch, gofundme
 
 TODO:
-- *get numbers for 24 and 25 (due to discrepancy)
-- save $$ on emails
-  - backup everything
-    - *info
-    - projects
-      - *email,etc
-      - drive: 300GB, need somewhere to put it
-    - thegarages
-      - 
-  - cancel squarespace, converts to google
-  - remove thegarages email (make an alias for projects?)
-- Shutdown heroku $7/mo
-- *Add payout for Rain
-  - for adobe (658.76) less phone (275.10) GBP
-  - oct 23 on
-- *Contract
-  - make sure transaction fees etc are before calculation
-  - Include some privacy policy / GDPR stuff
-  - If costs are more than 15%, org will eat costs
-  - If costs are less than 15%, remainder will be donated to charity
-- Form
-  - discord
-  - contact email
-  - paypal info
-  - contract - "legacy music" or default contract
-  - survey - what should happen to music
-    - llc shutdown
-  - explainer
-- Make separate hosting account
-- Migrate app and domain to GCP
+- Contributions
+  - Create contributions model
+  - Create form to add contributions
+  - Setup permissions to allow artists to see their contributions but hide accounting
+  - ensure artists can edit their own profiles and paypal info
+  - audit non-admin access to data
+
+- revisit `redo-payouts` and `rework-donations` branches, is it worth merging
+- revisit Patreon. Might be best to drop completely and say patreon is all 
+- Migrate to heroku - (requires postgres)
 - rails 8
 - Re-think donations
   - how do charities work?
