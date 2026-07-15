@@ -33,7 +33,7 @@ class ContributionsController < ApplicationController
     flash[:success] = 'Contributions updated'
     case @product
     when Album then redirect_to album_path(@product)
-    when Track then redirect_to album_path(@product.album)
+    when Track then redirect_to track_path(@product)
     when Merch then redirect_to merch_path(@product)
     end
   rescue StandardError => e

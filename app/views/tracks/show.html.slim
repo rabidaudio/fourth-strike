@@ -19,9 +19,13 @@ p
     = image_tag("bandcamp-button-square-green/bandcamp-button-square-green-64.png")
 
 - if @track.credits
-  == render_markdown @track.credits
+  p = @track.credits
 
-= render 'splits/splits_for_product', product: @track
+h2.is-size-2 Contributors
+
+= render 'contributions/for_track', track: @track
+
+= render 'contributions/splits_for_product', product: @track
 
 - if @track.lyrics
   pre.lyrics = @track.lyrics
