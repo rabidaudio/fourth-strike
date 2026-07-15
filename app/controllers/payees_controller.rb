@@ -6,6 +6,7 @@ class PayeesController < ApplicationController
   def index
     @payees = Payee.where.not(id: Payee.org).order(fsn: :desc)
     @payees = @payees.search(params[:search]) if params[:search].present?
+    @payees = @payees.artist if params[:artist_only].to_b
     @payees = @payees.paginate(page: params[:page] || 1, per_page: per_page)
 
     @due_to_charities = Payee.charity.total_owed
@@ -13,7 +14,7 @@ class PayeesController < ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: @payees.includes(:artists).map { |p| p.slice(:name, :fsn).merge(aliases: p.artist&.aliases) }
+        render json: @payees.includes(:artist).map { |p| p.slice(:name, :fsn).merge(aliases: p.artist&.aliases) }
       end
       format.html do
         render :index

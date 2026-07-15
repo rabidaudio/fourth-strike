@@ -32,8 +32,11 @@ Rails.application.routes.draw do
   scope path: '/products/:product_type/:product_id/splits' do
     get '/edit', to: 'splits#edit', as: 'edit_splits'
     post '/', to: 'splits#update', as: 'splits'
+  end
 
-    post '/append', to: 'splits#append', as: 'append_split'
+  scope path: '/products/:product_type/:product_id/contributions' do
+    get '/edit', to: 'contributions#edit', as: 'edit_contributions'
+    post '/', to: 'contributions#update', as: 'contributions'
   end
 
   get '/imports', to: 'imports#index', as: 'imports'

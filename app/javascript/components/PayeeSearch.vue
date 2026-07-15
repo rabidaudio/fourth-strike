@@ -7,6 +7,7 @@
     fieldName: String,
     name: String,
     fsn: String,
+    artistOnly: Boolean,
   })
 
   const payee = defineModel({ default: { name: '', fsn: '' } })
@@ -33,7 +34,7 @@
 
   async function loadResults(search) {
     // TODO: debounce? queue?
-    const res = await fetch(payees_path({ search, limit: 10, format: 'json' }))
+    const res = await fetch(payees_path({ search, artist_only: props.artistOnly, limit: 10, format: 'json' }))
     const data = await res.json()
     searchResults.value = data
   }

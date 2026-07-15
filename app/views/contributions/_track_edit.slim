@@ -1,0 +1,30 @@
+h2.is-size-3 = track.name
+
+section.section
+  .columns
+    .column
+      h4.is-size-5 Contributors
+      div vue-component="TrackContributors" props=track_contributors_props(track)
+
+      hr
+
+      h4.is-size-5 Distribution Splits
+      p.is-italic
+        | Typically, track splits go to the songwriter only. For covers, this means the original songwriter. 
+        | For albums, all contributors (songwriters and non-songwriters alike) receive an even split, regardless 
+        | of the magnitude or number of contributions. Merch items associated with a particular album use the same 
+        | splits as the album. 
+        | None of these rules apply if the product is for charity, in which case the splits go entirely to 
+        | the charity.
+
+      div vue-component="EditSplits" props=edit_splits_props(@splits)
+
+    .column
+      h1.is-size-2 = "Credits"
+      h4.is-size-5
+        = track.name
+        br
+        span.is-size-6 = "from #{track.album.name} by #{track.album.artist_name}"
+
+      pre style="white-space: pre-wrap;" = track.credits
+

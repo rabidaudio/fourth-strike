@@ -1,0 +1,10 @@
+= form_for(@product, url: contributions_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post) do |f|
+  
+  - if @product.is_a?(Track)
+    = render 'track_edit', track: @product
+
+  / TODO: album, merch
+
+  .field
+    .control
+      = f.submit "Save", class: "button is-link"

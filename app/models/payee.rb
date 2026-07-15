@@ -53,7 +53,7 @@ class Payee < ApplicationRecord
 
   scope :search, lambda { |keyword|
     search_value = "%#{keyword.strip.downcase}%"
-    left_outer_joins(:artists).where(
+    left_outer_joins(:artist).where(
       # TODO: lazy json searching, treating as string
       'lower(payees.fsn) like ? OR ' \
       'lower(payees.name) like ? OR lower(payees.paypal_account) like ? ' \

@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 
 import PayeeSearch from './PayeeSearch.vue'
 import EditSplits from './EditSplits.vue'
+import TrackContributors from './TrackContributors.vue'
 import RenderedServiceForm from './RenderedServiceForm.vue'
 import MoneyField from './MoneyField.vue'
 import StreamingChart from './StreamingChart.vue'
@@ -12,6 +13,7 @@ import AlbumForm from './AlbumForm.vue'
 const Components = {
   PayeeSearch,
   EditSplits,
+  TrackContributors,
   RenderedServiceForm,
   MoneyField,
   StreamingChart,
