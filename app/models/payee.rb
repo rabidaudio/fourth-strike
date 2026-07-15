@@ -27,7 +27,7 @@
 # All payees are given an fsn (a unique Fourth Strike ID), like FS-001.
 # FS-000 is reserved for the organization.
 class Payee < ApplicationRecord
-  has_many :artists, dependent: :restrict_with_exception
+  has_one :artist, dependent: :restrict_with_exception
   has_many :payouts, dependent: :restrict_with_exception
 
   has_many :splits, dependent: :destroy
@@ -95,10 +95,6 @@ class Payee < ApplicationRecord
 
   def self.build_fsn(number)
     "FS-#{number.to_s.rjust(3, '0')}"
-  end
-
-  def artist
-    artists.first if artists.count == 1
   end
 
   def charity?

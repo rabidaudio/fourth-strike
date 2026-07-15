@@ -9,7 +9,7 @@
 #  bio            :text
 #  contact_info   :string
 #  credit         :string
-#  discord_handle :string           not null
+#  discord_handle :string
 #  name           :string           not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null

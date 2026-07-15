@@ -1,5 +1,15 @@
 # NOTES
 
+Deadline, Timeline
+
+
+Contract: if we don't make at least X in a year, we won't do payouts < $10
+Payments less transaction fees
+
+Spreadsheet for tracking reach-outs
+
+
+
 - Finalize contract
   - reach out to Bertie
 - Blast out
@@ -30,7 +40,7 @@ TODO:
   - Setup permissions to allow artists to see their contributions but hide accounting
   - ensure artists can edit their own profiles and paypal info
   - audit non-admin access to data
-
+- remove Patreon except "signed artists"
 - revisit `redo-payouts` and `rework-donations` branches, is it worth merging
 - revisit Patreon. Might be best to drop completely and say patreon is all 
 - Migrate to heroku - (requires postgres)
