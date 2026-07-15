@@ -4,6 +4,7 @@ const vuePlugin = require('esbuild-plugin-vue3')
 const aliasPlugin = require('esbuild-plugin-alias')
 
 // "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
+// esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets
 
 const CONFIG = {
   entryPoints: ['app/javascript/*.js'],
