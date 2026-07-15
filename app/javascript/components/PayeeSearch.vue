@@ -7,7 +7,10 @@
     fieldName: String,
     name: String,
     fsn: String,
-    artistOnly: Boolean,
+    artistOnly: {
+      type: Boolean,
+      default: false,
+    },
   })
 
   const payee = defineModel({ default: { name: '', fsn: '' } })
@@ -79,7 +82,7 @@
 <template>
   <nav class="panel payee-search">
     <div>
-      <p class="control" :class="{'has-icons-left': !isFilled, 'has-icons-right': isFilled}">
+      <p class="control" style="margin-bottom: 0" :class="{'has-icons-left': !isFilled, 'has-icons-right': isFilled}">
         <input type="text" class="input" placeholder="Search" autocomplete="off"
           @input="search"
           @focus="resume"

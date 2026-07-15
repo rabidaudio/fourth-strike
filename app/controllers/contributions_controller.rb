@@ -65,8 +65,8 @@ class ContributionsController < ApplicationController
       Contribution.create!(
         track: @product,
         artist: artist,
-        is_songwriter: params[:is_songwriter].to_b,
-        details: params[:details]
+        is_songwriter: contribution_params[:is_songwriter].to_b,
+        details: contribution_params[:details]
       )
     end
   end

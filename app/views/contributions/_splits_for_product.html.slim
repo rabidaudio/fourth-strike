@@ -3,13 +3,10 @@
     div.notification.is-warning
       p No splits defined!
   
-      a.button href=edit_splits_path(product_type: product.class.name.downcase, product_id: product.id) Add Splits
+      a.button href=edit_contributions_path(product_type: product.class.name.downcase, product_id: product.id) Add Contributions
 
   - else
     h3.is-size-3 Splits
-    
-    .block
-      a.button href=edit_splits_path(product_type: product.class.name.downcase, product_id: product.id) Edit Splits
 
     table.table
       tbody
@@ -21,3 +18,6 @@
               a href=payee_path(split.payee) = split.payee.fsn
             td = "#{split.value}"
             td = "(#{split.to_percentage_string})"
+    
+    .block
+      a.button href=edit_contributions_path(product_type: product.class.name.downcase, product_id: product.id) Edit Contributions

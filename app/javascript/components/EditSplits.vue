@@ -72,7 +72,7 @@
     <tfoot>
       <tr>
         <th colspan="4">
-          <button class="button" @click.prevent="addContributor">Add Contributor</button>
+          <button class="button" @click.prevent="addContributor">Add Split</button>
         </th>
       </tr>
     </tfoot>

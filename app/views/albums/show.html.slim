@@ -57,6 +57,8 @@ p
                   span = "#{track.track_number}."
               td
                 a href=track_path(track.id) = track.name
+              td
+                = render 'contributions/for_track', track: track
   
   - if admin? && @album.merch_items.present?
     .column
@@ -69,7 +71,7 @@ p
               td
                 a href=merch_path(merch) = merch.name
 
-= render 'splits/splits_for_product', product: @album
+= render 'contributions/splits_for_product', product: @album
 
 - if admin?
 

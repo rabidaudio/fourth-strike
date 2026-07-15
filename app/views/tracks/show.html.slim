@@ -21,11 +21,13 @@ p
 - if @track.credits
   p = @track.credits
 
-h2.is-size-2 Contributors
+.columns
+  .column
+    h2.is-size-2 Contributors
+    = render 'contributions/for_track', track: @track
 
-= render 'contributions/for_track', track: @track
-
-= render 'contributions/splits_for_product', product: @track
+  .column
+    = render 'contributions/splits_for_product', product: @track
 
 - if @track.lyrics
   pre.lyrics = @track.lyrics

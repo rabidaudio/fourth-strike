@@ -6,9 +6,9 @@ module PropsHelper
   def track_contributors_props(track)
     props = { track_id: track.id }
     props[:contributions] = track.contributions.map do |contribution|
-      contribution.slice(:details, :is_songwriter).merge(artist: {
-                                                           name: contribution.artist.name,
-                                                           id: contribution.artist.id
+      contribution.slice(:details, :is_songwriter).merge(payee: {
+                                                           fsn: contribution.artist&.payee&.fsn,
+                                                           name: contribution.artist&.payee&.name
                                                          })
     end
     props.to_json

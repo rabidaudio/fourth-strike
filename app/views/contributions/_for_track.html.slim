@@ -1,5 +1,6 @@
 ul
-  - track.contributions.order(:is_songwriter).each do |contribution|
+  - track.contributions.order(is_songwriter: :desc).each do |contribution|
     li
       a href=artist_path(contribution.artist_id) = contribution.artist.name
-      span = contribution.details
+      - if contribution.details.present?
+        span = " (#{contribution.details})"
