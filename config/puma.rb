@@ -59,11 +59,3 @@ worker_timeout 3600 if ENV.fetch('RAILS_ENV', 'development') == 'development'
 
 # Specifies the `environment` that Puma will run in.
 environment ENV.fetch('RAILS_ENV', 'development')
-
-after_booted do
-  if Rails.env.production?
-    Rails.logger.info('Recomputing...')
-    CalculatorCache::Manager.recompute_all!
-    Rails.logger.info('Compute cache loaded')
-  end
-end

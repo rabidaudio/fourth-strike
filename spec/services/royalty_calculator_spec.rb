@@ -221,7 +221,6 @@ RSpec.describe 'Payout calculations' do
       before do
         create(:rendered_service, :fixed, compensation: 50.to_money, album: the_fame, description: 'Artwork')
         create(:rendered_service, :hourly, hours: 2, album: the_fame, description: 'Mastering', payee: producer)
-        CalculatorCache::Manager.recompute_all!
       end
 
       it 'should compute the amount owed' do

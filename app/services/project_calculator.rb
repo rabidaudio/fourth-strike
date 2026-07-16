@@ -5,16 +5,6 @@
 # It compares album expenses to the organization profit to determine project
 # gain/loss.
 class ProjectCalculator
-  prepend CalculatorCache
-
-  cache_calculations :bandcamp_downloads, :total_streams, :physical_products_sold,
-                     :digital_sale_gross_revenue, :digital_sale_net_revenue,
-                     :streaming_revenue,
-                     :merch_gross_revenue, :merch_cost_of_goods, :merch_net_revenue,
-                     :merch_net_revenue_payable, :merch_net_revenue_less_costs,
-                     :distributable_income, :artist_royalties, :charity_royalties,
-                     :organization_royalties, :production_expenses
-
   attr_accessor :album
 
   delegate :name, to: :@album

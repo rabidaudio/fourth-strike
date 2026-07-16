@@ -4,20 +4,18 @@
 # rubocop:disable Rails/Output
 class DistrokidReport
   def self.upsert_all!(path)
-    CalculatorCache::Manager.defer_recompute do
-      ActiveRecord::Base.transaction do
-        # There isn't a good uniqueness for rows (it would be a combination of several), so instead
-        # we just assume we're loading all data, and wipe and reload the whole table.
-        # TODO: the file is in reverse order, with most recent data first. Ideally we would load data
-        # oldest to newest so that it would be easier to tell if an interruption occurred. However
-        # reversing this file (which is ~50MB) is not trivial.
-        DistrokidSale.delete_all
+    ActiveRecord::Base.transaction do
+      # There isn't a good uniqueness for rows (it would be a combination of several), so instead
+      # we just assume we're loading all data, and wipe and reload the whole table.
+      # TODO: the file is in reverse order, with most recent data first. Ideally we would load data
+      # oldest to newest so that it would be easier to tell if an interruption occurred. However
+      # reversing this file (which is ~50MB) is not trivial.
+      DistrokidSale.delete_all
 
-        CSV.foreach(path, headers: true).each_with_index do |row, index|
-          drr = DistrokidReport::Row.new(row)
-          puts(drr.reported_at) if (index % 5000).zero?
-          drr.record_sale!
-        end
+      CSV.foreach(path, headers: true).each_with_index do |row, index|
+        drr = DistrokidReport::Row.new(row)
+        puts(drr.reported_at) if (index % 5000).zero?
+        drr.record_sale!
       end
     end
   end

@@ -13,17 +13,15 @@ class ReplaceSigfigsWithTrueSplits < ActiveRecord::Migration[7.2]
 
     products = sig_figs.splits.map(&:product).uniq
 
-    CalculatorCache::Manager.defer_recompute do
-      products.each do |product|
-        unless product.splits.where.not(payee: sig_figs).empty?
-          raise StandardError, 'SigFig splits are shared with other payees'
-        end
+    products.each do |product|
+      unless product.splits.where.not(payee: sig_figs).empty?
+        raise StandardError, 'SigFig splits are shared with other payees'
+      end
 
-        product.splits.delete_all
+      product.splits.delete_all
 
-        splits.each do |payee, integer_split|
-          Split.create!(product: product, payee: payee, value: integer_split)
-        end
+      splits.each do |payee, integer_split|
+        Split.create!(product: product, payee: payee, value: integer_split)
       end
     end
   end

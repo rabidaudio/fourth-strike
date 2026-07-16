@@ -3,8 +3,6 @@
 # This class computes the amount owed to contributors for a single product (optionally over a time period).
 # All methods return Money unless otherwise indicated.
 class RoyaltyCalculator
-  prepend CalculatorCache
-
   # An extension of a money class that has splits associated
   # with it. Able to calculate royalty distribution of an
   # arbitrary amount
@@ -135,15 +133,6 @@ class RoyaltyCalculator
       Rails.application.config.app_config[:organization_cut][:merch]
     end
   end
-
-  cache_calculations :production_expenses, :cost_of_goods, :physical_products_sold,
-                     :bandcamp_digital_gross_revenue, :bandcamp_digital_net_revenue,
-                     :bandcamp_physical_gross_revenue, :bandcamp_physical_net_revenue,
-                     :bandcamp_physical_net_revenue_payable,
-                     :distrokid_streaming_revenue,
-                     :patreon_gross_revenue, :patreon_net_revenue,
-                     :iam8bit_gross_revenue, :iam8bit_net_revenue,
-                     :bandcamp_pledge_gross_revenue, :bandcamp_pledge_net_revenue
 
   def initialize(product, from: Time.zone.at(0), to: Time.zone.now)
     @product = product

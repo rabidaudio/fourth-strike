@@ -288,7 +288,6 @@ namespace :bandcamp do
                               }, unique_by: [:bandcamp_pledge_id])
       end
     end
-    CalculatorCache::Manager.recompute_all!
   end
 end
 # rubocop:enable Rails/SkipsModelValidations

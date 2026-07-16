@@ -3,16 +3,6 @@
 # Calculates what a Payee is owed (optionally over a time period). Includes all products and services
 # rendered.
 class PayoutCalculator
-  prepend CalculatorCache
-
-  cache_calculations :for_album_sales,
-                     :for_track_sales,
-                     :for_merch_sales,
-                     :for_royalties,
-                     :for_services_rendered,
-                     :total_owed,
-                     :total_paid
-
   def initialize(payee, from: Time.zone.at(0), to: Time.zone.now)
     @payee = payee
     @start_at = from

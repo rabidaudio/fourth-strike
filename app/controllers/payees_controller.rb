@@ -9,14 +9,15 @@ class PayeesController < ApplicationController
     @payees = @payees.artist if params[:artist_only].to_b
     @payees = @payees.paginate(page: params[:page] || 1, per_page: per_page)
 
-    @due_to_charities = Payee.charity.total_owed
-    @due_to_artists = Payee.artist.total_owed
-
     respond_to do |format|
       format.json do
         render json: @payees.includes(:artist).map { |p| p.slice(:name, :fsn).merge(aliases: p.artist&.aliases) }
       end
       format.html do
+        @due_to_charities = 0.to_money
+        @due_to_artists = 0.to_money
+        # @due_to_charities = Payee.charity.total_owed
+        # @due_to_artists = Payee.artist.total_owed
         render :index
       end
     end
