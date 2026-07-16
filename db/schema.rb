@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_15_155508) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_16_173133) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -114,6 +114,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_15_155508) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["artist_id"], name: "index_contributions_on_artist_id"
+    t.index ["track_id", "artist_id"], name: "index_contributions_on_track_id_and_artist_id", unique: true
     t.index ["track_id"], name: "index_contributions_on_track_id"
   end
 
@@ -287,6 +288,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_15_155508) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["payee_id"], name: "index_splits_on_payee_id"
+    t.index ["product_type", "product_id", "payee_id"], name: "index_splits_on_product_type_and_product_id_and_payee_id", unique: true
     t.index ["product_type", "product_id"], name: "index_splits_on_product"
   end
 

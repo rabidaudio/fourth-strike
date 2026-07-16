@@ -60,6 +60,10 @@ p
               td
                 = render 'contributions/for_track', track: track
 
+      - if admin?
+        .block
+          a.button href=edit_contributions_path(product_type: 'album', product_id: @album.id) Edit Contributions for all tracks
+
   .column
     = render 'contributions/splits_for_product', product: @album
   

@@ -17,7 +17,7 @@ class ContributionsController < ApplicationController
       @product.splits.destroy_all
       create_splits
 
-      if @product.is_a?(Track)
+      if @product.is_a?(Track) || @product.is_a?(Album)
         @product.contributions.destroy_all
         create_contributions
       end

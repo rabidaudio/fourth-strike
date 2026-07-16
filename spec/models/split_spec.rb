@@ -14,8 +14,9 @@
 #
 # Indexes
 #
-#  index_splits_on_payee_id  (payee_id)
-#  index_splits_on_product   (product_type,product_id)
+#  index_splits_on_payee_id                                  (payee_id)
+#  index_splits_on_product                                   (product_type,product_id)
+#  index_splits_on_product_type_and_product_id_and_payee_id  (product_type,product_id,payee_id) UNIQUE
 #
 # Foreign Keys
 #

@@ -14,8 +14,9 @@
 #
 # Indexes
 #
-#  index_contributions_on_artist_id  (artist_id)
-#  index_contributions_on_track_id   (track_id)
+#  index_contributions_on_artist_id               (artist_id)
+#  index_contributions_on_track_id                (track_id)
+#  index_contributions_on_track_id_and_artist_id  (track_id,artist_id) UNIQUE
 #
 # Foreign Keys
 #
