@@ -54,6 +54,7 @@
 </style>
 
 <template>
+  <input type="hidden" name="contributions[][track_id]" :value="track_id">
   <div class="edit-contributions">
       <div class="contribution card" v-for="(contribution, index) in contributions" v-bind:key="contribution.artist_id">
         <div class="field is-grouped is-grouped-multiline">

@@ -3,7 +3,7 @@
 
   import PayeeSearch from './PayeeSearch.vue'
 
-  const props = defineProps(['splits'])
+  const props = defineProps(['splits', 'track_id'])
 
   const splits = ref(props.splits || [])
 
@@ -79,6 +79,7 @@
     <tbody v-for="(split, index) in splits" v-bind:key="split.payee.fsn">
       <tr>
         <td>
+          <input type="hidden" name="splits[][track_id]" :value="props.track_id">
           <PayeeSearch v-model="split.payee" fieldName="splits[][fsn]"/>
         </td>
         <td>

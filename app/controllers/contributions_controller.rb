@@ -34,7 +34,7 @@ class ContributionsController < ApplicationController
     case @product
     when Album then redirect_to album_path(@product)
     when Track then redirect_to track_path(@product)
-    when Merch then redirect_to merch_path(@product)
+      # when Merch then redirect_to merch_path(@product)
     end
   rescue StandardError => e
     flash[:danger] = e.message
@@ -50,20 +50,21 @@ class ContributionsController < ApplicationController
   def product_type
     {
       'album' => Album,
-      'track' => Track,
-      'merch' => Merch
+      'track' => Track
+      # 'merch' => Merch
     }[params[:product_type]]
   end
 
   def create_contributions
-    params.permit(contributions: [:fsn, :is_songwriter, :details])[:contributions].each do |contribution_params|
+    params.permit(contributions: [:fsn, :is_songwriter, :details,
+                                  :track_id])[:contributions].each do |contribution_params|
       next if contribution_params[:fsn].blank?
 
       artist = Payee.find_by!(fsn: contribution_params[:fsn]).artist
       next unless artist
 
       Contribution.create!(
-        track: @product,
+        track_id: contribution_params[:track_id],
         artist: artist,
         is_songwriter: contribution_params[:is_songwriter].to_b,
         details: contribution_params[:details]
@@ -72,12 +73,12 @@ class ContributionsController < ApplicationController
   end
 
   def create_splits
-    params.permit(splits: [:fsn, :value])[:splits].each do |split_params|
+    params.permit(splits: [:fsn, :value, :track_id])[:splits].each do |split_params|
       next if split_params[:fsn].blank?
 
       Split.create!(
         payee: Payee.find_by!(fsn: split_params[:fsn]),
-        product: @product,
+        product: Track.find(split_params[:track_id]),
         value: split_params[:value].to_i
       )
     end

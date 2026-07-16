@@ -13,7 +13,10 @@
         - product.splits.each do |split|
           tr
             td
-              span = split.payee.name
+              - if split.payee.artist
+                a href=artist_path(split.payee.artist) = split.payee.artist.name
+              - else
+                span = split.payee.name
               = ' / '
               a href=payee_path(split.payee) = split.payee.fsn
             td = "#{split.value}"

@@ -3,7 +3,9 @@
   - if @product.is_a?(Track)
     = render 'track_edit', track: @product
 
-  / TODO: album, merch
+  - if @product.is_a?(Album)
+    - @product.tracks.each do |track|
+      = render 'track_edit', track: track
 
   .field
     .control

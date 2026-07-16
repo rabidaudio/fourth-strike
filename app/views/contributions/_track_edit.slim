@@ -17,7 +17,7 @@ section.section
         | None of these rules apply if the product is for charity, in which case the splits go entirely to 
         | the charity.
 
-      div vue-component="EditSplits" props=edit_splits_props(@splits)
+      div vue-component="EditSplits" props=edit_splits_props(track.splits, track_id: track.id)
 
     .column
       h1.is-size-2 = "Credits"
