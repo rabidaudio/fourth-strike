@@ -380,13 +380,13 @@ patreon:
     # In addition to demo access, and digital downloads, get sent a new cassette every month!
     'Third Strike! (Cassettes)':
       # 12.5% of proceeds are treated as digital sales and divided amongst albums.
-      # The rest is treated as a casette merch sale
+      # The rest is treated as a cassette merch sale
       digital_distribution: 0.125
       merch: [cassette]
     # Get demos, WIP teases,a shirt AND a cassette sent to you every month.
     'Fourth Strike!':
       # 7.5% of proceeds are treated as digital sales and divided amongst albums.
-      # The rest is treated as a casette merch sale and t-shirt merch sale
+      # The rest is treated as a cassette merch sale and t-shirt merch sale
       digital_distribution: 0.075
       merch: [cassette, t-shirt]
   products:

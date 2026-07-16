@@ -12,7 +12,7 @@ section.section
           span Copy Splits from Album
 
       = form_for(@product, url: splits_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post) do |f|
-        div vue-component="EditSplits" props=@props.to_json
+        div vue-component="EditSplits" props=edit_splits_props(@splits)
 
         .field
           .control

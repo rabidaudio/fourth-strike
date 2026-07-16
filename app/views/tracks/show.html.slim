@@ -26,6 +26,10 @@ p
     h2.is-size-2 Contributors
     = render 'contributions/for_track', track: @track
 
+    - if admin?
+      .block
+        a.button href=edit_contributions_path(product_type: 'track', product_id: @track.id) Edit Contributions
+
   .column
     = render 'contributions/splits_for_product', product: @track
 

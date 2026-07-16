@@ -6,17 +6,9 @@ class ContributionsController < ApplicationController
   before_action :find_product
 
   def edit
-    if @product.is_a?(Merch) && params[:copy_from_album].to_b
-      @splits = @product.albums.map(&:payees).flatten.uniq.map { |p| Split.new(payee: p, product: @product, value: 1) }
-    elsif @product.is_a?(Album)
-      if params[:copy_from_tracks].to_b
-        @splits = @product.tracks.map(&:payees).flatten.uniq.map do |p|
-          Split.new(payee: p, product: @product, value: 1)
-        end
-      end
-    elsif @product.is_a?(Track)
-      @contributions = @product.contributions
-      @splits = @product.splits
+    if @product.is_a?(Merch)
+      redirect_to(edit_splits_path(product_type: @product.class.name.downcase,
+                                   product_id: @product.id))
     end
   end
 

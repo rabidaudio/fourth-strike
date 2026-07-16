@@ -6,16 +6,17 @@ class SplitsController < ApplicationController
   before_action :find_product
 
   def edit
+    if @product.is_a?(Track)
+      return redirect_to(edit_contributions_path(product_type: @product.class.name.downcase,
+                                                 product_id: @product.id))
+    end
+
     @splits = @product.splits
     if @product.is_a?(Merch) && params[:copy_from_album].to_b
       @splits = @product.albums.map(&:payees).flatten.uniq.map { |p| Split.new(payee: p, product: @product, value: 1) }
     elsif @product.is_a?(Album) && params[:copy_from_tracks].to_b
-      @splits = @product.tracks.map(&:payees).flatten.uniq.map { |p| Split.new(payee: p, product: @product, value: 1) }
+      @splits = @product.contributors.map { |a| Split.new(payee_id: a.payee_id, product: @product, value: 1) }
     end
-
-    @props = {
-      splits: @splits.map { |s| { payee: { name: s.payee.name, fsn: s.payee.fsn }, value: s.value } }
-    }
   end
 
   def update
@@ -35,7 +36,6 @@ class SplitsController < ApplicationController
     flash[:success] = 'Splits updated'
     case @product
     when Album then redirect_to album_path(@product)
-    when Track then redirect_to album_path(@product.album)
     when Merch then redirect_to merch_path(@product)
     end
   rescue StandardError => e
