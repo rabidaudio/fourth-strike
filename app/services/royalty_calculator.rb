@@ -111,6 +111,10 @@ class RoyaltyCalculator
       RoyaltyMoney.new(Money.new(cents, currency, options), product)
     end
 
+    def round
+      RoyaltyMoney.new(Money.new(cents.round, currency), product)
+    end
+
     def +(other)
       other_value = other
       other_value = other.to_money if other.is_a?(RoyaltyMoney)

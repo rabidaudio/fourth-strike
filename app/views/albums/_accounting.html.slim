@@ -3,86 +3,87 @@ section.section
 
   p These are the metrics for the project as a whole, including digital album sales, track streams, and any associated merch sales.
 
-  table.table
-    thead
-      tr
-        - if albums.count > 1
-          th Project
-        th Digital Album Sale Revenue (Gross)
-        th Digital Album Sale Revenue (Net)
-        th Streaming Revenue
-        th Associated Merch Revenue (Gross)
-        th Associated Merch Revenue (Net - Production Costs)
-        th Total Gross Revenue
-        th Distributable Income
-        th Royalties
-        th Organization Income
-        th Production Costs
-        th Organization Profit
-    tbody
-      - if albums.count > 1
-        tr.is-info
-          td.is-italic TOTALS
-          td
-            = albums.map(&:project).sum(&:digital_sale_gross_revenue).round.format
-            br
-            span.is-italic.is-size-7 = "#{number_with_delimiter(albums.map(&:project).sum(&:bandcamp_downloads))} Bandcamp downloads"
-          td = albums.map(&:project).sum(&:digital_sale_net_revenue).round.format
-          td
-            = albums.map(&:project).sum(&:streaming_revenue).round.format
-            br
-            span.is-italic.is-size-7 = "#{number_with_delimiter(albums.map(&:project).sum(&:total_streams))} streams"
-          td
-            = albums.map(&:project).sum(&:merch_gross_revenue).round.format
-            br
-            span.is-italic.is-size-7 = "#{number_with_delimiter(albums.map(&:project).sum(&:physical_products_sold))} products sold"
-          - if BandcampSale.unfulfilled_merch.present?
-            td.is-warning
-          - else
-            td = albums.map(&:project).sum(&:merch_net_revenue_less_costs).round.format
-          td = albums.map(&:project).sum(&:total_gross_revenue).round.format
-          td = albums.map(&:project).sum(&:distributable_income).round.format
-          td class=(albums.where.not(id: Album.joins(:splits)).present? ? 'is-warning': '')
-            = albums.map(&:project).sum(&:payable_royalties).round.format
-          td = albums.map(&:project).sum(&:organization_royalties).round.format
-          td = albums.map(&:project).sum(&:production_expenses).round.format
-          td = albums.map(&:project).sum(&:organization_profit).round.format
-
-      - albums.each do |album|
+  .table-container
+    table.table.is-full-width
+      thead
         tr
           - if albums.count > 1
+            th Project
+          th Digital Album Sale Revenue (Gross)
+          th Digital Album Sale Revenue (Net)
+          th Streaming Revenue
+          th Associated Merch Revenue (Gross)
+          th Associated Merch Revenue (Net - Production Costs)
+          th Total Gross Revenue
+          th Distributable Income
+          th Royalties
+          th Organization Income
+          th Production Costs
+          th Organization Profit
+      tbody
+        - if albums.count > 1
+          tr.is-info
+            td.is-italic TOTALS
             td
-              a href=album_path(album) = album.name
-              - if album.artist_name
-                br
-                span = ' by '
-                a href=merch_index_path(artist: album.artist_name) = album.artist_name
-          td
-            = album.project.digital_sale_gross_revenue.round.format
-            br
-            span.is-italic.is-size-7 = "#{number_with_delimiter(album.project.bandcamp_downloads)} Bandcamp downloads"
-          td
-            = album.project.digital_sale_net_revenue.round.format
-          td
-            = album.project.streaming_revenue.round.format
-            br
-            span.is-italic.is-size-7 = "#{number_with_delimiter(album.project.total_streams)} streams"
-          - has_unfulfilled = album.unfulfilled_merch_items.present?
-          td
-            = album.project.merch_gross_revenue.round.format
-          td class=(has_unfulfilled ? 'is-warning' : '')
-            = album.project.merch_net_revenue_less_costs.round.format
-            - if has_unfulfilled
+              = albums.map(&:project).sum(&:digital_sale_gross_revenue).round.format
               br
-              span.is-italic.is-size-7 = " *Not all merch orders fulfilled: #{album.unfulfilled_merch_items.sum_monetized(:net_revenue_amount).round.format} of unfulfilled orders"
-          td = album.project.total_gross_revenue.round.format
-          td = album.project.distributable_income.round.format
-          - if album.splits.empty?
-            td.is-warning
-              span.is-italic.is-size-7 No splits assigned
-          - else
-            td = album.project.payable_royalties.round.format
-          td = album.project.organization_royalties.round.format
-          td = album.project.production_expenses.round.format
-          td class=(album.splits.present? && album.project.organization_profit.negative? ? 'is-danger' : '')
-            = album.project.organization_profit.round.format
+              span.is-italic.is-size-7 = "#{number_with_delimiter(albums.map(&:project).sum(&:bandcamp_downloads))} Bandcamp downloads"
+            td = albums.map(&:project).sum(&:digital_sale_net_revenue).round.format
+            td
+              = albums.map(&:project).sum(&:streaming_revenue).round.format
+              br
+              span.is-italic.is-size-7 = "#{number_with_delimiter(albums.map(&:project).sum(&:total_streams))} streams"
+            td
+              = albums.map(&:project).sum(&:merch_gross_revenue).round.format
+              br
+              span.is-italic.is-size-7 = "#{number_with_delimiter(albums.map(&:project).sum(&:physical_products_sold))} products sold"
+            - if BandcampSale.unfulfilled_merch.present?
+              td.is-warning
+            - else
+              td = albums.map(&:project).sum(&:merch_net_revenue_less_costs).round.format
+            td = albums.map(&:project).sum(&:total_gross_revenue).round.format
+            td = albums.map(&:project).sum(&:distributable_income).round.format
+            td class=(albums.where.not(id: Album.joins(:splits)).present? ? 'is-warning': '')
+              = albums.map(&:project).sum(&:payable_royalties).round.format
+            td = albums.map(&:project).sum(&:organization_royalties).round.format
+            td = albums.map(&:project).sum(&:production_expenses).round.format
+            td = albums.map(&:project).sum(&:organization_profit).round.format
+
+        - albums.each do |album|
+          tr
+            - if albums.count > 1
+              td
+                a href=album_path(album) = album.name
+                - if album.artist_name
+                  br
+                  span = ' by '
+                  a href=merch_index_path(artist: album.artist_name) = album.artist_name
+            td
+              = album.project.digital_sale_gross_revenue.round.format
+              br
+              span.is-italic.is-size-7 = "#{number_with_delimiter(album.project.bandcamp_downloads)} Bandcamp downloads"
+            td
+              = album.project.digital_sale_net_revenue.round.format
+            td
+              = album.project.streaming_revenue.round.format
+              br
+              span.is-italic.is-size-7 = "#{number_with_delimiter(album.project.total_streams)} streams"
+            - has_unfulfilled = album.unfulfilled_merch_items.present?
+            td
+              = album.project.merch_gross_revenue.round.format
+            td class=(has_unfulfilled ? 'is-warning' : '')
+              = album.project.merch_net_revenue_less_costs.round.format
+              - if has_unfulfilled
+                br
+                span.is-italic.is-size-7 = " *Not all merch orders fulfilled: #{album.unfulfilled_merch_items.sum_monetized(:net_revenue_amount).round.format} of unfulfilled orders"
+            td = album.project.total_gross_revenue.round.format
+            td = album.project.distributable_income.round.format
+            td class=(album.splits.empty? ? 'is-warning' : '')
+              - if album.splits.empty?
+                span.is-italic.is-size-7 No splits assigned
+                br
+              span = album.project.payable_royalties.round.format
+            td = album.project.organization_royalties.round.format
+            td = album.project.production_expenses.round.format
+            td class=(album.splits.present? && album.project.organization_profit.negative? ? 'is-danger' : '')
+              = album.project.organization_profit.round.format
