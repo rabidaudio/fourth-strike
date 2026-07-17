@@ -46,17 +46,17 @@ section.section
         th Balance
     tbody
       tr
-        / td = @payee.royalties_owed.round.format
-        / td = @payee.services_rendered_owed.round.format
-        / td = @payee.paid_out.round.format
+        td = @payee.royalties_owed.round.format
+        td = @payee.services_rendered_owed.round.format
+        td = @payee.paid_out.round.format
         
-        / - balance = @payee.balance
-        / - if balance.negative?
-        /   td.is-danger = balance.round.format
-        / - elsif @payee.due_for_payout?
-        /   td.is-warning = balance.round.format
-        / - else
-        /   td = balance.round.format
+        - balance = @payee.balance
+        - if balance.negative?
+          td.is-danger = balance.round.format
+        - elsif @payee.due_for_payout?
+          td.is-warning = balance.round.format
+        - else
+          td = balance.round.format
 
 section.section id="royalties"
   h2.is-size-3 Royalties
