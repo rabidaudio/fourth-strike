@@ -9,6 +9,10 @@ class RoyaltyCalculator
   class RoyaltyMoney < Money
     attr_accessor :product
 
+    def self.default_infinite_precision # rubocop:disable Naming/PredicateMethod
+      true
+    end
+
     def initialize(money, product)
       super(money.cents, money.currency)
       @product = product
@@ -19,16 +23,36 @@ class RoyaltyCalculator
       organization_distribution_percentage * to_money
     end
 
-    # How much in royalties is owed to each split payee
+    # Royalties divided along the splits
     # Returns Hash[Payee => Money]
-    def royalties
-      @royalties ||= @product.payout_amounts(to_money - organization_distribution)
+    def earned_royalties
+      @earned_royalties ||= @product.payout_amounts(to_money - organization_distribution)
+    end
+
+    # The total amount owed in royalties, even if no splits are defined
+    def total_earned_royalties
+      to_money - organization_distribution
     end
 
     # How much in royalties the payee generated in splits. Includes royalties from
     # payees who have donated theirs to the org
     def royalties_earned_by(payee)
-      royalties[payee] || 0.to_money(currency)
+      earned_royalties[payee] || 0.to_money(currency)
+    end
+
+    # Total amount of royalties to artists who have chosen to donate
+    # their royalties to the org
+    def donated_royalties
+      earned_royalties.sum do |payee, value|
+        payee.opted_out_of_royalties? && !payee.org? ? value : 0.to_money(currency)
+      end || 0.to_money(currency)
+    end
+
+    # Royalties owed to artists and charities after accounting for donations
+    def owed_royalties
+      earned_royalties.reject do |payee, _value|
+        payee.opted_out_of_royalties? || payee.org?
+      end.to_h
     end
 
     # Actual royalties owed
@@ -38,37 +62,27 @@ class RoyaltyCalculator
       royalties_earned_by(payee)
     end
 
-    # Total amount of royalties to artists who have chosen to donate
-    # their royalties to the org
-    def donated_royalties
-      royalties.sum do |payee, value|
-        payee.opted_out_of_royalties? && !payee.org? ? value : 0.to_money(currency)
-      end || 0.to_money(currency)
-    end
-
     # Total value of royalties to charities
     def charity_royalties
-      royalties.sum do |payee, value|
-        payee.charity? && !payee.org? ? value : 0.to_money(currency)
+      owed_royalties.sum do |payee, value|
+        payee.charity? ? value : 0.to_money(currency)
       end || 0.to_money(currency)
     end
 
     # Royalties owed to artists expecting payouts
     # Returns Hash[Payee => Money]
     def artist_royalties
-      royalties.reject do |payee, _value|
-        payee.charity? || payee.opted_out_of_royalties? || payee.org?
+      owed_royalties.reject do |payee, _value|
+        payee.charity?
       end.to_h
     end
 
     # Total value of royalties to be paid to artists
     def total_artist_royalties
-      # if no splits, just assume proper distribution
-      if @product.splits.empty?
-        to_money - organization_distribution
-      else
-        artist_royalties.values.sum || 0.to_money(currency)
-      end
+      # if no splits, just assume all will be paid to artists
+      return total_earned_royalties if @product.splits.empty?
+
+      artist_royalties.values.sum || 0.to_money(currency)
     end
 
     # Value of royalties where the org receives a split

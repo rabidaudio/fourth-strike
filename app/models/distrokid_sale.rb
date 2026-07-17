@@ -65,4 +65,8 @@ class DistrokidSale < ApplicationRecord
 
   validates :product_type,
             inclusion: { in: ['Album', 'Track'], message: '%{value} cannot be sold through Distrokid' }
+
+  def net_revenue_amount
+    earnings_usd.to_money('USD')
+  end
 end

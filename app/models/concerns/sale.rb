@@ -25,8 +25,9 @@ module Sale
   end
 
   def distributable_income
-    income = is_a?(DistrokidSale) ? earnings_usd.to_money('USD') : net_revenue_amount
-
+    income = net_revenue_amount
+    income -= merch_fulfillment.production_cost if respond_to?(:merch_fulfillment) && merch_fulfillment.present?
+    income = 0.to_money if respond_to?(:refunded) && refunded?
     RoyaltyCalculator::RoyaltyMoney.new(income, product)
   end
 

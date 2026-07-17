@@ -7,7 +7,7 @@ class CreateChits < ActiveRecord::Migration[8.0]
       t.references :product, null: true, polymorphic: true
       t.references :rendered_service, null: true
       t.references :payee, null: false
-      t.numeric :earnings_usd, null: false
+      t.float :earnings_usd, null: false
       t.timestamp :earned_at, null: false
       t.timestamps
     end

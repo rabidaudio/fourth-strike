@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_16_182548) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_17_161452) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -112,8 +112,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_16_182548) do
     t.string "product_type"
     t.integer "product_id"
     t.integer "rendered_service_id"
-    t.integer "payee_id", null: false
-    t.decimal "earnings_usd", null: false
+    t.integer "payee_id"
+    t.float "earnings_usd", null: false
     t.datetime "earned_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -1,26 +1,17 @@
 # frozen_string_literal: true
 
-# A chit (aka dues) is a single atomic unit of money due to a payee.
-# This could be their royalty proportion for a Sale, or a service rendered.
-# It has an earnings amount in USD (a numeric, so that fractional cents can be stored),
-# and a date the money was earned.
-# This table is "de-normalized" (meaning it duplicates data from elsewhere
-# in the database) for query performance. Every time a sale or rendered service
-# is created or destroyed, or splits change, the chits MUST be updated.
-# This drastically improves the query performance for pages, quickly calculating
-# in the database how much is owed to a particular person.
 # == Schema Information
 #
 # Table name: chits
 #
 #  id                  :integer          not null, primary key
 #  earned_at           :datetime         not null
-#  earnings_usd        :decimal(, )      not null
+#  earnings_usd        :float            not null
 #  product_type        :string
 #  sale_type           :string
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
-#  payee_id            :integer          not null
+#  payee_id            :integer
 #  product_id          :integer
 #  rendered_service_id :integer
 #  sale_id             :integer
@@ -34,11 +25,23 @@
 #  index_chits_on_rendered_service_id                              (rendered_service_id)
 #  index_chits_on_sale                                             (sale_type,sale_id)
 #
+# A chit (aka dues) is a single atomic unit of money due to a payee.
+# This could be their royalty proportion for a Sale, or a service rendered.
+# It has an earnings amount in USD (a numeric, so that fractional cents can be stored),
+# and a date the money was earned.
+# This table is "de-normalized" (meaning it duplicates data from elsewhere
+# in the database) for query performance. Every time a sale or rendered service
+# is created or destroyed, or splits change, the chits MUST be updated.
+# This drastically improves the query performance for pages, quickly calculating
+# in the database how much is owed to a particular person.
+# If `payee` is nil, that means these are royalties that are owed, but splits haven't
+# yet been defined for the product. This allows us to account for money owed even when
+# splits haven't been assigned yet.
 class Chit < ApplicationRecord
   belongs_to :product, polymorphic: true, optional: true
   belongs_to :sale, polymorphic: true, optional: true
   belongs_to :rendered_service, optional: true
-  belongs_to :payee
+  belongs_to :payee, optional: true
 
   validate :ensure_for_sale_or_service
 

@@ -35,17 +35,27 @@ class ChitComputer
       earned_at: sale.sold_at,
       earnings_usd: income.total_org_income.to_f
     )
-    # for each split
-    income.royalties.each do |payee, money|
-      next if payee.org?
-
+    if sale.product.splits.empty?
       push(
         sale: sale,
         product: sale.product,
-        payee: payee,
+        payee: nil, # indicates unassigned
         earned_at: sale.sold_at,
-        earnings_usd: money.to_f
+        earnings_usd: income.total_earned_royalties.to_f
       )
+    else
+      # for each split
+      income.owed_royalties.each do |payee, money|
+        next if payee.org?
+
+        push(
+          sale: sale,
+          product: sale.product,
+          payee: payee,
+          earned_at: sale.sold_at,
+          earnings_usd: money.to_f
+        )
+      end
     end
     self
   end
@@ -79,7 +89,7 @@ class ChitComputer
 
   def upsert!
     ActiveRecord::Base.transaction do
-      Rails.logger.info("removing #{@removals.count} chits")
+      Rails.logger.info('removing chits')
       @removals.each(&:delete_all)
       Rails.logger.info("upsert-ing #{@chits.count} chits")
       # rubocop:disable Rails/SkipsModelValidations
@@ -104,7 +114,7 @@ class ChitComputer
                   sale_id: params[:sale]&.id,
                   product_type: params[:product]&.class&.name,
                   product_id: params[:product]&.id,
-                  payee_id: params[:payee].id,
+                  payee_id: params[:payee]&.id,
                   rendered_service_id: params[:rendered_service]&.id,
                   earned_at: params[:earned_at],
                   earnings_usd: params[:earnings_usd]
