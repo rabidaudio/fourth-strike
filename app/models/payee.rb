@@ -111,11 +111,11 @@ class Payee < ApplicationRecord
   end
 
   def royalties_owed(**)
-    chit.for_royalties.sum_earnings
+    chits.for_royalties.sum_earnings
   end
 
   def royalties_owed_for(product)
-    chit.where(product: product).sum_earnings
+    chits.where(product: product).sum_earnings
   end
 
   def services_rendered_owed(**)

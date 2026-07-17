@@ -10,7 +10,7 @@ section.section
     a.button.m-3 href=edit_artist_path(@artist)
       span Edit Artist Info
 
-  h2.is-size-3  = "Contributions (#{@artist.payee.tracks.count})"
+  h2.is-size-3  = "Contributions (#{@artist.contributions.count})"
 
   table.table
     thead
@@ -19,7 +19,7 @@ section.section
         th Album
         th Artist
     tbody
-      - @artist.payee.tracks.includes(:album).order_by_release_date_desc.limit(200).each do |track|
+      - Track.includes(:album).joins(:contributions).merge(@artist.contributions).order_by_release_date_desc.each do |track|
         tr
           td
             a href=track_path(track) = track.name

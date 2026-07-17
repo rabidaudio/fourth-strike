@@ -29,6 +29,11 @@ module BandcampScraper
       }
     end
 
+    # Try and get credits from track
+    tracks.each do |track|
+      track[:credits] = extract_credits(track[:bandcamp_url])
+    end
+
     {
       name: name,
       artist_name: artist_name,
@@ -38,5 +43,16 @@ module BandcampScraper
       bandcamp_price: bandcamp_price,
       tracks: tracks
     }
+  end
+
+  def extract_credits(track_url)
+    track_data = HTTP.get(track_url)
+    return if track_data.body.empty?
+
+    track_body = Nokogiri::XML.parse(track_data.body.to_s)
+    json_data = track_body.css('script[type="application/ld+json"]').text
+    return unless json_data
+
+    JSON.parse(json_data)['creditText']
   end
 end

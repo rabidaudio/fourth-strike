@@ -289,5 +289,12 @@ namespace :bandcamp do
       end
     end
   end
+
+  task :load_missing_credits => :environment do
+    Track.where(credits: nil).where.not(bandcamp_url: nil).find_each do |track|
+      puts("loading #{track.bandcamp_url}")
+      track.update!(credits: BandcampScraper.extract_credits(track.bandcamp_url))
+    end
+  end
 end
 # rubocop:enable Rails/SkipsModelValidations

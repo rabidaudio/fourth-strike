@@ -30,6 +30,8 @@
 # only, and album sales go to all contributors to any song on the album.
 # `details` describes the contribution (e.g. "guitar, additional vocals").
 class Contribution < ApplicationRecord
+  strip_attributes only: [:details]
+
   belongs_to :track
   belongs_to :artist
 

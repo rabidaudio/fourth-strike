@@ -14,13 +14,8 @@ class ContributionsController < ApplicationController
 
   def update
     ActiveRecord::Base.transaction do
-      @product.splits.destroy_all
       create_splits
-
-      if @product.is_a?(Track) || @product.is_a?(Album)
-        @product.contributions.destroy_all
-        create_contributions
-      end
+      create_contributions
     end
     flash[:success] = 'Contributions updated'
     case @product
@@ -48,8 +43,13 @@ class ContributionsController < ApplicationController
   end
 
   def create_contributions
-    params.permit(contributions: [:fsn, :is_songwriter, :details,
-                                  :track_id])[:contributions].each do |contribution_params|
+    if @product.is_a?(Track)
+      @product.contributions.destroy_all
+    else
+      @product.tracks.each { |t| t.contributions.destroy_all }
+    end
+    params.expect(contributions: [[:fsn, :is_songwriter, :details,
+                                   :track_id]]).each do |contribution_params|
       next if contribution_params[:fsn].blank?
 
       artist = Payee.find_by!(fsn: contribution_params[:fsn]).artist
@@ -65,7 +65,12 @@ class ContributionsController < ApplicationController
   end
 
   def create_splits
-    params.permit(splits: [:fsn, :value, :track_id])[:splits].each do |split_params|
+    if @product.is_a?(Track)
+      @product.splits.destroy_all
+    else
+      @product.tracks.each { |t| t.splits.destroy_all }
+    end
+    params.expect(splits: [[:fsn, :value, :track_id]]).each do |split_params|
       next if split_params[:fsn].blank?
 
       Split.create!(
