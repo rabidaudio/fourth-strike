@@ -48,8 +48,7 @@ class ProfitAndLossCalculator
   end
 
   def charity_outstanding
-    # charity_dues - charities_paid # $301
-    charity_calculators.map(&:outstanding).select(&:positive?).sum # $301
+    charity_dues - charities_paid # $301
   end
 
   def services_rendered_owed
@@ -69,8 +68,8 @@ class ProfitAndLossCalculator
   end
 
   def artist_outstanding
-    # artist_royalties_earned + services_rendered_owed - artist_royalties_and_services_paid # $2,745
-    artist_calculators.map(&:outstanding).select(&:positive?).sum # $3,506
+    artist_royalties_earned + services_rendered_owed - artist_royalties_and_services_paid # $2,745
+    # artist_calculators.map(&:outstanding).select(&:positive?).sum # $3,506
   end
 
   def organization_profit
@@ -132,13 +131,5 @@ class ProfitAndLossCalculator
 
   def payees
     @payees ||= Payee.distinct.joins(:splits).where(splits: { product: sold_products })
-  end
-
-  def charity_calculators
-    payees.charity.map { |payee| PayoutCalculator.new(payee, from: time_range.begin, to: time_range.end) }
-  end
-
-  def artist_calculators
-    payees.artist.map { |payee| PayoutCalculator.new(payee, from: time_range.begin, to: time_range.end) }
   end
 end

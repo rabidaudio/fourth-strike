@@ -16,8 +16,8 @@ class PayeesController < ApplicationController
       format.html do
         @due_to_charities = 0.to_money
         @due_to_artists = 0.to_money
-        # @due_to_charities = Payee.charity.total_owed
-        # @due_to_artists = Payee.artist.total_owed
+        @due_to_charities = Payee.charity.total_owed
+        @due_to_artists = Payee.artist.total_owed
         render :index
       end
     end

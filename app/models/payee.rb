@@ -32,6 +32,7 @@ class Payee < ApplicationRecord
 
   has_many :splits, dependent: :destroy
   has_many :rendered_services, dependent: :restrict_with_exception
+  has_many :chits, dependent: :restrict_with_exception
 
   strip_attributes
 
@@ -110,23 +111,23 @@ class Payee < ApplicationRecord
   end
 
   def royalties_owed(**)
-    PayoutCalculator.new(self, **).for_royalties
+    chit.for_royalties.sum_earnings
   end
 
   def royalties_owed_for(product)
-    RoyaltyCalculator.new(product).distributable_income.royalties_owed_to(self)
+    chit.where(product: product).sum_earnings
   end
 
   def services_rendered_owed(**)
-    PayoutCalculator.new(self, **).for_services_rendered
+    chits.for_service.sum_earnings
   end
 
   def total_owed(**)
-    PayoutCalculator.new(self, **).total_owed
+    chits.sum_earnings
   end
 
   def paid_out(**)
-    PayoutCalculator.new(self, **).total_paid
+    payouts.sum_monetized(:amount)
   end
 
   def balance(**)

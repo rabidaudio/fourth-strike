@@ -46,6 +46,7 @@ class Chit < ApplicationRecord
   validate :ensure_for_sale_or_service
 
   scope :for_service, -> { where.not(rendered_service: nil) }
+  scope :for_royalties, -> { where(rendered_service: nil) }
   scope :for_track_sales, -> { where(product_type: 'Track') }
   scope :for_album_sales, -> { where(product_type: 'Album') }
   scope :for_merch_sales, -> { where(product_type: 'Merch') }
