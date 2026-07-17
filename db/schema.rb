@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_16_173133) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_16_182548) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -104,6 +104,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_16_173133) do
     t.index ["paypal_transaction_id"], name: "index_bandcamp_sales_on_paypal_transaction_id"
     t.index ["product_type", "product_id"], name: "index_bandcamp_sales_on_product"
     t.index ["upc"], name: "index_bandcamp_sales_on_upc"
+  end
+
+  create_table "chits", force: :cascade do |t|
+    t.string "sale_type"
+    t.integer "sale_id"
+    t.string "product_type"
+    t.integer "product_id"
+    t.integer "rendered_service_id"
+    t.integer "payee_id", null: false
+    t.decimal "earnings_usd", null: false
+    t.datetime "earned_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["earned_at"], name: "index_chits_on_earned_at"
+    t.index ["payee_id"], name: "index_chits_on_payee_id"
+    t.index ["product_type", "product_id"], name: "index_chits_on_product"
+    t.index ["rendered_service_id"], name: "index_chits_on_rendered_service_id"
+    t.index ["sale_type", "sale_id", "rendered_service_id", "payee_id"], name: "idx_on_sale_type_sale_id_rendered_service_id_payee__fd3ebe7ce7", unique: true
+    t.index ["sale_type", "sale_id"], name: "index_chits_on_sale"
   end
 
   create_table "contributions", force: :cascade do |t|

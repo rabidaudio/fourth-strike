@@ -32,6 +32,7 @@ class SplitsController < ApplicationController
           value: split_params[:value].to_i
         )
       end
+      Chit.recompute_for_product_splits!(@product)
     end
     flash[:success] = 'Splits updated'
     case @product

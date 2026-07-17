@@ -42,6 +42,8 @@ class RenderedService < ApplicationRecord
   belongs_to :payee
   belongs_to :album, optional: true
 
+  has_many :chits, dependent: :destroy
+
   monetize :compensation_cents
   strip_attributes only: [:description]
 
@@ -60,6 +62,14 @@ class RenderedService < ApplicationRecord
 
   before_validation do |service|
     service.compensation = service.hours * RenderedService.hourly_rate if service.hourly? && service.compensation.zero?
+  end
+
+  after_create do |service|
+    Chit.recompute_for_service_rendered!(service)
+  end
+
+  after_update do |service|
+    Chit.recompute_for_service_rendered!(service)
   end
 
   def self.hourly_rate

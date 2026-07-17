@@ -15,6 +15,8 @@ module Product
     # Can be increased if needed.
     base.validates :splits, length: { maximum: 50 }
 
+    base.has_many :chits, as: :product, dependent: :destroy
+
     base.has_many :bandcamp_sales, as: :product, dependent: :nullify
     base.has_many :bandcamp_pledges, as: :product, dependent: :nullify
     base.has_many :distrokid_sales, as: :product, dependent: :nullify
@@ -22,6 +24,18 @@ module Product
     base.has_many :patreon_sales, as: :product, dependent: :nullify
 
     base.scope :without_splits, -> { where.missing(:splits) }
+  end
+
+  def self.each_product(&)
+    [Album, Track, Merch].each { |c| c.find_each(&) }
+  end
+
+  def each_sale(&)
+    bandcamp_sales.find_each(&)
+    bandcamp_pledges.find_each(&)
+    distrokid_sales.find_each(&)
+    iam8bit_sales.find_each(&)
+    patreon_sales.find_each(&)
   end
 
   # Returns a hash mapping payees to a fractional split of funds (0,1]
