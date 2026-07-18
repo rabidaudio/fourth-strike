@@ -21,6 +21,10 @@ class ChitComputer
     ChitComputer.new.compute_product_splits(product).upsert!
   end
 
+  def self.recompute_for_payee!(payee)
+    ChitComputer.new.compute_payee(payee).upsert!
+  end
+
   def self.recompute_all!
     ChitComputer.new.all.upsert!
   end
@@ -77,6 +81,13 @@ class ChitComputer
       compute_sale(sale)
     end
     self
+  end
+
+  def compute_payee(payee)
+    remove(Chit.where(payee: payee))
+    payee.splits.find_each do |split|
+      compute_product_splits(split.product)
+    end
   end
 
   def all
