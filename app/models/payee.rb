@@ -43,7 +43,7 @@ class Payee < ApplicationRecord
   end
 
   after_update do |payee|
-    ChitComputer.recompute_for_payee!(payee) if payee.changes['opted_out_of_royalties'].present?
+    ChitComputer.recompute_for_payee!(payee) if payee.saved_change_to_attribute?(:opted_out_of_royalties)
   end
 
   scope :missing_payment_info, -> { where.not(fsn: 'FS-000').where(paypal_account: nil, opted_out_of_royalties: false) }

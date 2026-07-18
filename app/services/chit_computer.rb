@@ -88,6 +88,7 @@ class ChitComputer
     payee.splits.find_each do |split|
       compute_product_splits(split.product)
     end
+    self
   end
 
   def all
