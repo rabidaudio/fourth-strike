@@ -135,7 +135,7 @@ class Payee < ApplicationRecord
   end
 
   def balance(**)
-    return 0._to_money if opted_out_of_royalties?
+    return 0.to_money if opted_out_of_royalties?
 
     total_owed(**) - paid_out(**)
   end

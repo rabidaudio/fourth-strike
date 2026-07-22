@@ -16,17 +16,23 @@ section.section
     thead
       tr
         th Track
+        th
         th Album
         th Artist
     tbody
-      - Track.includes(:album).joins(:contributions).merge(@artist.contributions).order_by_release_date_desc.each do |track|
+      - @artist.contributions.includes(track: :album).joins(:track).merge(Track.order_by_release_date_desc).each do |contribution|
         tr
           td
-            a href=track_path(track) = track.name
+            a href=track_path(contribution.track) = contribution.track.name
           td
-            a href=album_path(track.album) = track.album.name
+            - if contribution.songwriter?
+              span.tag.is-normal.is-success Songwriter
+            - if contribution.details.present?
+              span.details = contribution.details
           td
-            a href=merch_index_path(artist: track.album.artist_name) = track.album.artist_name
+            a href=album_path(contribution.track.album) = contribution.track.album.name
+          td
+            a href=merch_index_path(artist: contribution.track.album.artist_name) = contribution.track.album.artist_name
 
 - if admin? || current_user&.artist == @artist
   - @payee = @artist.payee
