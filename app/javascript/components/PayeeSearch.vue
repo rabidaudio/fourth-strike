@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, computed } from 'vue'
+  import { ref, computed, watch } from 'vue'
 
   import { payees_path } from '../routes'
 
@@ -62,7 +62,6 @@
 
   function select(selectedPayee) {
     payee.value = selectedPayee
-    searchValue.value = `${selectedPayee.name} / ${selectedPayee.fsn}`
     searchResults.value = []
     isDirty.value = false
   }
@@ -71,6 +70,13 @@
   if (props.name && props.fsn) {
     select(props)
   }
+
+  // reload if changes externally
+  watch(payee, (newVal, oldVal) => {
+    if (oldVal.fsn !== newVal.fsn) {
+      searchValue.value = `${newVal.name} / ${newVal.fsn}`
+    }
+  })
 </script>
 
 <style>
