@@ -48,6 +48,9 @@ class ContributionsController < ApplicationController
     else
       @product.tracks.each { |t| t.contributions.destroy_all }
     end
+
+    return if params[:contributions].nil?
+
     params.expect(contributions: [[:fsn, :is_songwriter, :details,
                                    :track_id]]).each do |contribution_params|
       next if contribution_params[:fsn].blank?
@@ -70,6 +73,9 @@ class ContributionsController < ApplicationController
     else
       @product.tracks.each { |t| t.splits.destroy_all }
     end
+
+    return if params[:splits].nil?
+
     params.expect(splits: [[:fsn, :value, :track_id]]).each do |split_params|
       next if split_params[:fsn].blank?
 
