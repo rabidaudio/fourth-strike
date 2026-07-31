@@ -17,6 +17,7 @@
   --text-second-color: #586066;
   --text-light-color: #aeb7ca;
   --bg-color: #ffffff;
+  /* --bulma-card-background-color: #fff; */
 
   --main-font: "Jost", Arial, Helvetica, sans-serif;
   --code-font: "JetBrains Mono", monospace;
@@ -41,6 +42,12 @@
     --bulma-family-code: var(--code-font);
 
     --bulma-body-line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #7789b0;
+  }
 }
 
 a {
