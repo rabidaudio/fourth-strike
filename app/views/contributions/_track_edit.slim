@@ -7,17 +7,7 @@ section.section
       div vue-component="TrackContributors" props=track_contributors_props(track)
 
     .column
-
       h4.is-size-5 Distribution Splits
-      p.is-italic
-        | Typically, track splits go to the songwriter(s) only, including for live albums. 
-        | For covers, distributions are split between the original songwriter(s) and the new arrangers. 
-        | For albums, all contributors (songwriters and non-songwriters alike) receive an even split, regardless 
-        | of the magnitude or number of contributions. Merch items associated with a particular album use the same 
-        | splits as the album. 
-        | None of these rules apply if the product is for charity, in which case the splits go entirely to 
-        | the charity.
-
       div vue-component="EditSplits" props=edit_splits_props(track.splits, track_id: track.id)
 
     .column

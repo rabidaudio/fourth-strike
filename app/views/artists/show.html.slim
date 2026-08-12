@@ -3,7 +3,7 @@ section.section
 
   - if @artist.bio.present?
     == render_markdown @artist.bio
-  - else
+  - elsif @artist.credit.present?
     pre style="white-space: pre-wrap;" = @artist.credit
 
   - if admin? || current_user&.artist == @artist
@@ -27,6 +27,10 @@ section.section
           td
             - if contribution.songwriter?
               span.tag.is-normal.is-success Songwriter
+            - elsif contribution.associated?
+              span.tag.is-normal.is-light Associated
+            - else
+              span.tag.is-normal.is-info Contributor
             - if contribution.details.present?
               span.details = contribution.details
           td
@@ -34,6 +38,6 @@ section.section
           td
             a href=merch_index_path(artist: contribution.track.album.artist_name) = contribution.track.album.artist_name
 
-- if admin? || current_user&.artist == @artist
+- if admin? #|| current_user&.artist == @artist
   - @payee = @artist.payee
   = render 'payees/info'

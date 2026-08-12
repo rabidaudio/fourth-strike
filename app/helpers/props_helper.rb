@@ -5,11 +5,11 @@
 module PropsHelper
   def track_contributors_props(track)
     props = { track_id: track.id }
-    props[:contributions] = track.contributions.order(is_songwriter: :desc).map do |contribution|
-      contribution.slice(:details, :is_songwriter).merge(payee: {
-                                                           fsn: contribution.artist&.payee&.fsn,
-                                                           name: contribution.artist&.payee&.name
-                                                         })
+    props[:contributions] = track.contributions.order(level: :desc).map do |contribution|
+      contribution.slice(:details, :level).merge(payee: {
+                                                   fsn: contribution.artist&.payee&.fsn,
+                                                   name: contribution.artist&.payee&.name
+                                                 })
     end
     props.to_json
   end

@@ -24,7 +24,7 @@ p
 .columns
   .column
     h2.is-size-2 Contributors
-    = render 'contributions/for_track', track: @track
+    = render 'contributions/list', contributions: @track.contributions
 
     - if admin?
       .block

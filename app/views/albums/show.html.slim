@@ -58,7 +58,7 @@ p
               td
                 a href=track_path(track.id) = track.name
               td
-                = render 'contributions/for_track', track: track
+                = render 'contributions/list', contributions: track.contributions
 
       - if admin?
         .block

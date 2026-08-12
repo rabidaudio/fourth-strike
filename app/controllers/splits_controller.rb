@@ -15,7 +15,7 @@ class SplitsController < ApplicationController
     if @product.is_a?(Merch) && params[:copy_from_album].to_b
       @splits = @product.albums.map(&:payees).flatten.uniq.map { |p| Split.new(payee: p, product: @product, value: 1) }
     elsif @product.is_a?(Album) && params[:copy_from_tracks].to_b
-      @splits = @product.contributors.map { |a| Split.new(payee_id: a.payee_id, product: @product, value: 1) }
+      @splits = @product.payable_contributors.map { |a| Split.new(payee_id: a.payee_id, product: @product, value: 1) }
     end
   end
 

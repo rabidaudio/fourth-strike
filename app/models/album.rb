@@ -55,6 +55,7 @@ class Album < ApplicationRecord
 
   has_many :contributions, through: :tracks
   has_many :contributors, -> { distinct }, through: :tracks
+  has_many :payable_contributors, -> { distinct }, through: :tracks
 
   validates :catalog_number, format: { with: /\A[A-Z]{3}-[0-9]{3}\z/, allow_nil: true }
 

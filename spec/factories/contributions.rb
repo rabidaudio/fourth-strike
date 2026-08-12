@@ -4,13 +4,13 @@
 #
 # Table name: contributions
 #
-#  id            :integer          not null, primary key
-#  details       :text
-#  is_songwriter :boolean          default(FALSE), not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  artist_id     :integer          not null
-#  track_id      :integer          not null
+#  id         :integer          not null, primary key
+#  details    :text
+#  level      :integer          default("associated"), not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  artist_id  :integer          not null
+#  track_id   :integer          not null
 #
 # Indexes
 #
@@ -27,9 +27,9 @@ FactoryBot.define do
   factory :contribution do
     track
     artist
-    is_songwriter { false }
+    level { :contributor }
     details do
-      if is_songwriter
+      if songwriter?
         'written by'
       else
         [

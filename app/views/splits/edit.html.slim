@@ -1,4 +1,7 @@
 h1.is-size-2 = "#{@product.class.name} Contributions"
+
+= render 'contributions/credit_explainer'
+
 h2.is-size-3 = @product.name
 
 section.section
@@ -18,6 +21,9 @@ section.section
           .control
             = f.submit "Update Splits", class: "button is-link"
 
+    .column
+      h1.is-size-2 = "Contributions"
+      = render 'contributions/list', contributions: @product.contributions
 
     .column
       h1.is-size-2 = "Credits"

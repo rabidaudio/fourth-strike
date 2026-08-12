@@ -1,0 +1,33 @@
+div data-controller="is_active" 
+  button.button.is-warning data-action="click->is_active#show" data-is_active-target="toggleable"
+    | Review the Contribution Policy
+
+  .modal data-is_active-target="toggleable"
+    .modal-background
+    .modal-content
+      .card
+        .card-content
+          p.is-italic
+            | Typically, track splits go to the songwriter(s) only, including for live albums. 
+            | For covers, distributions are split between the original songwriter(s) and the new arrangers. 
+            | For albums, all contributors (songwriters and non-songwriters alike) receive an even split, regardless 
+            | of the magnitude or number of contributions. Merch items associated with a particular album use the same 
+            | splits as the album. 
+            | None of these rules apply if the product is for charity, in which case the splits go entirely to 
+            | the charity.
+
+
+          h4.is-size-5 Songwriter/contributor definitions:
+          ul
+            li Songwriting IS: lyrics, melodies (identifiable main riffs and vocal or main melodies that form a fundamental part of the song), fundamental harmonic structure (chord structure, etc)
+            li Songwriting IS NOT: composition of instrumental backing parts, solos (if you did a different solo it would still be the same song)
+
+          span.has-text-weight-bold Special cases:
+
+          ul
+            li "Internal" covers: where someone has covered a song of another FS artist and got permission to do so, and fully arranged the song in a new format, the original songwriter(s) and the cover artist/arranger will share songwriting credit. If they did not get permission, full credit will go to the original songwriter. we will assume permission has been given unless we are told otherwise (and permission can be given retrospectively)
+            li "Internal" References/interpolation: we don't consider minor or short references to another FS song to warrant songwriter credit
+            li "Internal" Sampling: where a FS song has been sampled and the sampling artist got permission from the original artist to do so, no songwriting credit will be given to the original artist. where no permission was given, songwriting credit will be shared between the original and sampling artists. we will assume permission has been given unless we are told otherwise (and permission can be given retrospectively)
+            li Gang vox: if a call for gang vox was open and could be responded to by anyone in a server, we don't consider that to count as contributor credit
+
+    button.modal-close.is-large aria-label="close" data-action="click->is_active#hide" data-is_active-target="toggleable"

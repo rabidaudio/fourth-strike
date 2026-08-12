@@ -70,6 +70,9 @@ class Merch < ApplicationRecord
            foreign_key: :merch_item_id,
            dependent: :restrict_with_exception
 
+  has_many :contributions, through: :albums
+  has_many :contributors, -> { distinct }, through: :albums
+
   monetize :list_price_cents
 
   json_string_attributes :variants

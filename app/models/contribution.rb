@@ -4,13 +4,13 @@
 #
 # Table name: contributions
 #
-#  id            :integer          not null, primary key
-#  details       :text
-#  is_songwriter :boolean          default(FALSE), not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  artist_id     :integer          not null
-#  track_id      :integer          not null
+#  id         :integer          not null, primary key
+#  details    :text
+#  level      :integer          default("associated"), not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  artist_id  :integer          not null
+#  track_id   :integer          not null
 #
 # Indexes
 #
@@ -24,20 +24,24 @@
 #  track_id   (track_id => tracks.id)
 #
 # A list of Artists who contributed to a Track.
-# `is_songwriter` flags if the Artist should be credited as
-# writing a track, rather than simply contributing an additional
-# part. Typically, streaming revenue for a track goes to songwriters
+# There are three levels of contributions.
+# Songwriters wrote or contributed lyrics, melodies (identifiable
+# main riffs and vocal or main melodies that form a fundamental part
+# of the song), or fundamental harmonic structure (chord structure, etc).
+# The associated level is for linking an artist to a song that doesn't rise
+# to the level of contributor, such as samples or open calls for contributions
+# such as gang vocals do not rise to the level of contributor.
+# Typically, streaming revenue for a track goes to songwriters
 # only, and album sales go to all contributors to any song on the album.
-# `details` describes the contribution (e.g. "guitar, additional vocals").
+# `details` describes the contribution(s) (e.g. "guitar, additional vocals").
 class Contribution < ApplicationRecord
   strip_attributes only: [:details]
 
   belongs_to :track
   belongs_to :artist
 
-  scope :songwriters, -> { where(is_songwriter: true) }
-
-  def songwriter?
-    is_songwriter
-  end
+  enum :level,
+       associated: 0,
+       contributor: 1,
+       songwriter: 2
 end

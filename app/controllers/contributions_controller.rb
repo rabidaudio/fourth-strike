@@ -51,8 +51,9 @@ class ContributionsController < ApplicationController
 
     return if params[:contributions].nil?
 
-    params.expect(contributions: [[:fsn, :is_songwriter, :details,
-                                   :track_id]]).each do |contribution_params|
+    params.expect(
+      contributions: [[:fsn, :level, :details, :track_id]]
+    ).each do |contribution_params|
       next if contribution_params[:fsn].blank?
 
       artist = Payee.find_by!(fsn: contribution_params[:fsn]).artist
@@ -61,7 +62,7 @@ class ContributionsController < ApplicationController
       Contribution.create!(
         track_id: contribution_params[:track_id],
         artist: artist,
-        is_songwriter: contribution_params[:is_songwriter].to_b,
+        level: contribution_params[:level],
         details: contribution_params[:details]
       )
     end
