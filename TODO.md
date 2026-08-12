@@ -5,9 +5,20 @@ Deadline, Timeline
 
 Contract: if we don't make at least X in a year, we won't do payouts < $10
 Payments less transaction fees
+Clarify songwriter/contributor/associated credits in contract (or separate policy doc)
+After going through song credits:
+  - look for places where splits don’t match any contributors, songwriters != splits
+  - properly assign album/merch credits (don't blind copy! art, no gang vocals, etc)
+  - update discord for all artists
+  - regenerate chits and look at financial situation
+  - update credits on bandcamp and app as requested
 
-Spreadsheet for tracking reach-outs
 
+Rework charities to be independent of splits - hard-coded amount per release (computed from first 3 months), then org
+
+- add (internal) notes to tracks
+- Make contribution a 3-state: "songwriter", "contributor", "associated"
+- subdivide contributions on UI
 
 
 - Finalize contract
