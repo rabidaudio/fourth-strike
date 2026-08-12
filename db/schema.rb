@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_17_161452) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_12_160951) do
   create_table "admins", force: :cascade do |t|
     t.string "discord_handle", null: false
     t.datetime "granted_at"
@@ -128,10 +128,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_17_161452) do
   create_table "contributions", force: :cascade do |t|
     t.integer "track_id", null: false
     t.integer "artist_id", null: false
-    t.boolean "is_songwriter", default: false, null: false
     t.text "details"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "level", default: 0, null: false
     t.index ["artist_id"], name: "index_contributions_on_artist_id"
     t.index ["track_id", "artist_id"], name: "index_contributions_on_track_id_and_artist_id", unique: true
     t.index ["track_id"], name: "index_contributions_on_track_id"
