@@ -1,5 +1,5 @@
 - {songwriter: 'Songwriters', contributor: 'Contributors', associated: 'Associated artists'}.each do |level, title|
-  - cc = track.contributions.where(level: level)
+  - cc = contributions.where(level: level)
   - unless cc.empty?
     span.has-text-weight-bold = title
     ul
