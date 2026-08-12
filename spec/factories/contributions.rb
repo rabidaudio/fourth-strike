@@ -27,9 +27,9 @@ FactoryBot.define do
   factory :contribution do
     track
     artist
-    is_songwriter { false }
+    level { :contributor }
     details do
-      if is_songwriter
+      if songwriter?
         'written by'
       else
         [

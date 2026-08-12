@@ -27,6 +27,10 @@ section.section
           td
             - if contribution.songwriter?
               span.tag.is-normal.is-success Songwriter
+            - elsif contribution.associated?
+              span.tag.is-normal.is-light Associated
+            - else
+              span.tag.is-normal.is-info Contributor
             - if contribution.details.present?
               span.details = contribution.details
           td

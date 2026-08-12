@@ -1,3 +1,5 @@
+= render 'credit_explainer'
+
 = form_for(@product, url: contributions_path(product_type: @product.class.name.downcase, product_id: @product.id), method: :post) do |f|
   
   - if @product.is_a?(Track)

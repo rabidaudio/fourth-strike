@@ -52,9 +52,9 @@ FactoryBot.define do
 
       contributions do
         songwriter_count.times.map do
-          association(:contribution, is_songwriter: true, track: instance)
+          association(:contribution, level: :songwriter, track: instance)
         end + additional_count.times.map do
-          association(:contribution, is_songwriter: false, track: instance)
+          association(:contribution, level: :songwriter, track: instance)
         end
       end
     end
@@ -64,7 +64,7 @@ FactoryBot.define do
 
       transient do
         distribution do
-          contributions.songwriters.map do |contribution|
+          contributions.songwriter.map do |contribution|
             { contribution.payee => 1 }
           end
         end

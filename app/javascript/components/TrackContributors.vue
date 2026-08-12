@@ -11,7 +11,7 @@
   const hasSongwriters = computed(() => {
     for (const index in contributions.value) {
       const contribution = contributions.value[index]
-      if (contribution.is_songwriter) return true
+      if (contribution.level === 'songwriter') return true
     }
     return false
   })
@@ -23,7 +23,7 @@
         name: '',
       },
       track_id,
-      is_songwriter: !hasSongwriters.value,
+      level: hasSongwriters.value ? 'contributor' : 'songwriter',
       details: ''
     })
   }
@@ -60,11 +60,19 @@
           <input type="hidden" name="contributions[][track_id]" :value="track_id">
           <PayeeSearch v-model="contribution.payee" artistOnly fieldName="contributions[][fsn]"/>
 
-          <div class="control">
-            <label class="checkbox">
-              <input type="checkbox" name="contributions[][is_songwriter]" v-model="contribution.is_songwriter" />
-              <span> Songwriter</span>
-            </label>
+          <div class="control has-icons-left">
+            <div class="select">
+              <select name="contributions[][level]" v-model="contribution.level">
+                <option value="songwriter">Songwriter</option>
+                <option value="contributor">Contributor</option>
+                <option value="associated">Associated</option>
+              </select>
+              <div class="icon is-small is-left">
+                <span :class="{'songwriter': 'has-text-success', 'contributor': 'has-text-dark', 'associated': ''}[contribution.level]">
+                  <i :class="{'songwriter': 'ri-quill-pen-ai-line', 'contributor': 'ri-add-line', 'associated': 'ri-info-i'}[contribution.level]"></i>
+                </span>
+              </div>
+            </div>
           </div>
 
           <div class="control">

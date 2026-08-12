@@ -48,12 +48,19 @@ class Track < ApplicationRecord
   has_many :contributors, -> { distinct },
            through: :contributions,
            source: :artist
-  has_many :songwriting_contributions, -> { where(is_songwriter: true) },
+  has_many :songwriting_contributions, -> { songwriter },
            class_name: 'Contribution',
            dependent: :restrict_with_exception,
            inverse_of: :track
   has_many :songwriters, -> { distinct },
            through: :songwriting_contributions,
+           source: :artist
+  has_many :payable_contributions, -> { where.not(level: :associated) },
+           class_name: 'Contribution',
+           dependent: :restrict_with_exception,
+           inverse_of: :track
+  has_many :payable_contributors, -> { distinct },
+           through: :payable_contributions,
            source: :artist
 
   validates :track_number, numericality: { greater_than_or_equal_to: 1, allow_nil: true }

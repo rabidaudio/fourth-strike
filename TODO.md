@@ -16,10 +16,6 @@ After going through song credits:
 
 Rework charities to be independent of splits - hard-coded amount per release (computed from first 3 months), then org
 
-- add (internal) notes to tracks
-- Make contribution a 3-state: "songwriter", "contributor", "associated"
-- subdivide contributions on UI
-
 
 - Finalize contract
   - reach out to Bertie
@@ -42,12 +38,7 @@ Rework charities to be independent of splits - hard-coded amount per release (co
     - album, live show, merch, gofundme
 
 TODO:
-- Contributions
-  - Create contributions model
-  - Create form to add contributions
-  - remove discord requirement from artist
-  - generate artist for every payee
-    - 11 artist profiles. wipe and recreate?
+- Artist access
   - Setup permissions to allow artists to see their contributions but hide accounting
   - ensure artists can edit their own profiles and paypal info
   - audit non-admin access to data
