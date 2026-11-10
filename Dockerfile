@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.3.10
+ARG RUBY_VERSION=3.3.13
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
 
 # Rails app lives here
@@ -9,7 +9,6 @@ WORKDIR /rails
 
 # Set production environment
 ENV RAILS_ENV="production" \
-    NODE_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
@@ -24,8 +23,8 @@ RUN apt-get update -qq && \
         pkg-config python-is-python3 libpq-dev libyaml-dev zlib1g-dev
 
 # Install JavaScript dependencies
-ARG NODE_VERSION=20.19.6
-ARG YARN_VERSION=1.22.19
+ARG NODE_VERSION=24.22.2
+ARG YARN_VERSION=1.22.22
 ENV PATH=/usr/local/node/bin:$PATH
 RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
     /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
@@ -40,10 +39,8 @@ RUN bundle install && \
 
 # Install node modules
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
-# Copy only application code for compiling assets
-# COPY --exclude proxy --exclude docker-compose.yml --exclude Dockerfile --exclude README.md . .
 COPY . .
 
 # Precompile bootsnap code for faster boot times
@@ -51,11 +48,10 @@ RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN NODE_ENV=production yarn run build
 
-RUN yarn run build && yarn run build:css
-
-# # Copy remaining application code
-# COPY . .
+# remove dev dependencies
+RUN yarn install --production
 
 
 # Final stage for app image
