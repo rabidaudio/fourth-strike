@@ -5,6 +5,7 @@
   import { extract_bandcamp_details_path } from '../routes'
 
   import MoneyField from './MoneyField.vue'
+  import Spinner from './Spinner.vue'
   
   const props = defineProps(['album', 'tracks'])
 
@@ -13,15 +14,23 @@
 
   const hidden = computed(() => tracks.value.map(t => t.track_number == null))
 
+  const dataLoading = ref(false)
+
   async function loadDataFromBandcamp() {
     if (!album.bandcamp_url.match(/^(https?:\/\/)?([a-z0-9-]+\.)?bandcamp.com/)) return
     
-    // fetch, virtual dom, extract parameters
-    const res = await fetch(extract_bandcamp_details_path({url: album.bandcamp_url}), {method: "POST"})
-    const params = await res.json()
+    try {
+      dataLoading.value = true
+      // fetch, virtual dom, extract parameters
+      const res = await fetch(extract_bandcamp_details_path({url: album.bandcamp_url}), {method: "POST"})
+      const params = await res.json()
 
-    Object.assign(album, params.album)
-    tracks.value = params.tracks
+      Object.assign(album, params.album)
+      const ids = tracks.value.map(t => t.id)
+      tracks.value = params.tracks.map((t, i) => ({ id: ids[i], ...t }))
+    } finally {
+      dataLoading.value = false
+    }
   }
 
   function makePrivateIfUnreleased() {
@@ -73,8 +82,11 @@
   <section class="section">
     <div class="field">
       <label class="label is-required">Bandcamp URL</label>
-      <div class="control">
+      <div class="control has-icons-right">
         <input class="input" name="album[bandcamp_url]" type="url" placeholder="https://theband.bandcamp.com/album/the-album" v-model="album.bandcamp_url" @change="loadDataFromBandcamp">
+        <span class="icon is-small is-right">
+          <Spinner :spinning="dataLoading" />
+        </span>
       </div>
       <p class="help">
         Populating this will autofill much of the form from Bandcamp.

@@ -1,5 +1,38 @@
 # NOTES
 
+---
+Dec 1 is the deadline for people to contact and get their info updated (we've overwhelmingly got the most important contributors, I'd guess over 90% in terms of royalty $$ owed)
+Dec 1 we switch all revenue streams from the CIC to the LLC
+Over the month of December we send out royalties. I'm thinking I can script up their delivery so that it isn't 200 manual transactions
+The CIC donates any money leftover to charity (probably based on the charities we have worked with before) at which point the CIC can cease operations
+Anyone wanting royalties or credit corrections after Jan 1 talks to the LLC
+
+== NOVEMBER ==
+  - Add Expansion credits
+  - start trying to update payment info to see if there's blockers
+  - Make paypal account for LLC
+
+== DEC 1 ==
+  - issue payouts for any outstanding money: Bandcamp, DistroKid, Patreon
+  - update bank account: Bandcamp, DistroKid, Patreon
+  - Generate latest sales reports and update
+
+== EARLY DEC ==
+  - Script to update/confirm data with spreadsheet
+  - Correct splits and recompute chits
+  - code script to generate payments
+  - compare payments to whats in the bank - hope there's enough? Maybe personal donate the difference
+
+
+== EARLY NEXT YEAR ==
+  - remove promises of tapes and shirts from patreon
+  - Reach out to patreon members, confirming they want to continue to donate
+  - set up meeting with admin + community teams to talk about future
+  - Do taxes for LLC
+  - wind down CIC
+----
+
+
 Deadline, Timeline
 
 
@@ -13,6 +46,7 @@ After going through song credits:
   - regenerate chits and look at financial situation
   - update credits on bandcamp and app as requested
 
+Compute donated royalties from date of last payout
 
 Rework charities to be independent of splits - hard-coded amount per release (computed from first 3 months), then org
 
